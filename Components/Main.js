@@ -8,6 +8,8 @@ export default Main = () => {
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/inicio" element={<Inicio />} />
+      <Route path="/recuperar-contraseña" element={<Inicio />} />
+      <Route path="/registrarse" element={<Inicio />} />
     </Routes>
   );
 };
