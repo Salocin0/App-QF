@@ -1,24 +1,23 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Input, Text, Button } from "react-native-elements";
-import { Link } from "react-router-native";
 import useLogin from "./Hooks/UseLogin";
+import { ToastAndroid } from "react-native";
 
-export default Login = () => {
+export default Login = ({ navigation }) => {
   const {
     email,
     password,
     handleEmailChange,
     handlePasswordChange,
     handleLogin,
-  } = useLogin();
+  } = useLogin(navigation);
 
   const onPressLogin = async (event) => {
     if (event) {
       event.preventDefault();
     }
     const loginResult = await handleLogin();
-    console.log(loginResult);
   };
 
   return (
@@ -53,15 +52,21 @@ export default Login = () => {
         />
       </View>
       <View style={styles.footer}>
-        <Link to="/recuperar-contraseña">
-          <Text style={styles.link}>Recuperar Contraseña</Text>
-        </Link>
+        <Text
+          style={styles.link}
+          onPress={() => navigation.navigate("Recuperar Contraseña")}
+        >
+          Recuperar Contraseña
+        </Text>
       </View>
       <View style={styles.footer}>
         <Text>¿No tienes cuenta? </Text>
-        <Link to="/registrarse">
-          <Text style={styles.link}>Registrarse</Text>
-        </Link>
+        <Text
+          style={styles.link}
+          onPress={() => navigation.navigate("Seleccion Perfil")}
+        >
+          Registrarse
+        </Text>
       </View>
     </View>
   );
@@ -82,6 +87,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
+    marginBottom: 5,
   },
   label: {
     color: "black",

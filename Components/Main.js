@@ -1,15 +1,19 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-native';
-import Inicio from './Inicio';
-import Login from './Login';
+import React from "react";
+import Inicio from "./Inicio";
+import Login from "./Login";
+import SeleccionRegister from "./RegistrarUsuario/SeleccionRegister";
+import ProcesoRegistro from "./RegistrarUsuario/ProcesoRegistro";
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 export default Main = () => {
+  const Stack = createNativeStackNavigator();
   return (
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/inicio" element={<Inicio />} />
-      <Route path="/recuperar-contraseña" element={<Inicio />} />
-      <Route path="/registrarse" element={<Inicio />} />
-    </Routes>
+    <Stack.Navigator>
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Inicio" component={Inicio} />
+      <Stack.Screen name="Recuperar Contraseña" component={Inicio} />
+      <Stack.Screen name="Registrarse" component={ProcesoRegistro} />
+      <Stack.Screen name="Seleccion Perfil" component={SeleccionRegister} />
+    </Stack.Navigator>
   );
 };

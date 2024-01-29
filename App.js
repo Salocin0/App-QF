@@ -1,20 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
-import { NativeRouter } from "react-router-native";
 import Main from "./Components/Main";
+import { NavigationContainer } from '@react-navigation/native';
 
 export default function App() {
   return (
-    <NativeRouter>
+    <NavigationContainer>
       <Main />
-    </NativeRouter>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
