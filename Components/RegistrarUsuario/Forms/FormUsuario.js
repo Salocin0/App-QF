@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { ToastAndroid } from "react-native";
 
-const FormUsuario = ({ tipoUsuario, handleRegistro }) => {
+const FormUsuario = ({ tipoUsuario, handleRegistro, nextStep, backStep }) => {
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
 
@@ -55,7 +55,7 @@ const FormUsuario = ({ tipoUsuario, handleRegistro }) => {
     }
 
     handleRegistro(userData);
-    navigation("SiguienteScreen");
+    nextStep()
   };
 
   return (

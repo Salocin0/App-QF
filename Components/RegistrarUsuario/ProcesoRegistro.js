@@ -68,6 +68,7 @@ const ProcesoRegistro = (navigation) => {
           backStep={backStep}
           tipoUsuario={tipoUsuario}
           handleRegistro={handleConsumidorDataChange}
+          navigation={navigation}
         />
       );
     case 3:
@@ -78,6 +79,7 @@ const ProcesoRegistro = (navigation) => {
             backStep={backStep}
             tipoUsuario={tipoUsuario}
             handleRegistro={handleEncargadoDataChange}
+            navigation={navigation}
           />
         );
       } else if (tipoUsuario === "productor") {
@@ -87,6 +89,7 @@ const ProcesoRegistro = (navigation) => {
             backStep={backStep}
             tipoUsuario={tipoUsuario}
             handleRegistro={handleProductorDataChange}
+            navigation={navigation}
           />
         );
       }

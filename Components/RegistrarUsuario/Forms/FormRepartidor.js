@@ -17,7 +17,7 @@ const FormRepartidor = ({ nextStep, backStep, handleRegistro }) => {
   const handleSubmit = () => {
     if (repartidorData.confirmacionMayorDeEdad) {
       handleRegistro(repartidorData);
-      navigation("Login");
+      navigation.navigate("Login");
     } else {
       ToastAndroid("Debes confirmar que tienes más de 18 años.");
     }

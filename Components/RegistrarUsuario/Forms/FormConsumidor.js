@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Picker } from "react-native";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { ToastAndroid } from "react-native";
+import { Picker } from '@react-native-picker/picker';
+import useLocalidades from "../../Hooks/UseLocalidades";
+import useProvincias from "../../Hooks/UseProvincias";
 
-const FormConsumidor = ({ nextStep, backStep, handleRegistro, tipoUsuario }) => {
-  const [provincias, setProvincias] = useState([]);
+const FormConsumidor = ({ nextStep, backStep, handleRegistro, tipoUsuario, navigation }) => {
+  const { provincias } = useProvincias();
+  const { localidades, fetchLocalidades } = useLocalidades();
   const [selectedProvince, setSelectedProvince] = useState("");
-  const [localidades, setLocalidades] = useState([]);
   const [selectedLocalidad, setSelectedLocalidad] = useState("");
   const [consumidorData, setConsumidorData] = useState({
     nombre: "",
@@ -101,22 +104,11 @@ const FormConsumidor = ({ nextStep, backStep, handleRegistro, tipoUsuario }) => 
     handleRegistro(consumidorData);
 
     if (tipoUsuario === "consumidor") {
-      navigation("Login");
+      navigation.navigate("Login");
     } else {
       nextStep();
     }
   };
-
-  useEffect(() => {
-    fetch("https://apis.datos.gob.ar/georef/api/provincias")
-      .then((response) => response.json())
-      .then((data) => {
-        setProvincias(data.provincias);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
 
   const handleLocalidadChange = (value) => {
     setSelectedLocalidad(value);
@@ -125,25 +117,8 @@ const FormConsumidor = ({ nextStep, backStep, handleRegistro, tipoUsuario }) => 
 
   const handleProvinceChange = (value) => {
     setSelectedProvince(value);
+    fetchLocalidades(value);
     consumidorData.provincia = value;
-
-    if (value !== "") {
-      fetch(
-        `https://apis.datos.gob.ar/georef/api/municipios?provincia=${value}&campos=id,nombre&max=700`
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          const sortedLocalidades = data.municipios.sort((a, b) =>
-            a.nombre.localeCompare(b.nombre)
-          );
-          setLocalidades(sortedLocalidades);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } else {
-      setLocalidades([]);
-    }
   };
 
   return (

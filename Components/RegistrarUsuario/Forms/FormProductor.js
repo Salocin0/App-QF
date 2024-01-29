@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Picker } from "react-native";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { Picker } from '@react-native-picker/picker';
 import { ToastAndroid } from "react-native";
 
 const FormProductor = ({ nextStep, backStep, handleRegistro }) => {
@@ -46,7 +47,7 @@ const FormProductor = ({ nextStep, backStep, handleRegistro }) => {
     }
 
     handleRegistro(productorData);
-    navigation("Login");
+    navigation.navigate("Login");
   };
 
   return (
