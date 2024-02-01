@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const useLogin = (navigation) => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState();
+  const [password, setPassword] = useState("");
 
   const handleEmailChange = (text) => {
     setEmail(text);
@@ -22,7 +22,7 @@ const useLogin = (navigation) => {
       contraseña: password,
       correoElectronico: email,
     };
-    console.log(data);
+
     const options = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -40,20 +40,20 @@ const useLogin = (navigation) => {
 
       if (Number(responseData.code) === 200) {
         await AsyncStorage.setItem("sessionId", responseData.data.sessionId);
-        ToastAndroid("Login correcto");
+        ToastAndroid.show("Login correcto", ToastAndroid.SHORT);
         navigation.navigate("Inicio");
         return { success: true, data: responseData.data };
       } else if (Number(responseData.code) === 300) {
-        ToastAndroid("Email no validado, revisa tu correo");
+        ToastAndroid.show("Email no validado, revisa tu correo", ToastAndroid.SHORT);
         navigation.navigate("Login");
       } else if (Number(responseData.code) === 301) {
-        ToastAndroid("Usuario inhabilitado");
+        ToastAndroid.show("Usuario inhabilitado", ToastAndroid.SHORT);
         navigation.navigate("Login");
       } else {
-        ToastAndroid("Datos incorrectos");
+        ToastAndroid.show("Datos incorrectos", ToastAndroid.SHORT);
       }
     } catch (error) {
-      ToastAndroid("Error de red");
+      ToastAndroid.show("Error de red", ToastAndroid.SHORT);
     }
 
     return { success: false };

@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { Link } from "react-router-native";
+import styles from "../Styles/cards.style";
 import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
   ImageBackground,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -34,13 +33,13 @@ const SeleccionRegister = ({ navigation }) => {
       <View style={styles.container}>
         <View style={styles.card}>
           <View style={styles.cardheader}>
-            <Text style={{ color: "white", fontSize: 20 }}>
+            <Text style={styles.title}>
               Seleccione Perfil
             </Text>
           </View>
           <View style={styles.cardBody}>
             <TouchableOpacity
-              style={styles.button}
+              style={styles.btnSelect}
               onPress={() => handleTypeChange("consumidor")}
             >
               <Text>Consumidor</Text>
@@ -52,8 +51,8 @@ const SeleccionRegister = ({ navigation }) => {
                 <TouchableOpacity
                   key={type}
                   style={[
-                    styles.button,
-                    selectedType === type && styles.activeButton,
+                    styles.btnSelect,
+                    selectedType === type && styles.btnActive,
                   ]}
                   onPress={() => handleTypeChange(type)}
                 >
@@ -92,70 +91,5 @@ const SeleccionRegister = ({ navigation }) => {
     </ImageBackground>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  backgroundImage: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "center",
-  },
-  card: {
-    width: "80%",
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 10,
-    elevation: 3,
-  },
-  cardheader: {
-    marginBottom: 10,
-  },
-  cardBody: {
-    alignItems: "center",
-  },
-  button: {
-    borderWidth: 1,
-    borderColor: "blue",
-    padding: 10,
-    marginBottom: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  hr: {
-    borderBottomWidth: 1,
-    borderBottomColor: "white",
-    width: "100%",
-    marginVertical: 10,
-  },
-  buttonGroup: {
-    width: "100%",
-  },
-  activeButton: {
-    backgroundColor: "blue",
-  },
-  buttonsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
-  },
-  clearButton: {
-    backgroundColor: "lightgray",
-    padding: 10,
-    borderRadius: 5,
-  },
-  nextButton: {
-    backgroundColor: "blue",
-    padding: 10,
-    borderRadius: 5,
-  },
-  disabledButton: {
-    backgroundColor: "gray",
-  },
-});
 
 export default SeleccionRegister;

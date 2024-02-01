@@ -7,7 +7,7 @@ import FormUsuario from "./Forms/FormUsuario";
 import useRegister from "../Hooks/UseRegister";
 import { useRoute } from '@react-navigation/native';
 
-const ProcesoRegistro = (navigation) => {
+const ProcesoRegistro = ({navigation}) => {
   const route = useRoute();
   const { tipoUsuario } = route.params;
   const [step, setStep] = useState(1);
@@ -19,11 +19,12 @@ const ProcesoRegistro = (navigation) => {
     registrar,
     handleUserDataChange,
     handleConsumidorDataChange,
-    handleEncargadoDataChange,
     handleProductorDataChange,
     handleRegister,
-    setRegistrar
-  } = useRegister();
+    setRegistrar,
+    activarRegistro,
+    setTipoUsuario
+  } = useRegister(navigation);
 
   const nextStep = () => {
     setStep(step + 1);
@@ -33,24 +34,6 @@ const ProcesoRegistro = (navigation) => {
     setStep(step - 1);
   };
 
-  useEffect(() => {
-    console.log(tipoUsuario);
-    if (registrar) {
-      handleRegister()
-        .then(() => {
-          navigation.navigate("Login");
-        })
-        .catch((error) => {
-          console.error("Error en la solicitud:", error);
-          showToast({
-            type: "error",
-            text1: "Error al registrar. Por favor, vuelva a intentar.",
-          });
-          navigation.navigate("Home");
-        });
-    }
-  }, [registrar]);
-
   switch (step) {
     case 1:
       return (
@@ -58,7 +41,7 @@ const ProcesoRegistro = (navigation) => {
           nextStep={nextStep}
           backStep={backStep}
           tipoUsuario={tipoUsuario}
-          handleRegistro={handleUserDataChange}
+          handleUserDataChange={handleUserDataChange}
         />
       );
     case 2:
@@ -69,6 +52,8 @@ const ProcesoRegistro = (navigation) => {
           tipoUsuario={tipoUsuario}
           handleRegistro={handleConsumidorDataChange}
           navigation={navigation}
+          activarRegistro={activarRegistro}
+          setTipoUsuario={setTipoUsuario}
         />
       );
     case 3:
@@ -78,8 +63,9 @@ const ProcesoRegistro = (navigation) => {
             nextStep={nextStep}
             backStep={backStep}
             tipoUsuario={tipoUsuario}
-            handleRegistro={handleEncargadoDataChange}
             navigation={navigation}
+            activarRegistro={activarRegistro}
+            setTipoUsuario={setTipoUsuario}
           />
         );
       } else if (tipoUsuario === "productor") {
@@ -89,7 +75,9 @@ const ProcesoRegistro = (navigation) => {
             backStep={backStep}
             tipoUsuario={tipoUsuario}
             handleRegistro={handleProductorDataChange}
+            activarRegistro={activarRegistro}
             navigation={navigation}
+            setTipoUsuario={setTipoUsuario}
           />
         );
       }

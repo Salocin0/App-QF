@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import { Picker } from '@react-native-picker/picker';
 import { ToastAndroid } from "react-native";
+import RNPickerSelect from "react-native-picker-select";
 
-const FormProductor = ({ nextStep, backStep, handleRegistro }) => {
+const FormProductor = ({
+  nextStep,
+  backStep,
+  handleRegistro,
+  activarRegistro,
+}) => {
   const [productorData, setProductorData] = useState({
     cuit: "",
     razonSocial: "",
@@ -32,12 +37,18 @@ const FormProductor = ({ nextStep, backStep, handleRegistro }) => {
 
   const handleSubmit = () => {
     if (!isCuitValid(productorData.cuit)) {
-      ToastAndroid.show("El CUIT no es válido o está vacío.", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        "El CUIT no es válido o está vacío.",
+        ToastAndroid.SHORT
+      );
       return;
     }
 
     if (!productorData.razonSocial.trim()) {
-      ToastAndroid.show("Razón social no puede estar vacía.", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        "Razón social no puede estar vacía.",
+        ToastAndroid.SHORT
+      );
       return;
     }
 
@@ -47,35 +58,48 @@ const FormProductor = ({ nextStep, backStep, handleRegistro }) => {
     }
 
     handleRegistro(productorData);
-    navigation.navigate("Login");
+    activarRegistro("productor");
   };
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>Datos Productor 3/3</Text>
       <TextInput
-        style={{ /* Estilos para el input */ }}
+        style={
+          {
+            /* Estilos para el input */
+          }
+        }
         placeholder="Ingrese CUIT"
         value={productorData.cuit}
         onChangeText={(value) => handleChange("cuit", value)}
         required
       />
       <TextInput
-        style={{ /* Estilos para el input */ }}
+        style={
+          {
+            /* Estilos para el input */
+          }
+        }
         placeholder="Ingrese Razón Social"
         value={productorData.razonSocial}
         onChangeText={(value) => handleChange("razonSocial", value)}
         required
       />
-      <Picker
-        style={{ /* Estilos para el selector */ }}
-        selectedValue={productorData.ivaCondicion}
-        onValueChange={(value) => handleChange("ivaCondicion", value)}
-      >
-        <Picker.Item label="Responsable Inscripto" value="responsable_inscripto" />
-        <Picker.Item label="Monotributista" value="monotributista" />
-      </Picker>
-      <View style={{ /* Estilos para el contenedor de los botones */ }}>
+      <View>
+        <RNPickerSelect
+          useNativeAndroidPickerStyle={false}
+          fixAndroidTouchableBug={true}
+          placeholder={{ label: "Condicion frente al iva", value: null }}
+          value={productorData.ivaCondicion}
+          onValueChange={(value) => handleChange("ivaCondicion", value)}
+          items={[
+            { label: "Monotributista", value: "monotributista" },
+            { label: "Responsable Inscripto", value: "responsable_inscripto" },
+          ]}
+        />
+      </View>
+      <View>
         <TouchableOpacity onPress={() => backStep()}>
           <Text>Atrás</Text>
         </TouchableOpacity>

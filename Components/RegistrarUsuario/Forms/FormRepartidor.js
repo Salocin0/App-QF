@@ -1,45 +1,45 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, CheckBox } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { ToastAndroid } from "react-native";
+import CheckBox from "react-native-check-box";
 
-const FormRepartidor = ({ nextStep, backStep, handleRegistro }) => {
-  const [repartidorData, setRepartidorData] = useState({
-    confirmacionMayorDeEdad: false,
-  });
+const FormRepartidor = ({
+  nextStep,
+  backStep,
+  handleRegistro,
+  activarRegistro,
+}) => {
+  const [confirmacionMayorDeEdad,setconfirmacionMayorDeEdad] = useState(false)
 
-  const handleCheckboxChange = (name, checked) => {
-    setRepartidorData({
-      ...repartidorData,
-      [name]: checked,
-    });
+  const handleCheckboxChange = () => {
+    setconfirmacionMayorDeEdad(!confirmacionMayorDeEdad);
   };
 
   const handleSubmit = () => {
-    if (repartidorData.confirmacionMayorDeEdad) {
-      handleRegistro(repartidorData);
-      navigation.navigate("Login");
+    if (confirmacionMayorDeEdad) {
+      activarRegistro("repartidor");
     } else {
-      ToastAndroid("Debes confirmar que tienes más de 18 años.");
+      ToastAndroid.show("Debes confirmar que tienes más de 18 años.",ToastAndroid.SHORT);
     }
   };
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>Datos Repartidor</Text>
-      <View style={{ /* Estilos para el contenedor del checkbox y el texto */ }}>
+      <View>
         <CheckBox
-          value={repartidorData.confirmacionMayorDeEdad}
-          onValueChange={(checked) => handleCheckboxChange("confirmacionMayorDeEdad", checked)}
+          isChecked={confirmacionMayorDeEdad}
+          onClick={() => handleCheckboxChange()}
         />
         <Text>Confirmo que tengo más de 18 años</Text>
       </View>
-      <View style={{ /* Estilos para el contenedor de los botones */ }}>
+      <View>
         <TouchableOpacity onPress={() => backStep()}>
           <Text>Atrás</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleSubmit}
-          disabled={!repartidorData.confirmacionMayorDeEdad}
+          disabled={!confirmacionMayorDeEdad}
         >
           <Text>Finalizado</Text>
         </TouchableOpacity>

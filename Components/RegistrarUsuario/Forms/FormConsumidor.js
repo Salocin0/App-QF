@@ -1,20 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { ToastAndroid } from "react-native";
-import { Picker } from '@react-native-picker/picker';
 import useLocalidades from "../../Hooks/UseLocalidades";
 import useProvincias from "../../Hooks/UseProvincias";
+import RNPickerSelect from "react-native-picker-select";
+import RNDateTimePicker from "@react-native-community/datetimepicker";
 
-const FormConsumidor = ({ nextStep, backStep, handleRegistro, tipoUsuario, navigation }) => {
+const FormConsumidor = ({
+  nextStep,
+  backStep,
+  handleRegistro,
+  tipoUsuario,
+  activarRegistro,
+  navigation,
+  setTipoUsuario
+}) => {
   const { provincias } = useProvincias();
   const { localidades, fetchLocalidades } = useLocalidades();
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedLocalidad, setSelectedLocalidad] = useState("");
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [consumidorData, setConsumidorData] = useState({
     nombre: "",
     apellido: "",
     dni: "",
-    fechaNacimiento: "",
+    fechaNacimiento: new Date(2000, 0, 1),
     provincia: "",
     localidad: "",
     telefono: "",
@@ -25,6 +41,16 @@ const FormConsumidor = ({ nextStep, backStep, handleRegistro, tipoUsuario, navig
       ...consumidorData,
       [name]: value,
     });
+  };
+
+  const toggleDatePicker = () => {
+    setShowDatePicker(!showDatePicker);
+  };
+
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || consumidorData.fechaNacimiento;
+    setShowDatePicker(false);
+    handleChange("fechaNacimiento", currentDate);
   };
 
   const tieneNumeros = (cadena) => {
@@ -53,12 +79,18 @@ const FormConsumidor = ({ nextStep, backStep, handleRegistro, tipoUsuario, navig
     }
 
     if (tieneNumeros(consumidorData.nombre)) {
-      ToastAndroid.show("El nombre no puede contener números.", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        "El nombre no puede contener números.",
+        ToastAndroid.SHORT
+      );
       return;
     }
 
     if (tieneNumeros(consumidorData.apellido)) {
-      ToastAndroid.show("El apellido no puede contener números.", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        "El apellido no puede contener números.",
+        ToastAndroid.SHORT
+      );
       return;
     }
 
@@ -83,12 +115,18 @@ const FormConsumidor = ({ nextStep, backStep, handleRegistro, tipoUsuario, navig
     }
 
     if (edad < 18) {
-      ToastAndroid.show("Debes tener al menos 18 años para registrarte.", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        "Debes tener al menos 18 años para registrarte.",
+        ToastAndroid.SHORT
+      );
       return;
     }
 
     if (tieneLetras(consumidorData.telefono)) {
-      ToastAndroid.show("El teléfono no puede contener letras.", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        "El teléfono no puede contener letras.",
+        ToastAndroid.SHORT
+      );
       return;
     }
 
@@ -104,7 +142,8 @@ const FormConsumidor = ({ nextStep, backStep, handleRegistro, tipoUsuario, navig
     handleRegistro(consumidorData);
 
     if (tipoUsuario === "consumidor") {
-      navigation.navigate("Login");
+      setTipoUsuario(tipoUsuario)
+      activarRegistro(tipoUsuario);
     } else {
       nextStep();
     }
@@ -122,61 +161,113 @@ const FormConsumidor = ({ nextStep, backStep, handleRegistro, tipoUsuario, navig
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View style={styles.container}>
       <Text>Datos Consumidor 2/{tipoUsuario === "consumidor" ? "2" : "3"}</Text>
       <TextInput
-        style={{ /* Estilos para el input */ }}
+        style={
+          {
+            /* Estilos para el input */
+          }
+        }
         placeholder="Nombre"
         value={consumidorData.nombre}
         onChangeText={(value) => handleChange("nombre", value)}
       />
       <TextInput
-        style={{ /* Estilos para el input */ }}
+        style={
+          {
+            /* Estilos para el input */
+          }
+        }
         placeholder="Apellido"
         value={consumidorData.apellido}
         onChangeText={(value) => handleChange("apellido", value)}
       />
       <TextInput
-        style={{ /* Estilos para el input */ }}
+        style={
+          {
+            /* Estilos para el input */
+          }
+        }
         placeholder="DNI"
         keyboardType="numeric"
         value={consumidorData.dni}
         onChangeText={(value) => handleChange("dni", value)}
       />
+      <TouchableWithoutFeedback onPress={toggleDatePicker}>
+        <View>
+          <TextInput
+            style={
+              {
+                /* Estilos para el input */
+              }
+            }
+            placeholder="Fecha de Nacimiento"
+            editable={false} // Make the TextInput not editable, as the date picker will handle the selection
+            value={consumidorData.fechaNacimiento.toDateString()} // Display selected date
+          />
+        </View>
+      </TouchableWithoutFeedback>
+
+      {/* Show the date picker if showDatePicker is true */}
+      {showDatePicker && (
+        <RNDateTimePicker
+          value={consumidorData.fechaNacimiento}
+          onChange={handleDateChange}
+          mode="date"
+          maximumDate={new Date()}
+        />
+      )}
+
+      <View>
+        <RNPickerSelect
+          useNativeAndroidPickerStyle={false}
+          fixAndroidTouchableBug={true}
+          placeholder={{ label: "Seleccione una provincia", value: null }}
+          value={selectedProvince}
+          onValueChange={(value) => handleProvinceChange(value)}
+          items={provincias.map((prov) => ({
+            label: prov.nombre,
+            value: prov.nombre,
+            key: prov.id,
+            inputLabel: prov.nombre,
+          }))}
+        />
+      </View>
+
+      <View>
+        <RNPickerSelect
+          useNativeAndroidPickerStyle={false}
+          fixAndroidTouchableBug={true}
+          placeholder={{ label: "Seleccione una localidad", value: null }}
+          value={selectedLocalidad}
+          onValueChange={(value) => handleLocalidadChange(value)}
+          items={localidades.map((loc) => ({
+            label: loc.nombre,
+            value: loc.nombre,
+            key: loc.id,
+            inputLabel: loc.nombre,
+          }))}
+        />
+      </View>
       <TextInput
-        style={{ /* Estilos para el input */ }}
-        placeholder="Fecha de Nacimiento"
-        value={consumidorData.fechaNacimiento}
-        onChangeText={(value) => handleChange("fechaNacimiento", value)}
-      />
-      <Picker
-        style={{ /* Estilos para el selector */ }}
-        selectedValue={selectedProvince}
-        onValueChange={(value) => handleProvinceChange(value)}
-      >
-        <Picker.Item label="Seleccione una provincia" value="" disabled />
-        {provincias.map((prov) => (
-          <Picker.Item key={prov.nombre} label={prov.nombre} value={prov.nombre} />
-        ))}
-      </Picker>
-      <Picker
-        style={{ /* Estilos para el selector */ }}
-        selectedValue={selectedLocalidad}
-        onValueChange={(value) => handleLocalidadChange(value)}
-      >
-        <Picker.Item label="Seleccione una localidad" value="" disabled />
-        {localidades.map((loc) => (
-          <Picker.Item key={loc.nombre} label={loc.nombre} value={loc.nombre} />
-        ))}
-      </Picker>
-      <TextInput
-        style={{ /* Estilos para el input */ }}
+        style={
+          {
+            /* Estilos para el input */
+          }
+        }
         placeholder="Teléfono"
         keyboardType="numeric"
         value={consumidorData.telefono}
         onChangeText={(value) => handleChange("telefono", value)}
       />
-      <View style={{ /* Estilos para el contenedor de los botones */ }}>
+      <View
+        style={
+          {
+            /* Estilos para el contenedor de los botones */
+          }
+        }
+      >
         <TouchableOpacity onPress={() => backStep()}>
           <Text>Atrás</Text>
         </TouchableOpacity>

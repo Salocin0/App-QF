@@ -1,8 +1,8 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { Input, Text, Button } from "react-native-elements";
 import useLogin from "./Hooks/UseLogin";
-import { ToastAndroid } from "react-native";
+import styles from "./Styles/cards.style";
 
 export default Login = ({ navigation }) => {
   const {
@@ -71,44 +71,3 @@ export default Login = ({ navigation }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 20,
-  },
-  title: {
-    marginBottom: 20,
-  },
-  input: {
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 5,
-  },
-  label: {
-    color: "black",
-    fontWeight: "normal",
-  },
-  button: {
-    backgroundColor: "#3498db",
-    borderRadius: 5,
-    marginHorizontal: 10,
-    alignSelf: "flex-end",
-    width: "33%",
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 10,
-  },
-  link: {
-    color: "#3498db",
-  },
-  ViewButtom: {
-    width: "100%",
-  },
-});

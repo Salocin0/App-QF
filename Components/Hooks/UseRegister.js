@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { REACT_APP_BACK_URL } from "@env";
 import { ToastAndroid } from "react-native";
 
 const useRegister = (navigation) => {
+  const [tipoUsuario, setTipoUsuario] = useState("")
   const [userData, setUserData] = useState({
     email: "",
     password: "",
@@ -27,37 +28,29 @@ const useRegister = (navigation) => {
     razonSocial: "",
     ivaCondicion: "",
   });
+
   const [registrar, setRegistrar] = useState(false);
 
-  const handleUserDataChange = (field, value) => {
-    setUserData((prevUserData) => ({
-      ...prevUserData,
-      [field]: value,
-    }));
+  const handleUserDataChange = (data) => {
+    setUserData(data);
   };
 
-  const handleConsumidorDataChange = (field, value) => {
-    setConsumidorData((prevConsumidorData) => ({
-      ...prevConsumidorData,
-      [field]: value,
-    }));
+  const handleConsumidorDataChange = (data) => {
+    setConsumidorData(data)
   };
 
-  const handleEncargadoDataChange = (field, value) => {
-    setEncargadoData((prevEncargadoData) => ({
-      ...prevEncargadoData,
-      [field]: value,
-    }));
+  const handleProductorDataChange = (data) => {
+    setProductorData(data);
   };
 
-  const handleProductorDataChange = (field, value) => {
-    setProductorData((prevProductorData) => ({
-      ...prevProductorData,
-      [field]: value,
-    }));
+  const activarRegistro = (tipoUsuario) => {
+    setTipoUsuario(tipoUsuario)
+    setRegistrar(true);
   };
-
+  
   const handleRegister = async () => {
+    const url = `${REACT_APP_BACK_URL}user/`;
+  
     const datosRegistro = {
       correoElectronico: userData.email,
       contraseña: userData.password,
@@ -71,7 +64,7 @@ const useRegister = (navigation) => {
       consumidor: {
         nombre: consumidorData.nombre,
         apellido: consumidorData.apellido,
-        fechaDeNacimiento: consumidorData.fechaNacimiento,
+        fechaDeNacimiento: new Date(consumidorData.fechaNacimiento).toISOString().replace('T', ' ').slice(0, -1),
         dni: consumidorData.dni,
         localidad: consumidorData.localidad,
         provincia: consumidorData.provincia,
@@ -88,41 +81,38 @@ const useRegister = (navigation) => {
         condicionIva: productorData.ivaCondicion,
       },
     };
-
+  
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(datosRegistro),
+    };
+  
     try {
-      const response = await fetch(`${REACT_APP_BACK_URL}user/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(datosRegistro),
-      });
-
-      if (!response.ok) {
-        throw new Error("Respuesta de servidor no exitosa");
-      }
-
-      const data = await response.json();
-
-      if (data.status === "success") {
-        ToastAndroid({
-          type: "success",
-          text1: "Registro exitoso",
-          text2: "Se envió un email de validación a su correo",
-        });
+      const response = await fetch(url, options);
+  
+      const responseData = await response.json();
+      if (responseData.status === "sucess") {
+        console.log("registro existoso")
+        ToastAndroid.show("Registro exitoso", ToastAndroid.SHORT);
+        ToastAndroid.show("Se envió un email de validación a su correo", ToastAndroid.SHORT);
         navigation.navigate("Login");
       } else {
-        throw new Error(data.msg || "Error en el servidor");
+        throw new Error(responseData.msg || "Error en el servidor");
       }
     } catch (error) {
-      console.error("Error en la solicitud:", error);
-      ToastAndroid({
-        type: "error",
-        text1: "Error al registrar. Por favor, vuelva a intentar.",
-      });
-      navigation.navigate("Home");
+      ToastAndroid.show("Error al registrar. Por favor, vuelva a intentar.", ToastAndroid.SHORT);
+      navigation.navigate("Login");
     }
   };
+
+  useEffect(() => {
+    if (registrar) {
+      handleRegister();
+    }
+  }, [registrar]);
 
   return {
     userData,
@@ -132,10 +122,10 @@ const useRegister = (navigation) => {
     registrar,
     handleUserDataChange,
     handleConsumidorDataChange,
-    handleEncargadoDataChange,
     handleProductorDataChange,
-    handleRegister,
     setRegistrar,
+    activarRegistro,
+    setTipoUsuario
   };
 };
 
