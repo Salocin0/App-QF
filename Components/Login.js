@@ -22,10 +22,11 @@ export default Login = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text h4 style={styles.title}>
+      <Text h4 style={styles.title} testID="titulo">
         QuickFood
       </Text>
       <Input
+        testID="usuario"
         label="Usuario"
         inputStyle={styles.input}
         labelStyle={styles.label}
@@ -35,6 +36,7 @@ export default Login = ({ navigation }) => {
         value={email}
       />
       <Input
+        testID="contraseña"
         label="Contraseña"
         secureTextEntry
         inputStyle={styles.input}
@@ -46,6 +48,7 @@ export default Login = ({ navigation }) => {
       />
       <View style={styles.ViewButtom}>
         <Button
+          testID="botonIngresar"
           title="Ingresar"
           buttonStyle={styles.button}
           onPress={(event) => onPressLogin(event)}
@@ -53,6 +56,7 @@ export default Login = ({ navigation }) => {
       </View>
       <View style={styles.footer}>
         <Text
+          testID="recuperarContraseña"
           style={styles.link}
           onPress={() => navigation.navigate("Recuperar Contraseña")}
         >
@@ -62,6 +66,7 @@ export default Login = ({ navigation }) => {
       <View style={styles.footer}>
         <Text>¿No tienes cuenta? </Text>
         <Text
+          testID="registrarse"
           style={styles.link}
           onPress={() => navigation.navigate("Seleccion Perfil")}
         >
