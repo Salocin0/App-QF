@@ -5,6 +5,7 @@ import FormRepartidor from "./Forms/FormRepartidor";
 import FormProductor from "./Forms/FormProductor";
 import FormUsuario from "./Forms/FormUsuario";
 import useRegister from "../Hooks/UseRegister";
+import FormEncargado from "./Forms/FormEncargado";
 import { useRoute } from '@react-navigation/native';
 
 const ProcesoRegistro = ({navigation}) => {
@@ -20,6 +21,7 @@ const ProcesoRegistro = ({navigation}) => {
     handleUserDataChange,
     handleConsumidorDataChange,
     handleProductorDataChange,
+    handleEncargadoDataChange,
     handleRegister,
     setRegistrar,
     activarRegistro,
@@ -42,6 +44,7 @@ const ProcesoRegistro = ({navigation}) => {
           backStep={backStep}
           tipoUsuario={tipoUsuario}
           handleUserDataChange={handleUserDataChange}
+          navigation={navigation}
         />
       );
     case 2:
@@ -65,6 +68,18 @@ const ProcesoRegistro = ({navigation}) => {
             tipoUsuario={tipoUsuario}
             navigation={navigation}
             activarRegistro={activarRegistro}
+            setTipoUsuario={setTipoUsuario}
+          />
+        );
+      } else if (tipoUsuario === "encargado") {
+        return (
+          <FormEncargado
+            nextStep={nextStep}
+            backStep={backStep}
+            tipoUsuario={tipoUsuario}
+            handleRegistro={handleEncargadoDataChange}
+            activarRegistro={activarRegistro}
+            navigation={navigation}
             setTipoUsuario={setTipoUsuario}
           />
         );

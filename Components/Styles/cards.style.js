@@ -6,28 +6,33 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
   },
+  containerCard: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 5,
+  },
   backgroundImage: {
     flex: 1,
     resizeMode: "cover",
     justifyContent: "center",
   },
   card: {
-    width: "80%",
+    width: "85%",
     backgroundColor: "#fff",
-    padding: 20,
+    padding: 15,
     borderRadius: 10,
     elevation: 3,
   },
   title: {
-    marginBottom: 20,
-    fontSize:20,
+    fontSize: 18,
   },
   input: {
     borderColor: "gray",
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
-    marginBottom: 5,
+    marginBottom: 3,
   },
   label: {
     color: "black",
@@ -39,6 +44,20 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     alignSelf: "flex-end",
     width: "33%",
+  },
+  buttonForm: {
+    backgroundColor: "#3498db",
+    borderRadius: 5,
+    padding: 10,
+    alignSelf: "flex-end",
+    color: "white",
+  },
+  buttonEndForm: {
+    backgroundColor: "#198754",
+    borderRadius: 5,
+    padding: 10,
+    alignSelf: "flex-end",
+    color: "white",
   },
   footer: {
     flexDirection: "row",
@@ -53,26 +72,26 @@ const styles = StyleSheet.create({
   },
   cardheader: {
     marginBottom: 10,
-    alignSelf:"center"
+    alignSelf: "center",
   },
   cardBody: {
     alignItems: "center",
-    width:"100%"
+    width: "100%",
   },
   hr: {
     borderBottomWidth: 1,
     borderBottomColor: "white",
     width: "100%",
-    marginVertical: 10,
+    marginVertical: 2,
   },
   buttonGroup: {
     alignItems: "center",
-    width:"100%"
+    width: "100%",
   },
   buttonsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 20,
+    marginTop: 10,
   },
   clearButton: {
     backgroundColor: "lightgray",
@@ -87,12 +106,46 @@ const styles = StyleSheet.create({
   disabledButton: {
     backgroundColor: "gray",
   },
-  btnSelect:{
+  btnSelect: {
     marginVertical: 5,
+    backgroundColor: "orange",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    flexDirection: "row",
+    display: "flex",
+    justifyContent: "space-between",
+    width: "100%",
+    borderRadius: 5,
   },
   btnActive: {
-    backgroundColor: "blue",
+    marginVertical: 5,
+    backgroundColor: "chocolate",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    flexDirection: "row",
+    display: "flex",
+    justifyContent: "space-between",
+    width: "100%",
+    borderRadius: 5,
   },
+  textinput: {
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 5,
+    color: "black",
+    fontWeight: "normal",
+    width: "100%",
+  },
+  textInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  toggleButton: {
+    marginLeft: -25,
+    marginBottom: 5,
+  }
 });
 
 export default styles;

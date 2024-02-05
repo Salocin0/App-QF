@@ -30,7 +30,7 @@ const SeleccionRegister = ({ navigation }) => {
       source={require("../../assets/QuickFoodCortado.png")}
       style={styles.backgroundImage}
     >
-      <View style={styles.container}>
+      <View style={styles.containerCard}>
         <View style={styles.card}>
           <View style={styles.cardheader}>
             <Text style={styles.title}>
@@ -39,14 +39,15 @@ const SeleccionRegister = ({ navigation }) => {
           </View>
           <View style={styles.cardBody}>
             <TouchableOpacity
-              style={styles.btnSelect}
+              style={styles.btnActive}
               onPress={() => handleTypeChange("consumidor")}
             >
               <Text>Consumidor</Text>
-              <FontAwesomeIcon icon={faUser} />
+              <FontAwesomeIcon icon={faUser} style={{}} />
             </TouchableOpacity>
             <View style={styles.hr} />
             <View style={styles.buttonGroup}>
+              <Text>¡Trabaja con nosotros! (Opcional)</Text>
               {["productor", "repartidor", "encargado"].map((type) => (
                 <TouchableOpacity
                   key={type}
@@ -77,9 +78,9 @@ const SeleccionRegister = ({ navigation }) => {
             >
               <Text>Quitar selección</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.activeButton}>
+            <TouchableOpacity style={styles.containerCard}>
               <Text
-                style={{ color: "white" }}
+                style={styles.buttonForm}
                 onPress={()=>navigation.navigate(`Registrarse`,{tipoUsuario:selectedType})}
               >
                 Siguiente

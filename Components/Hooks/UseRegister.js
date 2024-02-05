@@ -42,6 +42,9 @@ const useRegister = (navigation) => {
   const handleProductorDataChange = (data) => {
     setProductorData(data);
   };
+  const handleEncargadoDataChange = (data) => {
+    setEncargadoData(data);
+  };
 
   const activarRegistro = (tipoUsuario) => {
     setTipoUsuario(tipoUsuario)
@@ -123,6 +126,7 @@ const useRegister = (navigation) => {
     handleUserDataChange,
     handleConsumidorDataChange,
     handleProductorDataChange,
+    handleEncargadoDataChange,
     setRegistrar,
     activarRegistro,
     setTipoUsuario
