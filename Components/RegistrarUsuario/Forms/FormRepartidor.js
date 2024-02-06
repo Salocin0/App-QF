@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ImageBackground  } from "react-native";
+import { View, Text, TouchableOpacity, ImageBackground } from "react-native";
 import { ToastAndroid } from "react-native";
 import styles from "../../Styles/cards.style";
-import { CheckBox } from '@rneui/themed';
-
-
+import { CheckBox } from "@rneui/themed";
 
 const FormRepartidor = ({
   nextStep,
@@ -41,6 +39,7 @@ const FormRepartidor = ({
           </View>
           <View>
             <CheckBox
+              testID="checkbox"
               title="Confirmo que tengo más de 18 años."
               isChecked={confirmacionMayorDeEdad}
               onClick={() => handleCheckboxChange()}

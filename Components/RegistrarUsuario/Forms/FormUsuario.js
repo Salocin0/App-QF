@@ -99,6 +99,7 @@ const FormUsuario = ({
             <View style={styles.hr}>
               <Text style={styles.label}>Usuario</Text>
               <TextInput
+                testID="Usuarioinput"
                 style={styles.textinput}
                 value={userData.username}
                 onChangeText={(value) => handleChange("username", value)}
