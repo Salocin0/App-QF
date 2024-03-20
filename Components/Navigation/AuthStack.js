@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Login from "../Login";
+import Login from "../Login/Login";
 import ProcesoRegistro from "../RegistrarUsuario/ProcesoRegistro";
-import RecuperarContraseña from "../RecuperarContraseña";
+import RecuperarContraseña from "../Login/RecuperarContraseña";
 import SeleccionRegister from "../RegistrarUsuario/SeleccionRegister";
 
 const Stack = createNativeStackNavigator();

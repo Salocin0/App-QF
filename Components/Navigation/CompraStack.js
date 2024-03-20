@@ -1,13 +1,13 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import Compra from '../Compra';
-import Inicio from '../Inicio';
+import Compra from '../Compra/Compra';
+import Inicio from '../Compra/Inicio';
 
 const Stack = createNativeStackNavigator()
 
 const CompraStack = () => {
     return (
-        <Stack.Navigator initialRouteName="Inicio">
-          <Stack.Screen name="Inicio" component={Inicio} />
+        <Stack.Navigator initialRouteName="Eventos">
+          <Stack.Screen name="Eventos" component={Inicio} />
           <Stack.Screen name="Compra" component={Compra} />
         </Stack.Navigator>
       );

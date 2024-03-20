@@ -6,7 +6,7 @@ import CompraStack from "./CompraStack";
 import CarritoStack from "./CarritoStack";
 import { Colors } from "../Styles/Colors";
 import { useSelector } from 'react-redux'
-import TabBarIcon from "../TabBarIcon";
+import TabBarIcon from "./TabBarIcon";
 import AuthStack from "./AuthStack";
 import PerfilStack from "./PerfilStack";
 

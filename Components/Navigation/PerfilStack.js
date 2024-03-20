@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import Perfil from '../Perfil'
+import Perfil from '../Perfil/Perfil'
 
 const Stack = createNativeStackNavigator()
 

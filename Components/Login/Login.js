@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { Input, Text, Button } from "react-native-elements";
 import { ToastAndroid } from "react-native";
-import styles from "./Styles/cards.style";
-import { useLoginUserMutation } from "./App/Service/authApi";
+import styles from "../Styles/cards.style";
+import { useLoginUserMutation } from "../App/Service/authApi";
 import { useDispatch } from 'react-redux'
-import { setUser } from "./Features/Auth/authSlice";
+import { setUser } from "../Features/Auth/authSlice";
 
 export default Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
