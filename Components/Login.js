@@ -4,13 +4,15 @@ import { Input, Text, Button } from "react-native-elements";
 import { ToastAndroid } from "react-native";
 import styles from "./Styles/cards.style";
 import { useLoginUserMutation } from "./App/Service/authApi";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch } from 'react-redux'
+import { setUser } from "./Features/Auth/authSlice";
 
 export default Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [loginUserMutation] = useLoginUserMutation();
+
+  const dispatch = useDispatch()
 
   const handleEmailChange = (text) => {
     setEmail(text);
@@ -30,9 +32,8 @@ export default Login = ({ navigation }) => {
     }
     const responseData = await loginUserMutation(userData);
     if (Number(responseData.data.code) === 200) {
-      await AsyncStorage.setItem("sessionId", responseData.data.data.sessionId);
+      dispatch(setUser({email:email,idToken:responseData.data.data.sessionId,tipoUsuario:responseData.data.data.tipoUsuario}))
       ToastAndroid.show("Login correcto", ToastAndroid.SHORT);
-      navigation.navigate("Inicio");
       return { success: true, data: responseData.data };
     } else if (Number(responseData.data.code) === 300) {
       ToastAndroid.show("Email no validado, revisa tu correo", ToastAndroid.SHORT);
