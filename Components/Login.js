@@ -1,23 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 import { Input, Text, Button } from "react-native-elements";
-import useLogin from "./Hooks/UseLogin";
+import { ToastAndroid } from "react-native";
 import styles from "./Styles/cards.style";
+import { useLoginUserMutation } from "./App/Service/authApi";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default Login = ({ navigation }) => {
-  const {
-    email,
-    password,
-    handleEmailChange,
-    handlePasswordChange,
-    handleLogin,
-  } = useLogin(navigation);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [loginUserMutation] = useLoginUserMutation();
+
+  const handleEmailChange = (text) => {
+    setEmail(text);
+  };
+
+  const handlePasswordChange = (text) => {
+    setPassword(text);
+  };
 
   const onPressLogin = async (event) => {
     if (event) {
       event.preventDefault();
     }
-    const loginResult = await handleLogin();
+    const userData={
+      correoElectronico: email,
+      contraseña: password,
+    }
+    const responseData = await loginUserMutation(userData);
+    if (Number(responseData.data.code) === 200) {
+      await AsyncStorage.setItem("sessionId", responseData.data.data.sessionId);
+      ToastAndroid.show("Login correcto", ToastAndroid.SHORT);
+      navigation.navigate("Inicio");
+      return { success: true, data: responseData.data };
+    } else if (Number(responseData.data.code) === 300) {
+      ToastAndroid.show("Email no validado, revisa tu correo", ToastAndroid.SHORT);
+      navigation.navigate("Login");
+    } else if (Number(responseData.data.code) === 301) {
+      ToastAndroid.show("Usuario inhabilitado", ToastAndroid.SHORT);
+      navigation.navigate("Login");
+    } else {
+      ToastAndroid.show("Datos incorrectos", ToastAndroid.SHORT);
+    }
   };
 
   return (
