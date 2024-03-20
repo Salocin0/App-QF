@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import Compra from '../Compra/Compra';
-import Inicio from '../Compra/Inicio';
+import Compra from '../Views/Compra/Compra';
+import Inicio from '../Views/Compra/Inicio';
 
 const Stack = createNativeStackNavigator()
 

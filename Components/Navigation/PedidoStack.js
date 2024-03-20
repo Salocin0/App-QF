@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import Pedidos from '../Pedidos/Pedidos'
+import Pedidos from '../Views/Pedidos/Pedidos'
 
 const Stack = createNativeStackNavigator()
 

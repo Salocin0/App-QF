@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import Carrito from '../Carrito/Carrito'
+import Carrito from '../Views/Carrito/Carrito'
 
 const Stack = createNativeStackNavigator()
 const CarritoStack = () => {
