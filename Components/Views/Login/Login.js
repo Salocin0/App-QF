@@ -2,17 +2,17 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { Input, Text, Button } from "react-native-elements";
 import { ToastAndroid } from "react-native";
-import styles from "../Styles/cards.style";
-import { useLoginUserMutation } from "../App/Service/authApi";
-import { useDispatch } from 'react-redux'
-import { setUser } from "../Features/Auth/authSlice";
+import styles from "../../Styles/cards.style";
+import { useLoginUserMutation } from "../../App/Service/authApi";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../Features/Auth/authSlice";
 
 export default Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginUserMutation] = useLoginUserMutation();
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const handleEmailChange = (text) => {
     setEmail(text);
@@ -26,17 +26,26 @@ export default Login = ({ navigation }) => {
     if (event) {
       event.preventDefault();
     }
-    const userData={
+    const userData = {
       correoElectronico: email,
       contraseña: password,
-    }
+    };
     const responseData = await loginUserMutation(userData);
     if (Number(responseData.data.code) === 200) {
-      dispatch(setUser({email:email,idToken:responseData.data.data.sessionId,tipoUsuario:responseData.data.data.tipoUsuario}))
+      dispatch(
+        setUser({
+          email: email,
+          idToken: responseData.data.data.sessionId,
+          tipoUsuario: responseData.data.data.tipoUsuario,
+        })
+      );
       ToastAndroid.show("Login correcto", ToastAndroid.SHORT);
       return { success: true, data: responseData.data };
     } else if (Number(responseData.data.code) === 300) {
-      ToastAndroid.show("Email no validado, revisa tu correo", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        "Email no validado, revisa tu correo",
+        ToastAndroid.SHORT
+      );
       navigation.navigate("Login");
     } else if (Number(responseData.data.code) === 301) {
       ToastAndroid.show("Usuario inhabilitado", ToastAndroid.SHORT);

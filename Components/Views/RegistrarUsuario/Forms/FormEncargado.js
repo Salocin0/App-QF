@@ -8,7 +8,7 @@ import {
   ImageBackground,
 } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import styles from "../../Styles/cards.style";
+import styles from "../../../Styles/cards.style";
 
 const FormEncargado = ({
   nextStep,
@@ -54,7 +54,7 @@ const FormEncargado = ({
 
   return (
     <ImageBackground
-      source={require("../../../assets/QuickFoodCortado.png")}
+      source={require("./../../../../assets/QuickFoodCortado.png")}
       style={styles.backgroundImage}
     >
       <View style={styles.containerCard}>

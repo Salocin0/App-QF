@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ImageBackground } from "react-native";
 import { ToastAndroid } from "react-native";
-import styles from "../../Styles/cards.style";
+import styles from "../../../Styles/cards.style";
 import { CheckBox } from "@rneui/themed";
 
 const FormRepartidor = ({
@@ -29,7 +29,7 @@ const FormRepartidor = ({
 
   return (
     <ImageBackground
-      source={require("../../../assets/QuickFoodCortado.png")}
+      source={require("../../../../assets/QuickFoodCortado.png")}
       style={styles.backgroundImage}
     >
       <View style={styles.containerCard}>

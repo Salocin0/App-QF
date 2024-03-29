@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "../Styles/cards.style";
+import styles from "../../Styles/cards.style";
 import {
   View,
   Text,
@@ -27,7 +27,7 @@ const SeleccionRegister = ({ navigation }) => {
 
   return (
     <ImageBackground
-      source={require("../../assets/QuickFoodCortado.png")}
+      source={require("../../../assets/QuickFoodCortado.png")}
       style={styles.backgroundImage}
     >
       <View style={styles.containerCard}>

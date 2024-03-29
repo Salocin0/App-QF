@@ -8,11 +8,11 @@ import {
   ImageBackground,
 } from "react-native";
 import { ToastAndroid } from "react-native";
-import useLocalidades from "../../Hooks/UseLocalidades";
-import useProvincias from "../../Hooks/UseProvincias";
+import useLocalidades from "../../../Hooks/UseLocalidades";
+import useProvincias from "../../../Hooks/UseProvincias";
 import RNPickerSelect from "react-native-picker-select";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
-import styles from "../../Styles/cards.style";
+import styles from "../../../Styles/cards.style";
 
 const FormConsumidor = ({
   nextStep,
@@ -174,7 +174,7 @@ const FormConsumidor = ({
 
   return (
     <ImageBackground
-      source={require("../../../assets/QuickFoodCortado.png")}
+      source={require("../../../../assets/QuickFoodCortado.png")}
       style={styles.backgroundImage}
     >
       <View style={styles.containerCard}>

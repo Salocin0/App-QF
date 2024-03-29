@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { ToastAndroid } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import styles from "../../Styles/cards.style";
+import styles from "../../../Styles/cards.style";
 
 const FormProductor = ({
   nextStep,
@@ -70,7 +70,7 @@ const FormProductor = ({
 
   return (
     <ImageBackground
-      source={require("../../../assets/QuickFoodCortado.png")}
+      source={require("./../../../../assets/QuickFoodCortado.png")}
       style={styles.backgroundImage}
     >
       <View style={styles.containerCard}>

@@ -4,7 +4,7 @@ import FormConsumidor from "./Forms/FormConsumidor";
 import FormRepartidor from "./Forms/FormRepartidor";
 import FormProductor from "./Forms/FormProductor";
 import FormUsuario from "./Forms/FormUsuario";
-import useRegister from "../Hooks/UseRegister";
+import useRegister from "../../Hooks/UseRegister"
 import FormEncargado from "./Forms/FormEncargado";
 import { useRoute } from '@react-navigation/native';
 
