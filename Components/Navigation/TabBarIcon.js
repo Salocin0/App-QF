@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native'
-import {Entypo} from '@expo/vector-icons'
+import { FontAwesome } from '@expo/vector-icons';
 import { Colors } from '../Styles/Colors'
 
 const TabBarIcon = ({title,nameIcon,focused}) => {
   return (
     <View style={styles.container}>
-      <Entypo name={nameIcon} size={25} color={focused ? Colors.Azul:Colors.Gris}/>  
+      <FontAwesome name={nameIcon} size={25}color={focused ? Colors.Azul:Colors.Gris}/>
       <Text style={[styles.text,!focused && styles.textFocused]} >{title}</Text>
     </View>
   )

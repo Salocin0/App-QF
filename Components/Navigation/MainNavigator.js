@@ -11,6 +11,7 @@ import AuthStack from "./AuthStack";
 import PerfilStack from "./PerfilStack";
 import PedidoRStack from "./PedidoRStack";
 import HistorialPedidosRStack from "./HistorialPedidosRStack";
+import EventosPStack from "./EventosPStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -111,8 +112,8 @@ const MainNavigator = () => {
                 headerShown: false,
                 tabBarIcon: ({ focused }) => (
                   <TabBarIcon
-                    title="Perfil"
-                    nameIcon="user"
+                    title="Historial"
+                    nameIcon="history"
                     focused={focused}
                   />
                 ),
@@ -138,14 +139,14 @@ const MainNavigator = () => {
           <Tab.Navigator screenOptions={{ tabBarStyle: styles.tabBar }}>
             <Tab.Screen
               name="EventosPStack"
-              component={CarritoStack}
+              component={EventosPStack}
               options={{
                 tabBarLabel: "",
                 headerShown: false,
                 tabBarIcon: ({ focused }) => (
                   <TabBarIcon
-                    title="Carrito"
-                    nameIcon="shopping-cart"
+                    title="Mis eventos"
+                    nameIcon="calendar"
                     focused={focused}
                   />
                 ),
