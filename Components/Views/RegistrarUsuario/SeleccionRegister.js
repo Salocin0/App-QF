@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "../../Styles/cards.style";
+import styles from "../../Styles/styles";
 import {
   View,
   Text,

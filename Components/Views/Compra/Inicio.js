@@ -1,35 +1,46 @@
-import React from 'react';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
-import CardEvento from './CardEvento';
+import React from "react";
+import { View, FlatList, ActivityIndicator, StyleSheet } from "react-native";
+import CardEvento from "./CardEvento";
+import Aviso from "../Aviso";
+import styles from "../../Styles/styles";
+import { useGetEventosJsonQuery } from "../../App/Service/EventosApi";
+import { Colors } from "../../Styles/Colors";
+import eventos from "./../../../data/eventos.json";
+import Buscador from "../Buscador";
 
-const Inicio = () => {
-    const eventosActivos = [
-        { id: 1, titulo: 'Evento 1', descripcion: 'Descripción del Evento 1' },
-        { id: 2, titulo: 'Evento 2', descripcion: 'Descripción del Evento 2' },
-        { id: 3, titulo: 'Evento 3', descripcion: 'Descripción del Evento 3' },
-    ];
+const Inicio = ({ navigation }) => {
+  // const { data: eventos, isLoading } = useGetEventosJsonQuery();
+  const isLoading = false;
 
-    const renderEvento = ({ item }) => (
-        <CardEvento titulo={item.titulo} descripcion={item.descripcion} />
-    );
+  const renderItem = ({ item }) => (
+    <CardEvento item={item} navigation={navigation} />
+  );
 
-    return (
-        <View style={styles.container}>
-            <Text>Inicio</Text>
-            <FlatList
-                data={eventosActivos}
-                renderItem={renderEvento}
-                keyExtractor={(item) => item?.id?.toString()}
-            />
-        </View>
-    );
+  return (
+    <View style={{ flex: 1 }}>
+      {isLoading ? (
+        <ActivityIndicator size="large" color={Colors.Azul} />
+      ) : eventos?.length > 0 ? (
+        <>
+          <Buscador />
+          <FlatList
+            data={eventos}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            contentContainerStyle={styleslocal.flatListContainer}
+          />
+        </>
+      ) : (
+        <Aviso mensaje="No hay eventos disponibles" />
+      )}
+    </View>
+  );
 };
 
-export default Inicio;
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
+const styleslocal = StyleSheet.create({
+  flatListContainer: {
+    paddingBottom: 10,
+  },
 });
+
+export default Inicio;

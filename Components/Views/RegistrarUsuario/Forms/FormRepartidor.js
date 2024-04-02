@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ImageBackground } from "react-native";
 import { ToastAndroid } from "react-native";
-import styles from "../../../Styles/cards.style";
+import styles from "../../../Styles/styles";
 import { CheckBox } from "@rneui/themed";
 
 const FormRepartidor = ({

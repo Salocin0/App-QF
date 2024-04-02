@@ -12,7 +12,7 @@ import useLocalidades from "../../../Hooks/UseLocalidades";
 import useProvincias from "../../../Hooks/UseProvincias";
 import RNPickerSelect from "react-native-picker-select";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
-import styles from "../../../Styles/cards.style";
+import styles from "../../../Styles/styles";
 
 const FormConsumidor = ({
   nextStep,

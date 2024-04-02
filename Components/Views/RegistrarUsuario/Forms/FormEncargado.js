@@ -8,7 +8,7 @@ import {
   ImageBackground,
 } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import styles from "../../../Styles/cards.style";
+import styles from "../../../Styles/styles";
 
 const FormEncargado = ({
   nextStep,
