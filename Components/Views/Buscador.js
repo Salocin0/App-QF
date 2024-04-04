@@ -1,14 +1,26 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Modal } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+} from "react-native";
 import { Colors } from "../Styles/Colors";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faArrowDownWideShort, faMagnifyingGlass, faFilter } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowDownWideShort,
+  faMagnifyingGlass,
+  faFilter,
+} from "@fortawesome/free-solid-svg-icons";
 
 const Buscador = () => {
   const [searchText, setSearchText] = useState("");
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState("porDistancia");
+  const [selectedCategoria, setSelectedCategotia] = useState("porDistancia");
+  const [selectedOrder, setSelectedOrder] = useState("ASC");
 
   const handleSearch = () => {
     console.log("Búsqueda:", searchText);
@@ -28,6 +40,11 @@ const Buscador = () => {
 
   const handleCloseFilterModal = () => {
     setShowFilterModal(false);
+  };
+
+  const handleSelectCategotia = (order) => {
+    setSelectedCategotia(order);
+    setShowOrderModal(false);
   };
 
   const handleSelectOrder = (order) => {
@@ -57,26 +74,65 @@ const Buscador = () => {
       <Modal visible={showOrderModal} animationType="none" transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text>Ordenar por:</Text>
+            <Text>Orden:</Text>
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity
+                style={[
+                  styles.radioButton,
+                  selectedOrder === "ASC" && styles.radioButtonSelected,
+                ]}
+                onPress={() => handleSelectOrder("ASC")}
+              >
+                <Text style={{ textAlign: "center" }}>ASC</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.radioButton,
+                  selectedOrder === "DESC" && styles.radioButtonSelected,
+                ]}
+                onPress={() => handleSelectOrder("DESC")}
+              >
+                <Text style={{ textAlign: "center" }}>DESC</Text>
+              </TouchableOpacity>
+            </View>
+            <Text>Categoria:</Text>
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity
+                style={[
+                  styles.radioButton,
+                  selectedCategoria === "porDistancia" &&
+                    styles.radioButtonSelected,
+                ]}
+                onPress={() => handleSelectCategotia("porDistancia")}
+              >
+                <Text style={{ textAlign: "center" }}>Distancia</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.radioButton,
+                  selectedCategoria === "porNombre" &&
+                    styles.radioButtonSelected,
+                ]}
+                onPress={() => handleSelectCategotia("porNombre")}
+              >
+                <Text style={{ textAlign: "center" }}>Nombre</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.radioButton,
+                  selectedCategoria === "porFecha" &&
+                    styles.radioButtonSelected,
+                ]}
+                onPress={() => handleSelectCategotia("porFecha")}
+              >
+                <Text style={{ textAlign: "center" }}>Fecha</Text>
+              </TouchableOpacity>
+            </View>
+
             <TouchableOpacity
-              style={[styles.radioButton, selectedOrder === 'porDistancia' && styles.radioButtonSelected]}
-              onPress={() => handleSelectOrder('porDistancia')}
+              style={styles.closeButton}
+              onPress={handleCloseOrderModal}
             >
-              <Text>Por distancia</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.radioButton, selectedOrder === 'porNombre' && styles.radioButtonSelected]}
-              onPress={() => handleSelectOrder('porNombre')}
-            >
-              <Text>Por nombre</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.radioButton, selectedOrder === 'porFecha' && styles.radioButtonSelected]}
-              onPress={() => handleSelectOrder('porFecha')}
-            >
-              <Text>Por fecha</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.closeButton} onPress={handleCloseOrderModal}>
               <Text style={{ color: Colors.Blanco }}>Cerrar</Text>
             </TouchableOpacity>
           </View>
@@ -85,8 +141,55 @@ const Buscador = () => {
       <Modal visible={showFilterModal} animationType="none" transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text>Filtrar por:</Text>
-            <TouchableOpacity style={styles.closeButton} onPress={handleCloseFilterModal}>
+            <Text style={{fontSize:18}}>Filtrar por:</Text>
+            <Text style={{fontSize:16, marginTop:10}}>Distancia:</Text>
+            <View style={styles.filterContainer}>
+              <View style={styles.inputContainer}>
+                <Text>Mínimo:</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={(text) => {}}
+                  placeholder="Mínimo"
+                  keyboardType="numeric"
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <Text>Máximo:</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={(text) => {}}
+                  placeholder="Máximo"
+                  keyboardType="numeric"
+                />
+              </View>
+            </View>
+            <Text style={{fontSize:16, marginTop:10}}>Días para empezar:</Text>
+            <View style={styles.filterContainer}>
+              
+              <View style={styles.inputContainer}>
+                <Text>Mínimo:</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={(text) => {}}
+                  placeholder="Mínimo"
+                  keyboardType="numeric"
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <Text>Máximo:</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={(text) => {}}
+                  placeholder="Máximo"
+                  keyboardType="numeric"
+                />
+              </View>
+            </View>
+
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={handleCloseFilterModal}
+            >
               <Text style={{ color: Colors.Blanco }}>Cerrar</Text>
             </TouchableOpacity>
           </View>
@@ -143,11 +246,23 @@ const styles = StyleSheet.create({
   radioButton: {
     marginVertical: 10,
     padding: 10,
-    backgroundColor: '#ccc',
+    backgroundColor: "#ccc",
     borderRadius: 5,
+    marginHorizontal: 5,
+    width: 80,
+    textAlign: "center",
   },
   radioButtonSelected: {
     backgroundColor: Colors.Verde,
+  },
+  filterContainer: {
+    flexDirection:"row"
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 5,
+    width:"50%"
   },
 });
 
