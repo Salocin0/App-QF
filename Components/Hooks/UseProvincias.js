@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 const useProvincias = () => {
   const [provincias, setProvincias] = useState([]);
@@ -8,9 +8,11 @@ const useProvincias = () => {
   useEffect(() => {
     const fetchProvincias = async () => {
       try {
-        const response = await fetch("https://apis.datos.gob.ar/georef/api/provincias");
+        const response = await fetch(
+          "https://apis.datos.gob.ar/georef/api/provincias"
+        );
         if (!response.ok) {
-          throw new Error('Error al cargar las provincias');
+          throw new Error("Error al cargar las provincias");
         }
         const data = await response.json();
         setProvincias(data.provincias);
@@ -22,8 +24,7 @@ const useProvincias = () => {
     };
 
     fetchProvincias();
-
-  }, []); 
+  }, []);
 
   return { provincias, loading, error };
 };

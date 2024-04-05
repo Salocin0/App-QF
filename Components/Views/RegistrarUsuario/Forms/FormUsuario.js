@@ -7,7 +7,7 @@ import {
   ImageBackground,
 } from "react-native";
 import { ToastAndroid } from "react-native";
-import styles from "../../../Styles/styles";
+import useStyles from "../../../Styles/useStyles";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faEye,faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
@@ -19,6 +19,7 @@ const FormUsuario = ({
   handleUserDataChange,
   navigation,
 }) => {
+  const styles = useStyles()
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
 

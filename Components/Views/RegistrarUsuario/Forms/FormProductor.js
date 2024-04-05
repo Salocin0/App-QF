@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { ToastAndroid } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import styles from "../../../Styles/styles";
+import useStyles from "../../../Styles/useStyles";
 
 const FormProductor = ({
   nextStep,
@@ -16,6 +16,7 @@ const FormProductor = ({
   handleRegistro,
   activarRegistro,
 }) => {
+  const styles = useStyles()
   const [productorData, setProductorData] = useState({
     cuit: "",
     razonSocial: "",

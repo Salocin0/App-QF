@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Modal,
 } from "react-native";
-import { Colors } from "../Styles/Colors";
+import useDynamicColors from "../Styles/useDynamicColors";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
   faArrowDownWideShort,
@@ -15,7 +15,8 @@ import {
   faFilter,
 } from "@fortawesome/free-solid-svg-icons";
 
-const Buscador = () => {
+const BuscadorEventos = () => {
+  const Colors = useDynamicColors();
   const [searchText, setSearchText] = useState("");
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -52,29 +53,105 @@ const Buscador = () => {
     setShowOrderModal(false);
   };
 
+  const styles = {
+    container: {
+      height: 70,
+      paddingVertical: 5,
+      marginHorizontal: 20,
+    },
+    searchContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      backgroundColor: Colors?.Blanco,
+      borderRadius: 10,
+      paddingLeft:5,
+      paddingRight:10,
+      paddingBottom:5,
+      paddingTop:2,
+    },
+    input: {
+      flex: 1,
+      height: 35,
+      margin: 5,
+      marginTop: 10,
+      paddingHorizontal: 10,
+      borderColor: Colors?.GrisClaroPeroNoTanClaro,
+      borderWidth: 1,
+      borderRadius: 5,
+    },
+    button: {
+      marginLeft: 5,
+      padding: 10,
+      backgroundColor: Colors?.Verde,
+      borderRadius: 10,
+    },
+    modalContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+    modalContent: {
+      width: "80%",
+      backgroundColor: Colors?.Blanco,
+      borderRadius: 10,
+      padding: 20,
+      alignItems: "center",
+    },
+    closeButton: {
+      marginTop: 20,
+      padding: 10,
+      backgroundColor: Colors?.Rojo,
+      borderRadius: 5,
+    },
+    radioButton: {
+      marginVertical: 10,
+      padding: 10,
+      backgroundColor: Colors?.GrisClaroPeroNoTanClaro,
+      borderRadius: 5,
+      marginHorizontal: 5,
+      width: 80,
+      textAlign: "center",
+    },
+    radioButtonSelected: {
+      backgroundColor: Colors?.Verde,
+    },
+    filterContainer: {
+      flexDirection: "row",
+    },
+    inputContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 5,
+      width: "50%",
+    },
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: Colors.Negro,fontSize:13 }]}
           placeholder="Buscar..."
+          placeholderTextColor={Colors.Negro}
           value={searchText}
           onChangeText={(text) => setSearchText(text)}
         />
         <TouchableOpacity style={styles.button} onPress={handleSearch}>
-          <FontAwesomeIcon icon={faMagnifyingGlass} />
+          <FontAwesomeIcon icon={faMagnifyingGlass} color={Colors.Negro} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleOpenOrderModal}>
-          <FontAwesomeIcon icon={faArrowDownWideShort} />
+          <FontAwesomeIcon icon={faArrowDownWideShort} color={Colors.Negro}/>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleOpenFilterModal}>
-          <FontAwesomeIcon icon={faFilter} />
+          <FontAwesomeIcon icon={faFilter} color={Colors.Negro}/>
         </TouchableOpacity>
       </View>
       <Modal visible={showOrderModal} animationType="none" transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text>Orden:</Text>
+            <Text style={{ color: Colors.Negro }}>Orden:</Text>
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity
                 style={[
@@ -83,7 +160,9 @@ const Buscador = () => {
                 ]}
                 onPress={() => handleSelectOrder("ASC")}
               >
-                <Text style={{ textAlign: "center" }}>ASC</Text>
+                <Text style={{ textAlign: "center", color: Colors.Negro }}>
+                  ASC
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[
@@ -92,10 +171,12 @@ const Buscador = () => {
                 ]}
                 onPress={() => handleSelectOrder("DESC")}
               >
-                <Text style={{ textAlign: "center" }}>DESC</Text>
+                <Text style={{ textAlign: "center", color: Colors.Negro }}>
+                  DESC
+                </Text>
               </TouchableOpacity>
             </View>
-            <Text>Categoria:</Text>
+            <Text style={{ color: Colors.Negro }}>Categoria:</Text>
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity
                 style={[
@@ -105,7 +186,9 @@ const Buscador = () => {
                 ]}
                 onPress={() => handleSelectCategotia("porDistancia")}
               >
-                <Text style={{ textAlign: "center" }}>Distancia</Text>
+                <Text style={{ textAlign: "center", color: Colors.Negro }}>
+                  Distancia
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[
@@ -115,7 +198,9 @@ const Buscador = () => {
                 ]}
                 onPress={() => handleSelectCategotia("porNombre")}
               >
-                <Text style={{ textAlign: "center" }}>Nombre</Text>
+                <Text style={{ textAlign: "center", color: Colors.Negro }}>
+                  Nombre
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[
@@ -125,7 +210,9 @@ const Buscador = () => {
                 ]}
                 onPress={() => handleSelectCategotia("porFecha")}
               >
-                <Text style={{ textAlign: "center" }}>Fecha</Text>
+                <Text style={{ textAlign: "center", color: Colors.Negro }}>
+                  Fecha
+                </Text>
               </TouchableOpacity>
             </View>
 
@@ -133,7 +220,7 @@ const Buscador = () => {
               style={styles.closeButton}
               onPress={handleCloseOrderModal}
             >
-              <Text style={{ color: Colors.Blanco }}>Cerrar</Text>
+              <Text style={{ color: Colors?.Negro }}>Cerrar</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -141,46 +228,55 @@ const Buscador = () => {
       <Modal visible={showFilterModal} animationType="none" transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={{fontSize:18}}>Filtrar por:</Text>
-            <Text style={{fontSize:16, marginTop:10}}>Distancia:</Text>
+            <Text style={{ fontSize: 18, color: Colors?.Negro }}>
+              Filtrar por
+            </Text>
+            <Text style={{ fontSize: 16, marginTop: 10, color: Colors?.Negro }}>
+              Distancia
+            </Text>
             <View style={styles.filterContainer}>
               <View style={styles.inputContainer}>
-                <Text>Mínimo:</Text>
+                <Text style={{ color: Colors?.Negro }}>Mínimo:</Text>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: Colors.Negro }]}
+                  placeholderTextColor={Colors.Negro}
                   onChangeText={(text) => {}}
-                  placeholder="Mínimo"
+                  placeholder="0 km"
                   keyboardType="numeric"
                 />
               </View>
               <View style={styles.inputContainer}>
-                <Text>Máximo:</Text>
+                <Text style={{ color: Colors?.Negro }}>Máximo:</Text>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: Colors.Negro }]}
+                  placeholderTextColor={Colors.Negro}
                   onChangeText={(text) => {}}
-                  placeholder="Máximo"
+                  placeholder="∞ km"
                   keyboardType="numeric"
                 />
               </View>
             </View>
-            <Text style={{fontSize:16, marginTop:10}}>Días para empezar:</Text>
+            <Text style={{ fontSize: 16, marginTop: 10, color: Colors?.Negro }}>
+              Días para empezar:
+            </Text>
             <View style={styles.filterContainer}>
-              
               <View style={styles.inputContainer}>
-                <Text>Mínimo:</Text>
+                <Text style={{ color: Colors?.Negro }}>Mínimo:</Text>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: Colors.Negro }]}
+                  placeholderTextColor={Colors.Negro}
                   onChangeText={(text) => {}}
-                  placeholder="Mínimo"
+                  placeholder="0"
                   keyboardType="numeric"
                 />
               </View>
               <View style={styles.inputContainer}>
-                <Text>Máximo:</Text>
+                <Text style={{ color: Colors?.Negro }}>Máximo:</Text>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: Colors.Negro }]}
+                  placeholderTextColor={Colors.Negro}
                   onChangeText={(text) => {}}
-                  placeholder="Máximo"
+                  placeholder="∞"
                   keyboardType="numeric"
                 />
               </View>
@@ -190,7 +286,7 @@ const Buscador = () => {
               style={styles.closeButton}
               onPress={handleCloseFilterModal}
             >
-              <Text style={{ color: Colors.Blanco }}>Cerrar</Text>
+              <Text style={{ color: Colors?.Blanco }}>Cerrar</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -199,71 +295,4 @@ const Buscador = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    height: 70,
-    paddingVertical: 10,
-    marginHorizontal: 20,
-  },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 5,
-  },
-  input: {
-    flex: 1,
-    height: "100%",
-    paddingHorizontal: 10,
-  },
-  button: {
-    marginLeft: 5,
-    padding: 10,
-    backgroundColor: Colors.Verde,
-    borderRadius: 10,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    width: "80%",
-    backgroundColor: Colors.Blanco,
-    borderRadius: 10,
-    padding: 20,
-    alignItems: "center",
-  },
-  closeButton: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: Colors.Rojo,
-    borderRadius: 5,
-  },
-  radioButton: {
-    marginVertical: 10,
-    padding: 10,
-    backgroundColor: "#ccc",
-    borderRadius: 5,
-    marginHorizontal: 5,
-    width: 80,
-    textAlign: "center",
-  },
-  radioButtonSelected: {
-    backgroundColor: Colors.Verde,
-  },
-  filterContainer: {
-    flexDirection:"row"
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 5,
-    width:"50%"
-  },
-});
-
-export default Buscador;
+export default BuscadorEventos;

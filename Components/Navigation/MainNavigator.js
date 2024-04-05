@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import PedidoStack from "./PedidoStack";
 import CompraStack from "./CompraStack";
 import CarritoStack from "./CarritoStack";
-import { Colors } from "../Styles/Colors";
+import useDynamicColors from "../Styles/useDynamicColors";
 import { useSelector } from "react-redux";
 import TabBarIcon from "./TabBarIcon";
 import AuthStack from "./AuthStack";
@@ -16,10 +16,19 @@ import EventosPStack from "./EventosPStack";
 const Tab = createBottomTabNavigator();
 
 const MainNavigator = () => {
+  const Colors = useDynamicColors();
   const user = useSelector((state) => state.auth);
 
   const isAuthenticated = user.idToken;
   const userType = isAuthenticated ? user.tipoUsuario : null;
+
+  const styles = {
+    tabBar: {
+      backgroundColor: Colors?.Blanco,
+      height: 60,
+      paddingTop: 15,
+    },
+  };
 
   return (
     <>
@@ -152,7 +161,7 @@ const MainNavigator = () => {
                 ),
               }}
             />
-             <Tab.Screen
+            <Tab.Screen
               name="PerfilStack"
               component={PerfilStack}
               options={{
@@ -177,11 +186,3 @@ const MainNavigator = () => {
 };
 
 export default MainNavigator;
-
-const styles = StyleSheet.create({
-  tabBar: {
-    backgroundColor: Colors.Blanco,
-    height: 60,
-    paddingTop: 15,
-  },
-});

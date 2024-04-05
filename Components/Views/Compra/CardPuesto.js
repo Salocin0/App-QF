@@ -2,9 +2,10 @@ import React from "react";
 import { Text, TouchableOpacity, View, Image } from "react-native";
 import imgevento from "./../../../assets/eventoimg.jpeg";
 import logoevento from "./../../../assets/logoevento.webp";
-import { Colors } from "../../Styles/Colors";
+import useDynamicColors from "../../Styles/useDynamicColors";
 
 const CardPuesto = ({ item, navigation }) => {
+  const Colors = useDynamicColors();
   const seleccionarPuesto = (evento) => {
     navigation.navigate("Productos", { evento });
   };
@@ -12,9 +13,9 @@ const CardPuesto = ({ item, navigation }) => {
   return (
     <TouchableOpacity
       style={{
-        backgroundColor: "#fff",
+        backgroundColor: Colors.Blanco,
         borderRadius: 10,
-        shadowColor: "#000",
+        shadowColor: Colors.Negro,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
@@ -23,7 +24,7 @@ const CardPuesto = ({ item, navigation }) => {
         height: 160,
         marginVertical: 20,
         marginHorizontal: 20,
-        borderColor: Colors.GrisClaroPeroNoTanClaro,
+        borderColor: Colors?.GrisClaroPeroNoTanClaro,
         borderWidth: 2,
       }}
       onPress={() => seleccionarPuesto(item)}
@@ -52,9 +53,9 @@ const CardPuesto = ({ item, navigation }) => {
             left: 0,
             width: 75,
             height: 75,
-            backgroundColor: "#fff",
+            backgroundColor: Colors.Blanco,
             borderRadius: 10,
-            shadowColor: "#000",
+            shadowColor: Colors.Negro,
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.25,
             shadowRadius: 3.84,
@@ -74,15 +75,17 @@ const CardPuesto = ({ item, navigation }) => {
               fontWeight: "bold",
               marginBottom: 5,
               textAlign: "center",
+              color:Colors.Negro
             }}
           >
             {item.nombre}
           </Text>
-          <Text style={{ fontSize: 16, textAlign: "center" }}>
+          <Text style={{ fontSize: 16, textAlign: "center",color:Colors.Negro }}>
             {item.descripcion}
           </Text>
         </View>
       </View>
+      {/*falta estrellas y otros datos*/}
     </TouchableOpacity>
   );
 };

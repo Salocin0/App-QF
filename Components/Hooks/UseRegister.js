@@ -1,9 +1,9 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ToastAndroid } from "react-native";
 import { REACT_APP_BACK_URL } from "@env";
 
 const useRegister = (navigation) => {
-  const [tipoUsuario, setTipoUsuario] = useState("")
+  const [tipoUsuario, setTipoUsuario] = useState("");
   const [userData, setUserData] = useState({
     email: "",
     password: "",
@@ -36,7 +36,7 @@ const useRegister = (navigation) => {
   };
 
   const handleConsumidorDataChange = (data) => {
-    setConsumidorData(data)
+    setConsumidorData(data);
   };
 
   const handleProductorDataChange = (data) => {
@@ -47,13 +47,13 @@ const useRegister = (navigation) => {
   };
 
   const activarRegistro = (tipoUsuario) => {
-    setTipoUsuario(tipoUsuario)
+    setTipoUsuario(tipoUsuario);
     setRegistrar(true);
   };
-  
+
   const handleRegister = async () => {
     const url = `${REACT_APP_BACK_URL}user/`;
-  
+
     const datosRegistro = {
       correoElectronico: userData.email,
       contraseña: userData.password,
@@ -67,7 +67,10 @@ const useRegister = (navigation) => {
       consumidor: {
         nombre: consumidorData.nombre,
         apellido: consumidorData.apellido,
-        fechaDeNacimiento: new Date(consumidorData.fechaNacimiento).toISOString().replace('T', ' ').slice(0, -1),
+        fechaDeNacimiento: new Date(consumidorData.fechaNacimiento)
+          .toISOString()
+          .replace("T", " ")
+          .slice(0, -1),
         dni: consumidorData.dni,
         localidad: consumidorData.localidad,
         provincia: consumidorData.provincia,
@@ -84,7 +87,7 @@ const useRegister = (navigation) => {
         condicionIva: productorData.ivaCondicion,
       },
     };
-  
+
     const options = {
       method: "POST",
       headers: {
@@ -92,21 +95,27 @@ const useRegister = (navigation) => {
       },
       body: JSON.stringify(datosRegistro),
     };
-  
+
     try {
       const response = await fetch(url, options);
-  
+
       const responseData = await response.json();
       if (responseData.status === "sucess") {
-        console.log("registro existoso")
+        console.log("registro existoso");
         ToastAndroid.show("Registro exitoso", ToastAndroid.SHORT);
-        ToastAndroid.show("Se envió un email de validación a su correo", ToastAndroid.SHORT);
+        ToastAndroid.show(
+          "Se envió un email de validación a su correo",
+          ToastAndroid.SHORT
+        );
         navigation.navigate("Login");
       } else {
         throw new Error(responseData.msg || "Error en el servidor");
       }
     } catch (error) {
-      ToastAndroid.show("Error al registrar. Por favor, vuelva a intentar.", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        "Error al registrar. Por favor, vuelva a intentar.",
+        ToastAndroid.SHORT
+      );
       navigation.navigate("Login");
     }
   };
@@ -129,7 +138,7 @@ const useRegister = (navigation) => {
     handleEncargadoDataChange,
     setRegistrar,
     activarRegistro,
-    setTipoUsuario
+    setTipoUsuario,
   };
 };
 

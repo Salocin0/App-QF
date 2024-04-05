@@ -8,7 +8,7 @@ import {
   ImageBackground,
 } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import styles from "../../../Styles/styles";
+import useStyles from "../../../Styles/useStyles";
 
 const FormEncargado = ({
   nextStep,
@@ -16,6 +16,7 @@ const FormEncargado = ({
   handleRegistro,
   activarRegistro,
 }) => {
+  const styles = useStyles()
   const [encargadoData, setEncargadoData] = useState({
     cuit: "",
     razonSocial: "",

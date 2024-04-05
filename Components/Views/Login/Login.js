@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { Input, Text, Button } from "react-native-elements";
 import { ToastAndroid } from "react-native";
-import styles from "../../Styles/styles";
+import useStyles from "../../Styles/useStyles";
 import { useLoginUserMutation } from "../../App/Service/authApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../Features/Auth/authSlice";
 
 export default Login = ({ navigation }) => {
+  const styles = useStyles()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginUserMutation] = useLoginUserMutation();

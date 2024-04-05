@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "../../Styles/styles";
+import useStyles from "../../Styles/useStyles";
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const SeleccionRegister = ({ navigation }) => {
+  const styles = useStyles()
   const [selectedType, setSelectedType] = useState("consumidor");
 
   const handleTypeChange = (type) => {

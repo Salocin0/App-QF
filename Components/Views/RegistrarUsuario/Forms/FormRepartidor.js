@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ImageBackground } from "react-native";
 import { ToastAndroid } from "react-native";
-import styles from "../../../Styles/styles";
+import useStyles from "../../../Styles/useStyles";
 import { CheckBox } from "@rneui/themed";
 
 const FormRepartidor = ({
@@ -10,6 +10,7 @@ const FormRepartidor = ({
   handleRegistro,
   activarRegistro,
 }) => {
+  const styles = useStyles()
   const [confirmacionMayorDeEdad, setconfirmacionMayorDeEdad] = useState(false);
 
   const handleCheckboxChange = () => {

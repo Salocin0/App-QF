@@ -1,13 +1,15 @@
-import { configureStore } from '@reduxjs/toolkit'
-import { authApi } from './Service/authApi'
-import authReducer from "./../Features/Auth/authSlice"
-import { productoApi } from './Service/ProductosApi'
-import { eventosApi } from './Service/EventosApi'
-import { puestosApi } from './Service/PuestosApi'
+import { configureStore } from "@reduxjs/toolkit";
+import { authApi } from "./Service/authApi";
+import authReducer from "./../Features/Auth/authSlice";
+import { productoApi } from "./Service/ProductosApi";
+import { eventosApi } from "./Service/EventosApi";
+import { puestosApi } from "./Service/PuestosApi";
+import modoOscuroReducer from "../Features/modoOscuro/modoOscuroSlice";
 
 export default configureStore({
-  reducer: { 
-    auth:authReducer,
+  reducer: {
+    auth: authReducer,
+    modoOscuro: modoOscuroReducer,
     [authApi.reducerPath]: authApi.reducer,
     [productoApi.reducerPath]: productoApi.reducer,
     [eventosApi.reducerPath]: eventosApi.reducer,
@@ -15,6 +17,10 @@ export default configureStore({
   },
 
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware,productoApi.middleware,eventosApi.middleware,puestosApi.middleware),
-
-})
+    getDefaultMiddleware().concat(
+      authApi.middleware,
+      productoApi.middleware,
+      eventosApi.middleware,
+      puestosApi.middleware
+    ),
+});

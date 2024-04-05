@@ -1,11 +1,11 @@
 import React from "react";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
-import { Colors } from "../Styles/Colors";
-import { View } from "react-native";
+import useDynamicColors from "../Styles/useDynamicColors";
 
-const ConfigNotifiButtom = () => {
+const ConfigNotifiButtom = ({ islogin = true }) => {
+  const Colors = useDynamicColors();
   const navigation = useNavigation();
 
   const goToConfig = () => {
@@ -16,14 +16,39 @@ const ConfigNotifiButtom = () => {
     navigation.navigate("Notificaciones");
   };
 
-  return (
-    <View style={{flexDirection:"row"}}>
-      <TouchableOpacity onPress={goToNotify}>
-        <Icon name="bell" size={25} color={Colors.Negro} style={{ marginHorizontal:5}}/>
-      </TouchableOpacity>
+  if (islogin === false) {
+    return (
       <TouchableOpacity onPress={goToConfig}>
-        <Icon name="cog" size={25} color={Colors.Negro} style={{ marginHorizontal:5}}/>
+        <Icon
+          name="cog"
+          size={25}
+          color={Colors?.Negro}
+          style={{ marginHorizontal: 5 }}
+        />
       </TouchableOpacity>
+    );
+  }
+
+  return (
+    <View>
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity onPress={goToNotify}>
+          <Icon
+            name="bell"
+            size={25}
+            color={Colors?.Negro}
+            style={{ marginHorizontal: 5 }}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={goToConfig}>
+          <Icon
+            name="cog"
+            size={25}
+            color={Colors?.Negro}
+            style={{ marginHorizontal: 5 }}
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

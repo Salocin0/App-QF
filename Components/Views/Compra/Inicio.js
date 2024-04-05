@@ -2,13 +2,15 @@ import React from "react";
 import { View, FlatList, ActivityIndicator, StyleSheet } from "react-native";
 import CardEvento from "./CardEvento";
 import Aviso from "../Aviso";
-import styles from "../../Styles/styles";
+import useStyles from "../../Styles/useStyles";
 import { useGetEventosJsonQuery } from "../../App/Service/EventosApi";
-import { Colors } from "../../Styles/Colors";
+import useDynamicColors from "../../Styles/useDynamicColors";
 import eventos from "./../../../data/eventos.json";
-import Buscador from "../Buscador";
+import BuscadorEventos from "../BuscadorEventos";
 
 const Inicio = ({ navigation }) => {
+  const styles = useStyles()
+  const Colors = useDynamicColors();
   // const { data: eventos, isLoading } = useGetEventosJsonQuery();
   const isLoading = false;
 
@@ -17,12 +19,12 @@ const Inicio = ({ navigation }) => {
   );
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: Colors?.GrisClaro,}}>
       {isLoading ? (
-        <ActivityIndicator size="large" color={Colors.Azul} />
+        <ActivityIndicator size="large" color={Colors?.Azul} />
       ) : eventos?.length > 0 ? (
         <>
-          <Buscador />
+          <BuscadorEventos />
           <FlatList
             data={eventos}
             renderItem={renderItem}

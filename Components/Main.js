@@ -1,8 +1,22 @@
 import React from "react";
-import MainNavigator from "./Navigation/MainNavigator"
+import { StatusBar } from "react-native";
+import { useSelector } from "react-redux";
+import MainNavigator from "./Navigation/MainNavigator";
+import useDynamicColors from "./Styles/useDynamicColors";
 
-export default Main = () => {
+const Main = () => {
+  const Colors = useDynamicColors();
+  const modoOscuroActivo = useSelector((state) => state.modoOscuro.modoOscuroActivo);
+
   return (
-    <MainNavigator/>
+    <>
+      <StatusBar
+        barStyle={modoOscuroActivo ? "light-content" : "dark-content"}
+        backgroundColor={modoOscuroActivo ? Colors.Blanco : Colors.Blanco}
+      />
+      <MainNavigator />
+    </>
   );
 };
+
+export default Main;
