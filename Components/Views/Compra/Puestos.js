@@ -25,7 +25,7 @@ const Puestos = ({ navigation }) => {
             data={puestos}
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={{}}
+            contentContainerStyle={{paddingBottom:75}}
           />
         </>
       ) : (

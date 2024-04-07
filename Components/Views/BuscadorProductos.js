@@ -20,7 +20,7 @@ const BuscadorProductos = () => {
   const [searchText, setSearchText] = useState("");
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
-  const [selectedCategoria, setSelectedCategotia] = useState("porDistancia");
+  const [selectedCategoria, setSelectedCategotia] = useState("porNombre");
   const [selectedOrder, setSelectedOrder] = useState("ASC");
 
   const handleSearch = () => {
@@ -181,18 +181,6 @@ const BuscadorProductos = () => {
               <TouchableOpacity
                 style={[
                   styles.radioButton,
-                  selectedCategoria === "porDistancia" &&
-                    styles.radioButtonSelected,
-                ]}
-                onPress={() => handleSelectCategotia("porDistancia")}
-              >
-                <Text style={{ textAlign: "center", color: Colors.Negro }}>
-                  Distancia
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.radioButton,
                   selectedCategoria === "porNombre" &&
                     styles.radioButtonSelected,
                 ]}
@@ -205,13 +193,13 @@ const BuscadorProductos = () => {
               <TouchableOpacity
                 style={[
                   styles.radioButton,
-                  selectedCategoria === "porFecha" &&
+                  selectedCategoria === "porPrecio" &&
                     styles.radioButtonSelected,
                 ]}
-                onPress={() => handleSelectCategotia("porFecha")}
+                onPress={() => handleSelectCategotia("porPrecio")}
               >
                 <Text style={{ textAlign: "center", color: Colors.Negro }}>
-                  Fecha
+                  Precio
                 </Text>
               </TouchableOpacity>
             </View>
@@ -232,32 +220,7 @@ const BuscadorProductos = () => {
               Filtrar por
             </Text>
             <Text style={{ fontSize: 16, marginTop: 10, color: Colors?.Negro }}>
-              Distancia
-            </Text>
-            <View style={styles.filterContainer}>
-              <View style={styles.inputContainer}>
-                <Text style={{ color: Colors?.Negro }}>Mínimo:</Text>
-                <TextInput
-                  style={[styles.input, { color: Colors.Negro }]}
-                  placeholderTextColor={Colors.Negro}
-                  onChangeText={(text) => {}}
-                  placeholder="0 km"
-                  keyboardType="numeric"
-                />
-              </View>
-              <View style={styles.inputContainer}>
-                <Text style={{ color: Colors?.Negro }}>Máximo:</Text>
-                <TextInput
-                  style={[styles.input, { color: Colors.Negro }]}
-                  placeholderTextColor={Colors.Negro}
-                  onChangeText={(text) => {}}
-                  placeholder="∞ km"
-                  keyboardType="numeric"
-                />
-              </View>
-            </View>
-            <Text style={{ fontSize: 16, marginTop: 10, color: Colors?.Negro }}>
-              Días para empezar:
+              Precio
             </Text>
             <View style={styles.filterContainer}>
               <View style={styles.inputContainer}>
@@ -281,7 +244,6 @@ const BuscadorProductos = () => {
                 />
               </View>
             </View>
-
             <TouchableOpacity
               style={styles.closeButton}
               onPress={handleCloseFilterModal}

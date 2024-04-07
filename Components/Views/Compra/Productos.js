@@ -25,7 +25,7 @@ const Productos = ({ navigation }) => {
             data={producto}
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={{}}
+            contentContainerStyle={{paddingBottom:75}}
           />
         </>
       ) : (

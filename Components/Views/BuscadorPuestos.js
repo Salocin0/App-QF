@@ -20,7 +20,7 @@ const BuscadorPuestos = () => {
   const [searchText, setSearchText] = useState("");
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
-  const [selectedCategoria, setSelectedCategotia] = useState("porDistancia");
+  const [selectedCategoria, setSelectedCategotia] = useState("porNombre");
   const [selectedOrder, setSelectedOrder] = useState("ASC");
 
   const handleSearch = () => {
@@ -181,13 +181,13 @@ const BuscadorPuestos = () => {
               <TouchableOpacity
                 style={[
                   styles.radioButton,
-                  selectedCategoria === "porDistancia" &&
+                  selectedCategoria === "TiempoEntrega" &&
                     styles.radioButtonSelected,
                 ]}
-                onPress={() => handleSelectCategotia("porDistancia")}
+                onPress={() => handleSelectCategotia("TiempoEntrega")}
               >
                 <Text style={{ textAlign: "center", color: Colors.Negro }}>
-                  Distancia
+                  Tiempo
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -205,13 +205,13 @@ const BuscadorPuestos = () => {
               <TouchableOpacity
                 style={[
                   styles.radioButton,
-                  selectedCategoria === "porFecha" &&
+                  selectedCategoria === "Estrellas" &&
                     styles.radioButtonSelected,
                 ]}
-                onPress={() => handleSelectCategotia("porFecha")}
+                onPress={() => handleSelectCategotia("Estrellas")}
               >
                 <Text style={{ textAlign: "center", color: Colors.Negro }}>
-                  Fecha
+                  Estrellas
                 </Text>
               </TouchableOpacity>
             </View>
@@ -232,32 +232,7 @@ const BuscadorPuestos = () => {
               Filtrar por
             </Text>
             <Text style={{ fontSize: 16, marginTop: 10, color: Colors?.Negro }}>
-              Distancia
-            </Text>
-            <View style={styles.filterContainer}>
-              <View style={styles.inputContainer}>
-                <Text style={{ color: Colors?.Negro }}>Mínimo:</Text>
-                <TextInput
-                  style={[styles.input, { color: Colors.Negro }]}
-                  placeholderTextColor={Colors.Negro}
-                  onChangeText={(text) => {}}
-                  placeholder="0 km"
-                  keyboardType="numeric"
-                />
-              </View>
-              <View style={styles.inputContainer}>
-                <Text style={{ color: Colors?.Negro }}>Máximo:</Text>
-                <TextInput
-                  style={[styles.input, { color: Colors.Negro }]}
-                  placeholderTextColor={Colors.Negro}
-                  onChangeText={(text) => {}}
-                  placeholder="∞ km"
-                  keyboardType="numeric"
-                />
-              </View>
-            </View>
-            <Text style={{ fontSize: 16, marginTop: 10, color: Colors?.Negro }}>
-              Días para empezar:
+              Estrellas
             </Text>
             <View style={styles.filterContainer}>
               <View style={styles.inputContainer}>
@@ -276,7 +251,32 @@ const BuscadorPuestos = () => {
                   style={[styles.input, { color: Colors.Negro }]}
                   placeholderTextColor={Colors.Negro}
                   onChangeText={(text) => {}}
-                  placeholder="∞"
+                  placeholder="5"
+                  keyboardType="numeric"
+                />
+              </View>
+            </View>
+            <Text style={{ fontSize: 16, marginTop: 10, color: Colors?.Negro }}>
+              Tiempo de entrega
+            </Text>
+            <View style={styles.filterContainer}>
+              <View style={styles.inputContainer}>
+                <Text style={{ color: Colors?.Negro }}>Mínimo:</Text>
+                <TextInput
+                  style={[styles.input, { color: Colors.Negro }]}
+                  placeholderTextColor={Colors.Negro}
+                  onChangeText={(text) => {}}
+                  placeholder="0 min"
+                  keyboardType="numeric"
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <Text style={{ color: Colors?.Negro }}>Máximo:</Text>
+                <TextInput
+                  style={[styles.input, { color: Colors.Negro }]}
+                  placeholderTextColor={Colors.Negro}
+                  onChangeText={(text) => {}}
+                  placeholder="∞ min"
                   keyboardType="numeric"
                 />
               </View>

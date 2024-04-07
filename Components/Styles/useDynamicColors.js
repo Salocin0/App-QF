@@ -12,6 +12,7 @@ const useDynamicColors = () => {
     Celeste: modoOscuroActivo ? "#2599fe" : "#0275d8",
     Naranja: modoOscuroActivo ? "#FFA500" : "#FFD700",
     NaranjaOscuro: modoOscuroActivo ? "#af6e0e" : "#f0ad4e",
+    NaranjaDetalle: modoOscuroActivo ? "#ff6d05" : "#F76500",
     Verde: modoOscuroActivo ? "#45a145" : "#5cb85c",
     Rojo: modoOscuroActivo ? "#ad2925" : "#d9534f",
     Gris: modoOscuroActivo ? "#616161" : "#9d9d9d",
