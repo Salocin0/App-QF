@@ -1,3 +1,4 @@
+import { color } from "react-native-elements/dist/helpers";
 import useDynamicColors from "./useDynamicColors";
 
 const useStyles = () => {
@@ -31,6 +32,11 @@ const useStyles = () => {
     },
     title: {
       fontSize: 18,
+      color: Colors.Negro,
+    },
+    text:{
+      color: Colors.Negro,
+      fontWeight: "normal",
     },
     input: {
       borderColor: Colors.Gris,
@@ -38,6 +44,7 @@ const useStyles = () => {
       borderRadius: 5,
       paddingHorizontal: 10,
       marginBottom: 3,
+      color: Colors.Negro,
     },
     label: {
       color: Colors.Negro,

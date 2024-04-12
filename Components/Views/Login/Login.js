@@ -100,7 +100,7 @@ export default Login = ({ navigation }) => {
         </Text>
       </View>
       <View style={styles.footer}>
-        <Text>¿No tienes cuenta? </Text>
+        <Text style={styles.text}>¿No tienes cuenta? </Text>
         <Text
           testID="registrarse"
           style={styles.link}
