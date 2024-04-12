@@ -5,11 +5,13 @@ import { productoApi } from "./Service/ProductosApi";
 import { eventosApi } from "./Service/EventosApi";
 import { puestosApi } from "./Service/PuestosApi";
 import modoOscuroReducer from "../Features/modoOscuro/modoOscuroSlice";
+import counterReducer from "./../Features/counter/counterSlice"
 
 export default configureStore({
   reducer: {
     auth: authReducer,
     modoOscuro: modoOscuroReducer,
+    counter: counterReducer,
     [authApi.reducerPath]: authApi.reducer,
     [productoApi.reducerPath]: productoApi.reducer,
     [eventosApi.reducerPath]: eventosApi.reducer,

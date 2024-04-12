@@ -7,8 +7,8 @@ import { faMoneyBillWave } from "@fortawesome/free-solid-svg-icons";
 
 const CardProducto = ({ item, navigation }) => {
   const Colors = useDynamicColors();
-  const seleccionarPuesto = (evento) => {
-    navigation.navigate("Detalle", { evento });
+  const seleccionarPuesto = (producto) => {
+    navigation.navigate("Detalle", { producto });
   };
 
   return (
