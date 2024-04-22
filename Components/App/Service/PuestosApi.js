@@ -1,19 +1,23 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import data from './../../../data/puestos.json';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { REACT_APP_BACK_URL } from "@env";
 
 export const puestosApi = createApi({
   reducerPath: "puestosApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "https://reactnativecoder-d3ff9-default-rtdb.firebaseio.com/" }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${REACT_APP_BACK_URL}`, forceRefetch: true }),
   endpoints: (builder) => ({
-    getPuestosJson: builder.query({
-      query: () => {
-        return data.puestos;
-      }
+    getPuestosPorEvento: builder.query({
+      query: (eventoId) => ({
+        url: `/puesto/evento/${eventoId}`,
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }),
+      transformResponse: (response) => {
+        if (response.status="success"){
+          return response.data;
+        }         
+      },
     }),
-    getPuestos: builder.query({
-      query: () => "/puestos.json"
-    })
-  })
+  }),
 });
 
-export const { useGetPuestosQuery, useGetPuestosJsonQuery } = puestosApi;
+export const { useGetPuestosPorEventoQuery } = puestosApi;

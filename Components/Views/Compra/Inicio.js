@@ -1,32 +1,32 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, FlatList, ActivityIndicator, StyleSheet } from "react-native";
 import CardEvento from "./CardEvento";
 import Aviso from "../Aviso";
 import useStyles from "../../Styles/useStyles";
-import { useGetEventosJsonQuery } from "../../App/Service/EventosApi";
 import useDynamicColors from "../../Styles/useDynamicColors";
-import eventos from "./../../../data/eventos.json";
 import BuscadorEventos from "../BuscadorEventos";
+import { useGetEventosQuery } from "../../App/Service/EventosApi";
 
 const Inicio = ({ navigation }) => {
-  const styles = useStyles()
+  const styles = useStyles();
   const Colors = useDynamicColors();
-  // const { data: eventos, isLoading } = useGetEventosJsonQuery();
-  const isLoading = false;
+  const { data, error, isLoading } = useGetEventosQuery();
 
   const renderItem = ({ item }) => (
     <CardEvento item={item} navigation={navigation} />
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors?.GrisClaro,}}>
+    <View style={{ flex: 1, backgroundColor: Colors?.GrisClaro }}>
       {isLoading ? (
         <ActivityIndicator size="large" color={Colors?.Azul} />
-      ) : eventos?.length > 0 ? (
+      ) : error ? (
+        <Aviso mensaje={error.message || "Error al cargar eventos"} />
+      ) : data.length > 0 ? (
         <>
           <BuscadorEventos />
           <FlatList
-            data={eventos}
+            data={data}
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
             contentContainerStyle={styleslocal.flatListContainer}

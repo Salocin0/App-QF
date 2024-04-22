@@ -1,43 +1,27 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import data from './../../../data/productos.json'; 
+import { REACT_APP_BACK_URL } from "@env";
 
 export const productoApi = createApi({
   reducerPath: "productoApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "https://reactnativecoder-d3ff9-default-rtdb.firebaseio.com/" }),
+  baseQuery: fetchBaseQuery({ baseUrl:`${REACT_APP_BACK_URL}`, forceRefetch: true  }),
   endpoints: (builder) => ({
-    getProductsByPuestoJson: builder.query({
-      query: (category) => {
-        const filteredProducts = data.products.filter(product => product.category === category);
-        return filteredProducts;
-      },
+    getProductos: builder.query({
+      query: (puestoId) => ({
+        url: `/producto`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'puestoid': puestoId
+        }
+      }),
       transformResponse: (response) => {
-        return response;
+        if (response.status="success"){
+          console.log("entra",response.data);
+          return response.data;
+        }    
       }
     }),
-    getProductsByPuesto: builder.query({
-      query: (category) => `/products.json?orderBy="category"&equalTo="${category}"`,
-      transformResponse: (response) => {
-        const data = Object.values(response);
-        return data;
-      }
-    }),
-    getPuestosJson: builder.query({
-      query: () => {
-        return data.puestos;
-      }
-    }),
-    getPuestos: builder.query({
-      query: () => "/puestos.json"
-    }),
-    getProductJson: builder.query({
-      query: (id) => {
-        return data.products.find(product => product.id === id);
-      }
-    }),
-    getProduct: builder.query({
-      query: (id) => `/products/${id}.json`
-    })
   })
 });
 
-export const { useGetPuestosQuery, useGetProductsByPuestoQuery, useGetProductQuery, useGetPuestosJsonQuery, useGetProductsByPuestoJsonQuery, useGetProductJsonQuery } = productoApi;
+export const { useGetProductosQuery } = productoApi;

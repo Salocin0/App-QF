@@ -1,31 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React,{useEffect} from "react";
 import { View, FlatList, ActivityIndicator } from "react-native";
 import CardPuesto from "./CardPuesto";
 import Aviso from "../Aviso";
 import useDynamicColors from "../../Styles/useDynamicColors";
-import puestos from "./../../../data/puestos.json";
-import BuscadorPuestos from "./../BuscadorPuestos"
+import BuscadorPuestos from "./../BuscadorPuestos";
+import { useGetPuestosPorEventoQuery } from "../../App/Service/PuestosApi";
+import { useRoute } from '@react-navigation/native';
 
 const Puestos = ({ navigation }) => {
+  const route = useRoute();
   const Colors = useDynamicColors();
-  const isLoading = false;
+  const { evento } = route.params;
+  console.log(evento);
+  const { data, error, isLoading } = useGetPuestosPorEventoQuery(evento.id);  
 
   const renderItem = ({ item }) => (
-    <CardPuesto item={item} navigation={navigation} />
+    <CardPuesto item={data} navigation={navigation} />
   );
-
   return (
     <View style={{ backgroundColor: Colors?.GrisClaro }}>
       {isLoading ? (
         <ActivityIndicator size="large" color={Colors?.Azul} />
-      ) : puestos.length > 0 ? (
+      ) : error ? (
+        <Aviso mensaje={error.message || "Error al cargar puestos"} />
+      ) : data ? (
         <>
-          <BuscadorPuestos/>
+          <BuscadorPuestos />
           <FlatList
-            data={puestos}
+            data={data}
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={{paddingBottom:75}}
+            contentContainerStyle={{ paddingBottom: 75 }}
           />
         </>
       ) : (

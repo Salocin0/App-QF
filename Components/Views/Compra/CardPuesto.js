@@ -76,9 +76,9 @@ const CardPuesto = ({ item, navigation }) => {
               color: Colors.Negro,
             }}
           >
-            {item.nombre}
+            {item.nombreCarro}
           </Text>
-          <Text style={{ fontSize: 16, textAlign: "center", color: Colors.Negro }}>{item.descripcion}</Text>
+          <Text style={{ fontSize: 16, textAlign: "center", color: Colors.Negro }}>{item.tipoNegocio}</Text>
           <View
             style={{
               flexDirection: "row",
