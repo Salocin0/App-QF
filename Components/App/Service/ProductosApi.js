@@ -16,7 +16,6 @@ export const productoApi = createApi({
       }),
       transformResponse: (response) => {
         if (response.status="success"){
-          console.log("entra",response.data);
           return response.data;
         }    
       }

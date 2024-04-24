@@ -9,7 +9,7 @@ import { faStar, faClock } from "@fortawesome/free-solid-svg-icons";
 const CardPuesto = ({ item, navigation }) => {
   const Colors = useDynamicColors();
   const seleccionarPuesto = (evento) => {
-    navigation.navigate("Productos", { evento });
+    navigation.navigate("Productos", { evento, puesto:item });
   };
 
   return (

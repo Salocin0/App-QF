@@ -2,8 +2,10 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { decrement, increment } from './counterSlice';
+import useDynamicColors from '../../Styles/useDynamicColors';
 
 export function Counter() {
+  const Colors = useDynamicColors();
   const count = useSelector(state => state.counter.value);
   const dispatch = useDispatch();
 
@@ -23,7 +25,7 @@ export function Counter() {
           }}
           onPress={() => dispatch(increment())}
         >
-          <Text style={{ fontSize: 16 }}>+</Text>
+          <Text style={{ fontSize: 16,color:Colors.Negro }}>+</Text>
         </TouchableOpacity>
         <View
           style={{
@@ -36,7 +38,7 @@ export function Counter() {
             alignItems: 'center',
           }}
         >
-          <Text style={{ fontSize: 16 }}>{count}</Text>
+          <Text style={{ fontSize: 16,color:Colors.Negro }}>{count}</Text>
         </View>
         <TouchableOpacity
           style={{
@@ -51,7 +53,7 @@ export function Counter() {
           }}
           onPress={() => dispatch(decrement())}
         >
-          <Text style={{ fontSize: 16 }}>-</Text>
+          <Text style={{ fontSize: 16,color:Colors.Negro }}>-</Text>
         </TouchableOpacity>
       </View>
     </View>

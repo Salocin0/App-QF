@@ -4,6 +4,10 @@ const initialState = {
   email: "",
   idToken: "",
   tipoUsuario: "",
+  usuario: "",
+  consumidorId: "",
+  id: "", //user id
+  sessionId: "",
 };
 
 export const authSlice = createSlice({
@@ -11,7 +15,7 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, actions) => (state = actions.payload),
-    clearUser: (state) => (state = { email: "", idToken: "", tipoUsuario: "" }),
+    clearUser: (state) => (state = { email: "", idToken: "", tipoUsuario: "", usuario: "", consumidorId: "", id: "", sessionId: "" }),
   },
 });
 

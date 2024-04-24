@@ -38,6 +38,10 @@ export default Login = ({ navigation }) => {
           email: email,
           idToken: responseData.data.data.sessionId,
           tipoUsuario: responseData.data.data.tipoUsuario,
+          usuario: responseData.data.data.usuario,
+          consumidorId: responseData.data.data.consumidorId,
+          id: responseData.data.data.id,
+          sessionId: responseData.data.data.sessionId,
         })
       );
       ToastAndroid.show("Login correcto", ToastAndroid.SHORT);

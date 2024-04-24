@@ -11,11 +11,10 @@ const Puestos = ({ navigation }) => {
   const route = useRoute();
   const Colors = useDynamicColors();
   const { evento } = route.params;
-  console.log(evento);
-  const { data, error, isLoading } = useGetPuestosPorEventoQuery(evento.id);  
+  const { data, error, isLoading } = useGetPuestosPorEventoQuery(evento.id); 
 
   const renderItem = ({ item }) => (
-    <CardPuesto item={data} navigation={navigation} />
+    <CardPuesto item={item} navigation={navigation} />
   );
   return (
     <View style={{ backgroundColor: Colors?.GrisClaro }}>

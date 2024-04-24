@@ -101,7 +101,6 @@ const useRegister = (navigation) => {
 
       const responseData = await response.json();
       if (responseData.status === "sucess") {
-        console.log("registro existoso");
         ToastAndroid.show("Registro exitoso", ToastAndroid.SHORT);
         ToastAndroid.show(
           "Se envió un email de validación a su correo",
