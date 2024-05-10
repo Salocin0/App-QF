@@ -17,7 +17,9 @@ export const productoApi = createApi({
       transformResponse: (response) => {
         if (response.status="success"){
           return response.data;
-        }    
+        }else{
+          console.log("error")
+        }
       }
     }),
   })

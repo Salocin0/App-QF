@@ -16,7 +16,7 @@ const StarsBar = ({ pregunta = "pregunta", rating, onRatingChange }) => {
           key={i}
           icon={i <= rating ? solidStar : regularStar}
           color={i <= rating ? Colors.NaranjaDetalle : Colors.Gris}
-          size={20}
+          size={25}
           style={{ marginHorizontal: 11 }}
         />
       );
@@ -25,10 +25,11 @@ const StarsBar = ({ pregunta = "pregunta", rating, onRatingChange }) => {
   };
 
   return (
-    <View style={{ flex: 1, alignItems: 'center' }}>
-      <Text style={{ color: Colors.Negro }}>{pregunta}</Text>
+    <View style={{ height: 80, alignItems: 'center', position: 'relative' }}>
+      <Text style={{ color: Colors.Negro, fontSize: 20, marginBottom: 5 }}>{pregunta}</Text>
+      <View style={{ flexDirection: 'row' }}>{renderStars()}</View>
       <Slider
-        style={{ width: 200, height: 25 }}
+        style={{ width: 200, position: 'absolute', top: 35, opacity: 0 }}
         minimumValue={1}
         maximumValue={5}
         step={1}
@@ -38,7 +39,6 @@ const StarsBar = ({ pregunta = "pregunta", rating, onRatingChange }) => {
         maximumTrackTintColor={Colors.Gris}
         thumbTintColor={Colors.NaranjaDetalle}
       />
-      <View style={{ flexDirection: 'row' }}>{renderStars()}</View>
     </View>
   );
 };

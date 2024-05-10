@@ -8,6 +8,7 @@ import counterReducer from "./../Features/counter/counterSlice"
 import { eventosApi } from "./Service/EventosApi";
 import carritoReducer from "../Features/carrito/carritoSlice"
 import { pedidoApi } from "./Service/PedidosApi";
+import { valoracionApi } from "./Service/ValoracionApi";
 
 export default configureStore({
   reducer: {
@@ -20,14 +21,19 @@ export default configureStore({
     [eventosApi.reducerPath]: eventosApi.reducer,
     [puestosApi.reducerPath]: puestosApi.reducer,
     [pedidoApi.reducerPath]: pedidoApi.reducer,
+    [valoracionApi.reducerPath]:valoracionApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(
+    getDefaultMiddleware({
+      immutableCheck: false,
+      serializableCheck: false,
+    }).concat(
       authApi.middleware,
       productoApi.middleware,
       eventosApi.middleware,
       puestosApi.middleware,
-      pedidoApi.middleware
+      pedidoApi.middleware,
+      valoracionApi.middleware,
     ),
 });

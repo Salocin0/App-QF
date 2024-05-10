@@ -32,6 +32,10 @@ export default Login = ({ navigation }) => {
       contraseña: password,
     };
     const responseData = await loginUserMutation(userData);
+    console.log(responseData)
+    if(responseData.data.code === "undefined"){
+      ToastAndroid.show("Error en el login", ToastAndroid.SHORT);
+    }
     if (Number(responseData.data.code) === 200) {
       dispatch(
         setUser({

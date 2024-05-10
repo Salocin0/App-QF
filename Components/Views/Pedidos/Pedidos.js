@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
+import { View, FlatList, ActivityIndicator } from "react-native";
 import PedidoCard from "./PedidoCard";
 import useDynamicColors from "../../Styles/useDynamicColors";
 import useStyles from "../../Styles/useStyles";
-import pedidos from "../../../data/pedidos.json";
 import Aviso from "../Aviso";
-import { View, FlatList, ActivityIndicator, StyleSheet } from "react-native";
+import { useGetPedidosQuery } from "../../App/Service/PedidosApi";
+import { useSelector } from "react-redux";
 
 const Pedido = ({ navigation }) => {
   const Colors = useDynamicColors();
   const styles = useStyles();
-  const isLoading = false;
+  const user = useSelector((state) => state.auth);
+  const { data, error, isLoading } = useGetPedidosQuery(user.consumidorId);
 
   const renderItem = ({ item }) => <PedidoCard item={item} navigation={navigation} />;
 
@@ -17,8 +19,10 @@ const Pedido = ({ navigation }) => {
     <View style={{ flex: 1, backgroundColor: Colors?.GrisClaro }}>
       {isLoading ? (
         <ActivityIndicator size="large" color={Colors?.Azul} />
-      ) : pedidos?.length > 0 ? (
-        <FlatList data={pedidos} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.flatListContainer} />
+      ) : error ? (
+        <Aviso mensaje="Error al cargar los pedidos" />
+      ) : data && data.data?.length > 0 ? (
+        <FlatList data={data.data} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.flatListContainer} />
       ) : (
         <Aviso mensaje="No hay pedidos disponibles" />
       )}
