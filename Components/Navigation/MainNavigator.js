@@ -33,7 +33,7 @@ const MainNavigator = () => {
   return (
     <>
       {isAuthenticated ? (
-        userType === "consumidor" ? (
+        userType === "consumidor" || userType === "encargado" ? (
           <Tab.Navigator screenOptions={{ tabBarStyle: styles.tabBar }}>
             <Tab.Screen
               name="CompraStack"

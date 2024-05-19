@@ -10,7 +10,7 @@ import DetallePedido from "../Views/Pedidos/DetallePedido";
 const Stack = createNativeStackNavigator();
 
 const PedidoStack = () => {
-  const Colors = useDynamicColors()
+  const Colors = useDynamicColors();
   return (
     <Stack.Navigator
       screenOptions={{
@@ -20,14 +20,10 @@ const PedidoStack = () => {
         headerTintColor: Colors.Negro,
       }}
     >
-      <Stack.Screen
-        name="Pedidos"
-        component={Pedidos}
-        options={{ headerRight: () => <ConfigNotifiButtom /> }}
-      />
+      <Stack.Screen name="Pedidos" component={Pedidos} options={{ headerRight: () => <ConfigNotifiButtom /> }} />
       <Stack.Screen name="Config" component={Config} />
       <Stack.Screen name="Notificaciones" component={Notificaciones} />
-      <Stack.Screen name="Detalle Pedido" component={DetallePedido} options={{ headerRight: () => <ConfigNotifiButtom /> }}/>
+      <Stack.Screen name="Detalle Pedido" component={DetallePedido} options={{ headerRight: () => <ConfigNotifiButtom /> }} />
     </Stack.Navigator>
   );
 };

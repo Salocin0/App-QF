@@ -120,6 +120,7 @@ const DetallePedido = ({ route }) => {
         <Text style={styles.title}>Pedido #{pedido?.id}</Text>
         <Text style={styles.text}>Repartidor: {pedido?.repartidorId}</Text>
         <Text style={styles.text}>Puesto: {pedido?.puesto?.nombreCarro}</Text>
+        <Text style={styles.text}>Estado: {pedido?.estado}</Text>
         <Text style={styles.text}>Productos:</Text>
         {pedido?.detalles?.map((detalle, index) => (
           <Text key={index} style={styles.text}>

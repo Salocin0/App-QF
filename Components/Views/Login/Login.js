@@ -37,6 +37,9 @@ export default Login = ({ navigation }) => {
       ToastAndroid.show("Error en el login", ToastAndroid.SHORT);
     }
     if (Number(responseData.data.code) === 200) {
+      //get token y mandar al back
+      //guardar en dispatch el token
+      //armar en una clase el receptor de notificaciones
       dispatch(
         setUser({
           email: email,
