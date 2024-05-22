@@ -1,28 +1,83 @@
 import { StyleSheet, Text, View, ActivityIndicator, Button, TextInput } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useGetPerfilQuery } from "../../App/Service/PerfilApi";
+import { useGetPerfilQuery, useUpdateConsumidorMutation, useUpdateEncargadoMutation, useUpdateProductorMutation } from "../../App/Service/PerfilApi";
 import useStyles from "../../Styles/useStyles";
 import useDynamicColors from "../../Styles/useDynamicColors";
 import RNPickerSelect from "react-native-picker-select";
 import useLocalidades from "../../Hooks/UseLocalidades";
 import useProvincias from "../../Hooks/UseProvincias";
+import { useNavigation } from "@react-navigation/native";
+import { ToastAndroid } from "react-native";
 
 const EditarPerfil = () => {
   const Colors = useDynamicColors();
   const user = useSelector((state) => state.auth);
   const userId = user?.consumidorId;
   const { data, error, isLoading } = useGetPerfilQuery(userId);
-  const [nombre, setNombre] = useState(data.nombre || "");
-  const [apellido, setApellido] = useState(data.apellido || "");
-  const [dni, setDNI] = useState(String(data.dni) || "");
-  const [telefono, setTelefono] = useState(data.telefono || "");
-  const [localidad, setLocalidad] = useState(data.localidad || "");
-  const [provincia, setProvincia] = useState(data.provincia || "");
-  const [condicionIva, setCondicionIva] = useState(data.encargado?.condicionIva || data.productor?.condicionIva || "");
-  const [cuit, setCuit] = useState(data.encargado?.cuit || data.productor?.cuit || "");
+  const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [dni, setDNI] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [localidad, setLocalidad] = useState("");
+  const [provincia, setProvincia] = useState("");
+  const [condicionIva, setCondicionIva] = useState("");
+  const [razonSocial, setRazonSocial] = useState("");
+  const [cuit, setCuit] = useState("");
   const { provincias } = useProvincias();
-  const { localidades, fetchLocalidades } = useLocalidades();
+  const { localidades, fetchLocalidades, setLocalidades } = useLocalidades();
+  const [initialFormState, setInitialFormState] = useState({});
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [isFormReady, setIsFormReady] = useState(false);
+  const [updateConsumidor] = useUpdateConsumidorMutation();
+  const [updateProductor] = useUpdateProductorMutation();
+  const [updateEncargado] = useUpdateEncargadoMutation();
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    if (data) {
+      const initialState = {
+        nombre: data.nombre || "",
+        apellido: data.apellido || "",
+        dni: String(data.dni) || "",
+        telefono: data.telefono || "",
+        localidad: data.localidad || "",
+        provincia: data.provincia || "",
+        condicionIva: data.encargado?.condicionIva || data.productor?.condicionIva || "",
+        cuit: data.encargado?.cuit || data.productor?.cuit || "",
+        razonSocial: data.encargado?.razonSocial || data.productor?.razonSocial || "",
+      };
+      setInitialFormState(initialState);
+      setNombre(initialState.nombre);
+      setApellido(initialState.apellido);
+      setDNI(initialState.dni);
+      setTelefono(initialState.telefono);
+      setLocalidad(initialState.localidad);
+      setProvincia(initialState.provincia);
+      setCondicionIva(initialState.condicionIva);
+      setRazonSocial(initialState.razonSocial);
+      setCuit(initialState.cuit);
+      setIsFormReady(true);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    const currentFormState = {
+      nombre,
+      apellido,
+      dni,
+      telefono,
+      localidad,
+      provincia,
+      condicionIva,
+      razonSocial,
+      cuit,
+    };
+    const isFormChanged = Object.keys(initialFormState).some(
+      (key) => initialFormState[key] !== currentFormState[key] && currentFormState[key] !== ""
+    );
+    setIsButtonDisabled(!isFormChanged);
+  }, [nombre, apellido, dni, telefono, localidad, provincia, condicionIva, razonSocial, cuit, initialFormState]);
 
   const handleLocalidadChange = (value) => {
     setLocalidad(value);
@@ -30,14 +85,62 @@ const EditarPerfil = () => {
 
   const handleProvinceChange = (value) => {
     setProvincia(value);
-    handleLocalidadChange("")
+    setLocalidad("");
+    setLocalidades([]);
     fetchLocalidades(value);
   };
 
-  const handleGuardarCambios = () => {
-    //crear un objeto con todos los usestate
-    //crear la api para hacer el update al back
-    //volver atras
+  const handleGuardarCambios = async () => {
+    try {
+      let resultUser = null;
+      let resultEncargado = null;
+      let resultProductor = null;
+
+      const newDataConsumidor = {
+        nombreC: nombre,
+        apellidoC: apellido,
+        dniC: dni,
+        telefono,
+        provinciaC: provincia,
+        localidad,
+      };
+
+      const newDataRol = {
+        condicionIva,
+        cuitPE: cuit,
+        cuitEPC: cuit,
+        razonSocialEPC: razonSocial,
+        razonSocialPE: razonSocial,
+      };
+
+      if (Object.keys(newDataConsumidor).some((key) => newDataConsumidor[key] !== initialFormState[key])) {
+        resultUser = await updateConsumidor({ id: userId, ...newDataConsumidor });
+      }
+
+      if (Object.keys(newDataRol).some((key) => newDataRol[key] !== initialFormState[key])) {
+        if (data?.encargado && data.encargado.habilitado) {
+          resultEncargado = await updateEncargado({ id: userId, ...newDataRol });
+        }
+
+        if (data?.productor && data.productor.habilitado) {
+          resultProductor = await updateProductor({ id: userId, ...newDataRol });
+        }
+      }
+
+      const allResponses = [resultUser, resultEncargado, resultProductor].filter(Boolean);
+      const allSuccessful = allResponses.every((response) => response?.data === 200);
+
+      if (allSuccessful) {
+        ToastAndroid.show("Datos Guardados Correctamente", ToastAndroid.SHORT);
+        navigation.navigate("Perfil");
+      } else {
+        ToastAndroid.show("Error: algunos datos no se guardaron correctamente", ToastAndroid.SHORT);
+        navigation.navigate("Perfil");
+      }
+    } catch (error) {
+      ToastAndroid.show("Error al guardar los datos", ToastAndroid.SHORT);
+      navigation.navigate("Perfil");
+    }
   };
 
   const styles = StyleSheet.create({
@@ -78,6 +181,7 @@ const EditarPerfil = () => {
     inputSelect: {
       fontSize: 14,
       color: Colors.Negro,
+      minWidth: 100,
     },
     placeholder: {
       color: Colors.Negro,
@@ -89,7 +193,7 @@ const EditarPerfil = () => {
     },
   });
 
-  if (isLoading) {
+  if (isLoading && !isFormReady) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color={Colors.Naranja} />
@@ -105,6 +209,7 @@ const EditarPerfil = () => {
       </View>
     );
   }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Editar Usuario</Text>
@@ -119,52 +224,50 @@ const EditarPerfil = () => {
         </View>
         <View style={styles.inputContainer}>
           <Text style={styles.label}>DNI: </Text>
-          <TextInput style={styles.input} placeholder="DNI" value={dni} onChangeText={setDNI} />
+          <TextInput style={styles.input} placeholder="DNI" value={dni} onChangeText={setDNI} keyboardType="numeric" />
         </View>
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Teléfono: </Text>
-          <TextInput style={styles.input} placeholder="Teléfono" value={telefono} onChangeText={setTelefono} />
+          <TextInput style={styles.input} placeholder="Teléfono" value={telefono} onChangeText={setTelefono} keyboardType="numeric" />
         </View>
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Provincia: </Text>
           <RNPickerSelect
-            style={{ inputAndroid: styles.inputSelect,placeholder:styles.placeholder }}
+            style={{ inputAndroid: styles.inputSelect, placeholder: styles.placeholder }}
             useNativeAndroidPickerStyle={false}
             fixAndroidTouchableBug={true}
-            placeholder={{ label: data.provincia, value: data.provincia }}
+            placeholder={{ label: data?.provincia, value: data?.provincia }}
             value={provincia}
-            onValueChange={(value) => handleProvinceChange(value)}
+            onValueChange={handleProvinceChange}
             items={provincias.map((provincia) => ({
               label: provincia.nombre,
               value: provincia.id,
               key: provincia.id,
-              inputLabel: provincia.nombre,
             }))}
           />
         </View>
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Localidad: </Text>
           <RNPickerSelect
-            style={{ inputAndroid: styles.inputSelect,placeholder:styles.placeholder }}
+            style={{ inputAndroid: styles.inputSelect, placeholder: styles.placeholder }}
             useNativeAndroidPickerStyle={false}
             fixAndroidTouchableBug={true}
-            placeholder={{ label: data.localidad, value: data.localidad }}
+            placeholder={{ label: data?.localidad, value: data?.localidad }}
             value={localidad}
-            onValueChange={(value) => handleLocalidadChange(value)}
+            onValueChange={handleLocalidadChange}
             items={localidades.map((localidad) => ({
               label: localidad.nombre,
               value: localidad.id,
               key: localidad.id,
-              inputLabel: localidad.nombre,
             }))}
           />
         </View>
-        {data.productor && data.productor.habilitado && (
+        {data?.productor && data.productor.habilitado && (
           <>
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Condición frente al IVA: </Text>
               <RNPickerSelect
-                style={{ inputAndroid: styles.inputSelect,placeholder:styles.placeholder }}
+                style={{ inputAndroid: styles.inputSelect, placeholder: styles.placeholder }}
                 useNativeAndroidPickerStyle={false}
                 fixAndroidTouchableBug={true}
                 placeholder={{ label: "", value: null }}
@@ -181,10 +284,15 @@ const EditarPerfil = () => {
               <Text style={styles.label}>CUIT: </Text>
               <TextInput style={styles.input} placeholder="CUIT" value={cuit} onChangeText={setCuit} />
             </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Razon social: </Text>
+              <TextInput style={styles.input} placeholder="Razón Social" value={razonSocial} onChangeText={setRazonSocial} />
+            </View>
           </>
         )}
 
-        {data.encargado && data.encargado.habilitado && (
+        {data?.encargado && data.encargado.habilitado && (
           <>
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Condición frente al IVA: </Text>
@@ -206,10 +314,14 @@ const EditarPerfil = () => {
               <Text style={styles.label}>CUIT: </Text>
               <TextInput style={styles.input} placeholder="CUIT" value={cuit} onChangeText={setCuit} />
             </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Razon social: </Text>
+              <TextInput style={styles.input} placeholder="Razón Social" value={razonSocial} onChangeText={setRazonSocial} />
+            </View>
           </>
         )}
 
-        <Button title="Guardar Cambios" style={styles.button} onPress={handleGuardarCambios} />
+        <Button title="Guardar Cambios" style={styles.button} onPress={handleGuardarCambios} disabled={isButtonDisabled} />
       </View>
     </View>
   );

@@ -10,6 +10,7 @@ const useLocalidades = () => {
     try {
       if (!provincia) {
         setLocalidades([]);
+        setLoading(false);
         return;
       }
 
@@ -27,7 +28,7 @@ const useLocalidades = () => {
     }
   };
 
-  return { localidades, loading, error, fetchLocalidades };
+  return { localidades, loading, error, fetchLocalidades, setLocalidades };
 };
 
 export default useLocalidades;
