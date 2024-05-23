@@ -158,16 +158,6 @@ const Perfil = () => {
             <Text style={{ color: Colors.Negro }}>Condición IVA: {data.productor.condicionIva}</Text>
             <Text style={{ color: Colors.Negro }}>CUIT: {data.productor.cuit}</Text>
             <Text style={{ color: Colors.Negro }}>Razón Social: {data.productor.razonSocial}</Text>
-            <Text style={{ color: Colors.Negro }}>Validez: {data.productor.estaValido ? "Sí" : "No"}</Text>
-          </View>
-        </>
-      )}
-      {data.repartidore && data.repartidore.habilitado && (
-        <>
-          <Text style={styles.title}>Repartidor</Text>
-          <View style={styles.card}>
-            <Text style={{ color: Colors.Negro }}>Repartidor ID: {data.repartidore.id}</Text>
-            <Text style={{ color: Colors.Negro }}>Validez: {data.repartidore.estaValido ? "Sí" : "No"}</Text>
           </View>
         </>
       )}
