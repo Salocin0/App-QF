@@ -29,6 +29,11 @@ const Perfil = () => {
     }
   };
 
+  const handleCerrarSesion = async () => {
+    dispatch(clearUser());
+    ToastAndroid.show("Sesion Cerrada Exitosamente", ToastAndroid.SHORT);
+  };
+
   const handleEditarUser = () => {
     navigation.navigate("EditarPerfil");
   };
@@ -58,6 +63,19 @@ const Perfil = () => {
     },
     button: {
       marginTop: 4,
+    },
+    buttonInfo: {
+      marginTop: 20,
+      borderWidth: 3,
+      borderColor: Colors.Info,
+      padding: 10,
+      borderRadius: 5,
+      alignItems: "center",
+    },
+    buttonInfoText: {
+      color: Colors.Info,
+      fontWeight: "800",
+      fontSize: 15,
     },
     modalContainer: {
       flex: 1,
@@ -160,7 +178,6 @@ const Perfil = () => {
             <Text style={{ color: Colors.Negro }}>Condición IVA: {data.encargado.condicionIva}</Text>
             <Text style={{ color: Colors.Negro }}>CUIT: {data.encargado.cuit}</Text>
             <Text style={{ color: Colors.Negro }}>Razón Social: {data.encargado.razonSocial}</Text>
-            <Text style={{ color: Colors.Negro }}>Validez: {data.encargado.estaValido ? "Sí" : "No"}</Text>
           </View>
         </>
       )}
@@ -171,6 +188,10 @@ const Perfil = () => {
       <View style={styles.button}>
         <Button title="Deshabilitar usuario" color={Colors.Rojo} onPress={() => setModalVisible(true)} />
       </View>
+
+      <TouchableOpacity style={styles.buttonInfo} onPress={handleCerrarSesion}>
+        <Text style={styles.buttonInfoText}>Cerrar Sesion</Text>
+      </TouchableOpacity>
 
       <Modal visible={modalVisible} animationType="fade" transparent={true}>
         <View style={styles.modalContainer}>
@@ -186,10 +207,7 @@ const Perfil = () => {
               >
                 <Text style={styles.buttonText}>Sí</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.buttonModal, styles.closeButton]}
-                onPress={() => setModalVisible(false)}
-              >
+              <TouchableOpacity style={[styles.buttonModal, styles.closeButton]} onPress={() => setModalVisible(false)}>
                 <Text style={styles.buttonText}>No</Text>
               </TouchableOpacity>
             </View>
