@@ -13,7 +13,13 @@ export const authApi = createApi({
         body: JSON.stringify(userData),
       }),
     }),
+    deleteUser: builder.mutation({
+      query: (id) => ({
+        url: `/user/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
-export const { useLoginUserMutation } = authApi;
+export const { useLoginUserMutation, useDeleteUserMutation } = authApi;

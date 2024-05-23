@@ -1,23 +1,32 @@
-import { StyleSheet, Text, View, ActivityIndicator, Button } from "react-native";
-import React from "react";
-import { useSelector } from "react-redux";
+import { StyleSheet, Text, View, ActivityIndicator, Button, Modal, TouchableOpacity, ToastAndroid } from "react-native";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useGetPerfilQuery } from "../../App/Service/PerfilApi";
-import useStyles from "../../Styles/useStyles";
 import useDynamicColors from "../../Styles/useDynamicColors";
 import { useNavigation } from "@react-navigation/native";
+import { useDeleteUserMutation } from "../../App/Service/authApi";
+import { clearUser } from "../../Features/Auth/authSlice";
 
 const Perfil = () => {
   const Colors = useDynamicColors();
   const user = useSelector((state) => state.auth);
   const userId = user?.consumidorId;
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const [deleteUser] = useDeleteUserMutation();
+  const [modalVisible, setModalVisible] = useState(false);
 
   const { data, error, isLoading } = useGetPerfilQuery(userId);
 
-  const handleDisableUser = (role) => {
-    //crear la api al back para desactivar el rol
-    //si funciona actualizar la pantalla
-    //sino mostrar toast con error
+  const handleDisableUser = async () => {
+    try {
+      await deleteUser(userId).unwrap();
+      dispatch(clearUser());
+      ToastAndroid.show("Usuario deshabilitado exitosamente", ToastAndroid.SHORT);
+    } catch (err) {
+      console.error("Fallo al deshabilitar el usuario", err);
+      ToastAndroid.show("Fallo al deshabilitar el usuario", ToastAndroid.SHORT);
+    }
   };
 
   const handleEditarUser = () => {
@@ -50,6 +59,45 @@ const Perfil = () => {
     button: {
       marginTop: 4,
     },
+    modalContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+    modalContent: {
+      width: "80%",
+      backgroundColor: Colors.Blanco,
+      borderRadius: 10,
+      padding: 20,
+      alignItems: "center",
+    },
+    modalText: {
+      marginBottom: 15,
+      textAlign: "center",
+      color: Colors.Negro,
+    },
+    buttonRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginTop: 10,
+    },
+    buttonModal: {
+      width: 100,
+      padding: 10,
+      borderRadius: 5,
+      alignItems: "center",
+    },
+    confirmButton: {
+      backgroundColor: Colors.Verde,
+      marginRight: 10,
+    },
+    closeButton: {
+      backgroundColor: Colors.Rojo,
+    },
+    buttonText: {
+      color: Colors.Negro,
+    },
   });
 
   if (isLoading) {
@@ -81,9 +129,6 @@ const Perfil = () => {
             <Text style={{ color: Colors.Negro }}>Teléfono: {data.telefono}</Text>
             <Text style={{ color: Colors.Negro }}>Localidad: {data.localidad}</Text>
             <Text style={{ color: Colors.Negro }}>Provincia: {data.provincia}</Text>
-            <View style={styles.button}>
-              <Button title="Deshabilitar usuario" color={Colors.Rojo} onPress={() => handleDisableUser("Usuario")} />
-            </View>
           </View>
         </>
       )}
@@ -96,9 +141,6 @@ const Perfil = () => {
             <Text style={{ color: Colors.Negro }}>CUIT: {data.productor.cuit}</Text>
             <Text style={{ color: Colors.Negro }}>Razón Social: {data.productor.razonSocial}</Text>
             <Text style={{ color: Colors.Negro }}>Validez: {data.productor.estaValido ? "Sí" : "No"}</Text>
-            <View style={styles.button}>
-              <Button title="Deshabilitar usuario Productor" color={Colors.Rojo} onPress={() => handleDisableUser("Productor")} />
-            </View>
           </View>
         </>
       )}
@@ -108,9 +150,6 @@ const Perfil = () => {
           <View style={styles.card}>
             <Text style={{ color: Colors.Negro }}>Repartidor ID: {data.repartidore.id}</Text>
             <Text style={{ color: Colors.Negro }}>Validez: {data.repartidore.estaValido ? "Sí" : "No"}</Text>
-            <View style={styles.button}>
-              <Button title="Deshabilitar usuario Repartidor" color={Colors.Rojo} onPress={() => handleDisableUser("Repartidor")} />
-            </View>
           </View>
         </>
       )}
@@ -122,15 +161,41 @@ const Perfil = () => {
             <Text style={{ color: Colors.Negro }}>CUIT: {data.encargado.cuit}</Text>
             <Text style={{ color: Colors.Negro }}>Razón Social: {data.encargado.razonSocial}</Text>
             <Text style={{ color: Colors.Negro }}>Validez: {data.encargado.estaValido ? "Sí" : "No"}</Text>
-            <View style={styles.button}>
-              <Button title="Deshabilitar usuario Encargado" color={Colors.Rojo} onPress={() => handleDisableUser("Encargado")} />
-            </View>
           </View>
         </>
       )}
       <View style={styles.button}>
-        <Button title="Editar Datos" color={Colors.Azul} onPress={() => handleEditarUser()} />
+        <Button title="Editar Datos" color={Colors.Azul} onPress={handleEditarUser} />
       </View>
+
+      <View style={styles.button}>
+        <Button title="Deshabilitar usuario" color={Colors.Rojo} onPress={() => setModalVisible(true)} />
+      </View>
+
+      <Modal visible={modalVisible} animationType="fade" transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>¿Estás seguro que deseas deshabilitar el usuario?</Text>
+            <View style={styles.buttonRow}>
+              <TouchableOpacity
+                style={[styles.buttonModal, styles.confirmButton]}
+                onPress={() => {
+                  setModalVisible(false);
+                  handleDisableUser();
+                }}
+              >
+                <Text style={styles.buttonText}>Sí</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.buttonModal, styles.closeButton]}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.buttonText}>No</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
