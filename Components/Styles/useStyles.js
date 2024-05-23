@@ -46,6 +46,14 @@ const useStyles = () => {
       marginBottom: 3,
       color: Colors.Negro,
     },
+    inputAlternativo: {
+      width:200,
+      paddingHorizontal: 10,
+      marginBottom: 3,
+      color: Colors.Negro,
+      backgroundColor: Colors.GrisClaroPeroNoTanClaro,
+      borderRadius:5
+    },
     label: {
       color: Colors.Negro,
       fontWeight: "normal",
@@ -157,6 +165,14 @@ const useStyles = () => {
     toggleButton: {
       marginLeft: -25,
       marginBottom: 5,
+    },
+    inputContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 8,
+    },
+    inputContainerAlternativa: {
+      marginBottom: 8,
     },
   };
 

@@ -6,6 +6,8 @@ import SeleccionRegister from "../Views/RegistrarUsuario/SeleccionRegister";
 import ConfigNotifiButtom from "./ConfigNotifiButtom";
 import Config from "../Views/Config/Config";
 import useDynamicColors from "../Styles/useDynamicColors"
+import TengoCodigo from "../Views/Login/TengoCodigo";
+import CambioContraseña from "../Views/Login/CambioContraseña";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +32,13 @@ const AuthStack = () => {
         }}
       />
       <Stack.Screen
+        name="TengoCodigo"
+        component={TengoCodigo}
+        options={{
+          headerRight: () => <ConfigNotifiButtom islogin={isLogin} />,
+        }}
+      />
+      <Stack.Screen
         name="Recuperar Contraseña"
         component={RecuperarContraseña}
         options={{
@@ -46,6 +55,13 @@ const AuthStack = () => {
       <Stack.Screen
         name="Seleccion Perfil"
         component={SeleccionRegister}
+        options={{
+          headerRight: () => <ConfigNotifiButtom islogin={isLogin} />,
+        }}
+      />
+      <Stack.Screen
+        name="CambioContraseña"
+        component={CambioContraseña}
         options={{
           headerRight: () => <ConfigNotifiButtom islogin={isLogin} />,
         }}

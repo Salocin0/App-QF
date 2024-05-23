@@ -19,7 +19,39 @@ export const authApi = createApi({
         method: "DELETE",
       }),
     }),
+    recuperarContrasenia: builder.mutation({
+      query: (correoElectronico) => ({
+        url: "/user/recuperarcontrasenia",
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ correoElectronico }),
+      }),
+      transformResponse: (response) => {
+        console.log(response)
+        if (response.status="success"){
+          return true;
+        }else{
+          return false;
+        }
+      },
+    }),
+    nuevaContraseña: builder.mutation({
+      query: ({contraseña,codigo}) => ({
+        url: `/user/recuperarcontrasenia/${codigo}`,
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contraseña }),
+      }),
+      transformResponse: (response) => {
+        console.log(response)
+        if (response.status="success"){
+          return true;
+        }else{
+          return false;
+        }
+      },
+    }),
   }),
 });
 
-export const { useLoginUserMutation, useDeleteUserMutation } = authApi;
+export const { useLoginUserMutation, useDeleteUserMutation, useRecuperarContraseniaMutation,useNuevaContraseñaMutation } = authApi;

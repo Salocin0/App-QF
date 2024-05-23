@@ -6,25 +6,15 @@ import { useRecuperarContraseniaMutation } from "../../App/Service/authApi";
 import { ToastAndroid } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const RecuperarContraseña = () => {
+const TengoCodigo = () => {
   const styles = useStyles();
   const Colors = useDynamicColors();
-  const [email, setEmail] = useState("");
+  const [codigo, setCodigo] = useState("");
   const navigation = useNavigation();
   const [recuperarContraseña] = useRecuperarContraseniaMutation();
 
-  const handleRecuperarContraseña = () => {
-    const result = recuperarContraseña(email);
-    if (result) {
-      ToastAndroid.show("Email enviado", ToastAndroid.SHORT);
-      navigation.navigate("Login");
-    } else {
-      ToastAndroid.show("Error al enviar el Email", ToastAndroid.SHORT);
-    }
-  };
-
-  const handleTengoUnCodigo = () => {
-    navigation.navigate("TengoCodigo");
+  const handleTengoCodigo = () => {
+    navigation.navigate("CambioContraseña", { codigo: codigo });
   };
 
   return (
@@ -32,24 +22,18 @@ const RecuperarContraseña = () => {
       <View style={styles.containerCard}>
         <View style={styles.card}>
           <View style={styles.cardheader}>
-            <Text style={styles.title}>Enviar codigo al Email</Text>
+            <Text style={styles.title}>Ingrese Codigo</Text>
           </View>
           <View style={styles.cardBody}>
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Email </Text>
-              <TextInput style={styles.inputAlternativo} value={email} onChangeText={setEmail} />
+              <Text style={styles.label}>Codigo </Text>
+              <TextInput style={styles.inputAlternativo} value={codigo} onChangeText={setCodigo} />
             </View>
           </View>
           <View style={styles.buttonsContainer}>
             <TouchableOpacity style={styles.containerCard}>
-              <Text style={styles.buttonEndForm} onPress={() => handleTengoUnCodigo()}>
-                Tengo un codigo
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.containerCard}>
-              <Text style={styles.buttonForm} onPress={() => handleRecuperarContraseña()}>
-                Enviar
+              <Text style={styles.buttonForm} onPress={() => handleTengoCodigo()}>
+                Siguiente
               </Text>
             </TouchableOpacity>
           </View>
@@ -59,6 +43,4 @@ const RecuperarContraseña = () => {
   );
 };
 
-export default RecuperarContraseña;
-
-const styles = StyleSheet.create({});
+export default TengoCodigo;
