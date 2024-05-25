@@ -31,8 +31,6 @@ const CambioContraseña = () => {
     }else{
       ToastAndroid.show("Las contraseñas no son iguales", ToastAndroid.SHORT);
     }
-    
-    
   };
 
   return (

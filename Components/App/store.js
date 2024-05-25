@@ -10,6 +10,7 @@ import carritoReducer from "../Features/carrito/carritoSlice"
 import { pedidoApi } from "./Service/PedidosApi";
 import { valoracionApi } from "./Service/ValoracionApi";
 import { perfilApi } from "./Service/PerfilApi";
+import { puntosEncuentroApi } from "./Service/PuntosEncuentroApi";
 
 export default configureStore({
   reducer: {
@@ -24,6 +25,7 @@ export default configureStore({
     [pedidoApi.reducerPath]: pedidoApi.reducer,
     [valoracionApi.reducerPath]:valoracionApi.reducer,
     [perfilApi.reducerPath]:perfilApi.reducer,
+    [puntosEncuentroApi.reducerPath]:puntosEncuentroApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -37,6 +39,7 @@ export default configureStore({
       puestosApi.middleware,
       pedidoApi.middleware,
       valoracionApi.middleware,
-      perfilApi.middleware
+      perfilApi.middleware,
+      puntosEncuentroApi.middleware,
     ),
 });

@@ -12,7 +12,22 @@ export const eventosApi = createApi({
         headers: { "Content-Type": "application/json" },
       }),
       transformResponse: (response) => {
-        if (response.status="success"){
+        if (response.status === "success") {
+          return response.data;
+        }
+      },
+    }),
+    getAllEventos: builder.query({
+      query: ({consumidorId}) => ({
+        url: "/evento/all",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          'consumidorid': consumidorId,
+        },
+      }),
+      transformResponse: (response) => {
+        if (response.status === "success") {
           return response.data;
         }
       },
@@ -20,4 +35,4 @@ export const eventosApi = createApi({
   }),
 });
 
-export const { useGetEventosQuery } = eventosApi;
+export const { useGetEventosQuery, useGetAllEventosQuery } = eventosApi;
