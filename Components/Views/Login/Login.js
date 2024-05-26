@@ -6,12 +6,14 @@ import useStyles from "../../Styles/useStyles";
 import { useLoginUserMutation } from "../../App/Service/authApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../Features/Auth/authSlice";
+import useNotificationToken from "./useNoficationToken";
 
 export default Login = ({ navigation }) => {
   const styles = useStyles()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginUserMutation] = useLoginUserMutation();
+  const token = useNotificationToken();
 
   const dispatch = useDispatch();
 
@@ -33,13 +35,23 @@ export default Login = ({ navigation }) => {
     };
     const responseData = await loginUserMutation(userData);
     console.log(responseData)
-    if(responseData.data.code === "undefined"){
+    if(responseData?.data?.code === "undefined"){
       ToastAndroid.show("Error en el login", ToastAndroid.SHORT);
     }
-    if (Number(responseData.data.code) === 200) {
-      //get token y mandar al back
-      //guardar en dispatch el token
-      //armar en una clase el receptor de notificaciones
+    if (Number(responseData?.data?.code) === 200) {
+      if (token) {
+        try {
+          await fetch(`http://192.168.0.154:8000/token/${token}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          console.log('Token enviado al backend:', token);
+        } catch (error) {
+          console.error('Error al enviar el token:', error);
+        }
+      }
       dispatch(
         setUser({
           email: email,
@@ -53,13 +65,13 @@ export default Login = ({ navigation }) => {
       );
       ToastAndroid.show("Login correcto", ToastAndroid.SHORT);
       return { success: true, data: responseData.data };
-    } else if (Number(responseData.data.code) === 300) {
+    } else if (Number(responseData?.data?.code) === 300) {
       ToastAndroid.show(
         "Email no validado, revisa tu correo",
         ToastAndroid.SHORT
       );
       navigation.navigate("Login");
-    } else if (Number(responseData.data.code) === 301) {
+    } else if (Number(responseData?.data?.code) === 301) {
       ToastAndroid.show("Usuario inhabilitado", ToastAndroid.SHORT);
       navigation.navigate("Login");
     } else {
@@ -70,7 +82,7 @@ export default Login = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text h4 style={styles.title} testID="titulo">
-        QuickFood
+        QuickFood {token && <Text>Token: {token}</Text>}
       </Text>
       <Input
         testID="usuario"
