@@ -1,32 +1,39 @@
 import { useState, useEffect } from 'react';
 import * as Notifications from 'expo-notifications';
-import * as Permissions from 'expo-permissions';
-import Constants from 'expo-constants';
+import * as Device from 'expo-device';
 import { Platform } from 'react-native';
 
 const useNotificationToken = () => {
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState('Initializing...');
 
   useEffect(() => {
     const registerForPushNotificationsAsync = async () => {
-      if (Constants.isDevice) {
-        const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
-        let finalStatus = existingStatus;
+      if (Device.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus.status;
 
-        if (existingStatus !== 'granted') {
-          const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        if (existingStatus.status !== 'granted') {
+          const { status } = await Notifications.requestPermissionsAsync();
           finalStatus = status;
+          setToken('Permissions requested');
         }
 
         if (finalStatus !== 'granted') {
           alert('Failed to get push token for push notification!');
+          setToken('Failed to get push token: Permissions not granted');
           return;
         }
 
-        const tokenData = await Notifications.getExpoPushTokenAsync();
-        setToken(tokenData.data);
+        try {
+          const tokenData = await Notifications.getExpoPushTokenAsync();
+          setToken(tokenData.data); // Actualiza el estado con el token obtenido
+        } catch (error) {
+          console.error('Error retrieving push token:', error);
+          setToken(error);
+        }
       } else {
         alert('Must use physical device for Push Notifications');
+        setToken('Failed to get push token: Not a physical device');
       }
 
       if (Platform.OS === 'android') {

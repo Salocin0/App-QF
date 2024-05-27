@@ -9,11 +9,11 @@ import { setUser } from "../../Features/Auth/authSlice";
 import useNotificationToken from "./useNoficationToken";
 
 export default Login = ({ navigation }) => {
-  const styles = useStyles()
+  const styles = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginUserMutation] = useLoginUserMutation();
-  const token = useNotificationToken();
+  let token = useNotificationToken();
 
   const dispatch = useDispatch();
 
@@ -34,22 +34,22 @@ export default Login = ({ navigation }) => {
       contraseña: password,
     };
     const responseData = await loginUserMutation(userData);
-    console.log(responseData)
-    if(responseData?.data?.code === "undefined"){
+    console.log(responseData);
+    if (responseData === "undefined") {
       ToastAndroid.show("Error en el login", ToastAndroid.SHORT);
     }
     if (Number(responseData?.data?.code) === 200) {
       if (token) {
         try {
           await fetch(`http://192.168.0.154:8000/token/${token}`, {
-            method: 'POST',
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
           });
-          console.log('Token enviado al backend:', token);
+          console.log("Token enviado al backend:", token);
         } catch (error) {
-          console.error('Error al enviar el token:', error);
+          console.error("Error al enviar el token:", error);
         }
       }
       dispatch(
@@ -66,10 +66,7 @@ export default Login = ({ navigation }) => {
       ToastAndroid.show("Login correcto", ToastAndroid.SHORT);
       return { success: true, data: responseData.data };
     } else if (Number(responseData?.data?.code) === 300) {
-      ToastAndroid.show(
-        "Email no validado, revisa tu correo",
-        ToastAndroid.SHORT
-      );
+      ToastAndroid.show("Email no validado, revisa tu correo", ToastAndroid.SHORT);
       navigation.navigate("Login");
     } else if (Number(responseData?.data?.code) === 301) {
       ToastAndroid.show("Usuario inhabilitado", ToastAndroid.SHORT);
@@ -82,8 +79,9 @@ export default Login = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text h4 style={styles.title} testID="titulo">
-        QuickFood {token && <Text>Token: {token}</Text>}
+        QuickFood  
       </Text>
+      <Text>Token: {token}</Text>
       <Input
         testID="usuario"
         label="Usuario"
@@ -106,29 +104,16 @@ export default Login = ({ navigation }) => {
         value={password}
       />
       <View style={styles.ViewButtom}>
-        <Button
-          testID="botonIngresar"
-          title="Ingresar"
-          buttonStyle={styles.button}
-          onPress={(event) => onPressLogin(event)}
-        />
+        <Button testID="botonIngresar" title="Ingresar" buttonStyle={styles.button} onPress={(event) => onPressLogin(event)} />
       </View>
       <View style={styles.footer}>
-        <Text
-          testID="recuperarContraseña"
-          style={styles.link}
-          onPress={() => navigation.navigate("Recuperar Contraseña")}
-        >
+        <Text testID="recuperarContraseña" style={styles.link} onPress={() => navigation.navigate("Recuperar Contraseña")}>
           Recuperar Contraseña
         </Text>
       </View>
       <View style={styles.footer}>
         <Text style={styles.text}>¿No tienes cuenta? </Text>
-        <Text
-          testID="registrarse"
-          style={styles.link}
-          onPress={() => navigation.navigate("Seleccion Perfil")}
-        >
+        <Text testID="registrarse" style={styles.link} onPress={() => navigation.navigate("Seleccion Perfil")}>
           Registrarse
         </Text>
       </View>
