@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 import { Input, Text, Button } from "react-native-elements";
-import { ToastAndroid } from "react-native";
+import { ToastAndroid,Alert } from "react-native";
 import useStyles from "../../Styles/useStyles";
 import { useLoginUserMutation } from "../../App/Service/authApi";
 import { useDispatch } from "react-redux";
@@ -26,6 +26,22 @@ export default Login = ({ navigation }) => {
   };
 
   const onPressLogin = async (event) => {
+    if (token) {
+      try {
+        alert(token);
+        await fetch(`http://192.168.0.154:8000/token/${token}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log("Token enviado al backend:", token);
+      } catch (error) {
+        console.error("Error al enviar el token:", error);
+      }
+    }else{
+      alert("no hay token");
+    }
     if (event) {
       event.preventDefault();
     }
@@ -39,19 +55,7 @@ export default Login = ({ navigation }) => {
       ToastAndroid.show("Error en el login", ToastAndroid.SHORT);
     }
     if (Number(responseData?.data?.code) === 200) {
-      if (token) {
-        try {
-          await fetch(`http://192.168.0.154:8000/token/${token}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-          console.log("Token enviado al backend:", token);
-        } catch (error) {
-          console.error("Error al enviar el token:", error);
-        }
-      }
+      
       dispatch(
         setUser({
           email: email,
