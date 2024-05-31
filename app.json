@@ -1,12 +1,16 @@
 {
   "expo": {
+    "updates": {
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0
+    },
     "name": "qf-app",
     "slug": "qf-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "sdkVersion": "50.0.19",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
