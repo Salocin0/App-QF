@@ -28,7 +28,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.salocin0.qfapp"
+      "package": "com.salocin0.qfapp",
+      "googleServicesFile":"./android/app/google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"

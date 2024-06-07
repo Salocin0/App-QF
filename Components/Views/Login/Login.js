@@ -1,19 +1,17 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 import { Input, Text, Button } from "react-native-elements";
-import { ToastAndroid,Alert } from "react-native";
+import { ToastAndroid } from "react-native";
 import useStyles from "../../Styles/useStyles";
 import { useLoginUserMutation } from "../../App/Service/authApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../Features/Auth/authSlice";
-import useNotificationToken from "./useNoficationToken";
 
 export default Login = ({ navigation }) => {
   const styles = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginUserMutation] = useLoginUserMutation();
-  let token = useNotificationToken();
 
   const dispatch = useDispatch();
 
@@ -26,36 +24,23 @@ export default Login = ({ navigation }) => {
   };
 
   const onPressLogin = async (event) => {
-    if (token) {
-      try {
-        alert(token);
-        await fetch(`http://192.168.0.154:8000/token/${token}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        console.log("Token enviado al backend:", token);
-      } catch (error) {
-        console.error("Error al enviar el token:", error);
-      }
-    }else{
-      alert("no hay token");
-    }
     if (event) {
       event.preventDefault();
     }
+
     const userData = {
       correoElectronico: email,
       contraseña: password,
     };
+    
     const responseData = await loginUserMutation(userData);
     console.log(responseData);
+    
     if (responseData === "undefined") {
       ToastAndroid.show("Error en el login", ToastAndroid.SHORT);
     }
+
     if (Number(responseData?.data?.code) === 200) {
-      
       dispatch(
         setUser({
           email: email,
@@ -85,7 +70,7 @@ export default Login = ({ navigation }) => {
       <Text h4 style={styles.title} testID="titulo">
         QuickFood  
       </Text>
-      <Text>Token: {token}</Text>
+      <Text>Token: {expoPushToken?.data ?? ""}</Text>
       <Input
         testID="usuario"
         label="Usuario"
