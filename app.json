@@ -25,8 +25,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/adaptive-icon.png"
       },
       "package": "com.salocin0.qfapp",
       "googleServicesFile":"./android/app/google-services.json"

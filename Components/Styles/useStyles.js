@@ -1,4 +1,3 @@
-import { color } from "react-native-elements/dist/helpers";
 import useDynamicColors from "./useDynamicColors";
 
 const useStyles = () => {

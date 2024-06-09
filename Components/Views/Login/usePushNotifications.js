@@ -6,12 +6,7 @@ import Constants from "expo-constants";
 
 import { Platform } from "react-native";
 
-export interface PushNotificationState {
-  expoPushToken?: Notifications.ExpoPushToken;
-  notification?: Notifications.Notification;
-}
-
-export const usePushNotifications = (): PushNotificationState => {
+export const usePushNotifications = () => {
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldPlaySound: false,
@@ -20,16 +15,11 @@ export const usePushNotifications = (): PushNotificationState => {
     }),
   });
 
-  const [expoPushToken, setExpoPushToken] = useState<
-    Notifications.ExpoPushToken | undefined
-  >();
+  const [expoPushToken, setExpoPushToken] = useState(undefined);
+  const [notification, setNotification] = useState(undefined);
 
-  const [notification, setNotification] = useState<
-    Notifications.Notification | undefined
-  >();
-
-  const notificationListener = useRef<Notifications.Subscription>();
-  const responseListener = useRef<Notifications.Subscription>();
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   async function registerForPushNotificationsAsync() {
     let token;
@@ -83,10 +73,10 @@ export const usePushNotifications = (): PushNotificationState => {
 
     return () => {
       Notifications.removeNotificationSubscription(
-        notificationListener.current!
+        notificationListener.current
       );
 
-      Notifications.removeNotificationSubscription(responseListener.current!);
+      Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
 
