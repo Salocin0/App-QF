@@ -12,7 +12,7 @@ export default Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginUserMutation] = useLoginUserMutation();
-  const { expoPushToken, notification } = usePushNotifications();
+  const { expoPushToken, notification } = usePushNotifications()
   const dispatch = useDispatch();
 
   const handleEmailChange = (text) => {
