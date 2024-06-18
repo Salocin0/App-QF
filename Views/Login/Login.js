@@ -53,7 +53,7 @@ export default Login = ({ navigation }) => {
           id: responseData.data.data.id,
           sessionId: responseData.data.data.sessionId,
           tokenWeb: null,
-          tokenMobile:expoPushToken.data,
+          tokenMobile:expoPushToken?.null,
         })
       );
       ToastAndroid.show("Login correcto", ToastAndroid.SHORT);
@@ -85,6 +85,7 @@ export default Login = ({ navigation }) => {
         <TextInput
           style={[styles.input, { color: Colors.Negro,fontSize:13,width:"100%", height:40 }]}
           placeholderTextColor={Colors.Negro}
+          secureTextEntry={true}
           value={password}
           onChangeText={(password) => setPassword(password)}
         />

@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-const REACT_APP_BACK_URL = process.env.REACT_APP_BACK_URL
+import { REACT_APP_BACK_URL } from '@env';
+
 
 export const pedidoApi = createApi({
   reducerPath: "pedidoApi",

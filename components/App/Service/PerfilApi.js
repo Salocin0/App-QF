@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-const REACT_APP_BACK_URL = process.env.REACT_APP_BACK_URL
+import { REACT_APP_BACK_URL } from '@env';
+
 
 // Definir la API para obtener y actualizar datos del perfil del usuario
 export const perfilApi = createApi({

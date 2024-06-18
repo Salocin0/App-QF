@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, Text, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import useDynamicColors from "./../../Styles/useDynamicColors";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -20,7 +20,7 @@ const ConfigNotifiButtom = ({ islogin = true }) => {
   if (islogin === false) {
     return (
       <TouchableOpacity onPress={goToConfig}>
-        <FontAwesomeIcon icon={faGear} color={Colors.Negro} />
+        <FontAwesomeIcon icon={faGear} color={Colors.Negro} size={24} />
       </TouchableOpacity>
     );
   }
@@ -28,11 +28,11 @@ const ConfigNotifiButtom = ({ islogin = true }) => {
   return (
     <View>
       <View style={{ flexDirection: "row" }}>
-        <TouchableOpacity onPress={goToNotify}>
-          <FontAwesomeIcon icon={faGear} color={Colors.Negro} />
+        <TouchableOpacity onPress={goToNotify} style={{ paddingHorizontal: 5 }}>
+          <FontAwesomeIcon icon={faBell} color={Colors.Negro} size={24} />
         </TouchableOpacity>
         <TouchableOpacity onPress={goToConfig}>
-          <FontAwesomeIcon icon={faBell} color={Colors.Negro} />
+          <FontAwesomeIcon icon={faGear} color={Colors.Negro} size={24} />
         </TouchableOpacity>
       </View>
     </View>

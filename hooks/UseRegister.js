@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ToastAndroid } from "react-native";
-const REACT_APP_BACK_URL = process.env.REACT_APP_BACK_URL
+import { REACT_APP_BACK_URL } from '@env';
+
 
 const useRegister = (navigation) => {
   const [tipoUsuario, setTipoUsuario] = useState("");
