@@ -30,7 +30,8 @@ const useStyles = () => {
       elevation: 3,
     },
     title: {
-      fontSize: 18,
+      fontSize: 24,
+      fontWeight: "bold",
       color: Colors.Negro,
     },
     text:{

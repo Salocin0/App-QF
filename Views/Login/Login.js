@@ -6,8 +6,10 @@ import { useLoginUserMutation } from "./../../components/App/Service/authApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../components/Features/Auth/authSlice";
 import { usePushNotifications } from "./usePushNotifications";
+import useDynamicColors from "@/Styles/useDynamicColors";
 
 export default Login = ({ navigation }) => {
+  const Colors = useDynamicColors()
   const styles = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -50,6 +52,8 @@ export default Login = ({ navigation }) => {
           consumidorId: responseData.data.data.consumidorId,
           id: responseData.data.data.id,
           sessionId: responseData.data.data.sessionId,
+          tokenWeb: null,
+          tokenMobile:expoPushToken.data,
         })
       );
       ToastAndroid.show("Login correcto", ToastAndroid.SHORT);
@@ -70,10 +74,21 @@ export default Login = ({ navigation }) => {
       <Text h4 style={styles.title} testID="titulo">
         QuickFood
       </Text>
-      <Text>Token: {expoPushToken?.data ?? ""}</Text>
-
-
-      <View style={styles.ViewButtom}>
+      <Text style={[styles.label, { alignSelf: 'flex-start',paddingTop:20 }]}>Usuario </Text>
+      <TextInput
+          style={[styles.input, { color: Colors.Negro,fontSize:13, width:"100%", height:40 }]}
+          placeholderTextColor={Colors.Negro}
+          value={email}
+          onChangeText={(email) => setEmail(email)}
+        />
+        <Text style={[styles.label, { alignSelf: 'flex-start',paddingTop:20 }]}>Contraseña </Text>
+        <TextInput
+          style={[styles.input, { color: Colors.Negro,fontSize:13,width:"100%", height:40 }]}
+          placeholderTextColor={Colors.Negro}
+          value={password}
+          onChangeText={(password) => setPassword(password)}
+        />
+      <View style={[styles.ViewButtom,{paddingTop:20}]}>
         <Button testID="botonIngresar" title="Ingresar" buttonStyle={styles.button} onPress={(event) => onPressLogin(event)} />
       </View>
       <View style={styles.footer}>
