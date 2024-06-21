@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { REACT_APP_BACK_URL } from '@env';
 
-
 export const puntosEncuentroApi = createApi({
   reducerPath: "puntosEncuentroApi",
   baseQuery: fetchBaseQuery({ baseUrl: `${REACT_APP_BACK_URL}` }),
@@ -20,6 +19,7 @@ export const puntosEncuentroApi = createApi({
         }
         return [];
       },
+      keepUnusedDataFor: 0,
     }),
     getPuntosEncuentroByEventoId: builder.query({
       query: (eventoId) => ({
@@ -32,6 +32,7 @@ export const puntosEncuentroApi = createApi({
           return response.data;
         }
       },
+      keepUnusedDataFor: 0,
     }),
     getPuntoEncuentroById: builder.query({
       query: (id) => ({
@@ -47,6 +48,7 @@ export const puntosEncuentroApi = createApi({
         }
         return null;
       },
+      keepUnusedDataFor: 0,
     }),
     updatePuntoEncuentroById: builder.mutation({
       query: ({ id, ...data }) => ({
