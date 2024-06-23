@@ -12,6 +12,7 @@ const PerfilStack = () => {
   const Colors = useDynamicColors();
   return (
     <Stack.Navigator
+    initialRouteName="Perfil"
       screenOptions={{
         headerStyle: {
           backgroundColor: Colors.Blanco,

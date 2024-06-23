@@ -11,6 +11,7 @@ import PerfilStack from "./PerfilStack";
 import PedidoRStack from "./PedidoRStack";
 import HistorialPedidosRStack from "./HistorialPedidosRStack";
 import EventosPStack from "./EventosPStack";
+import MisAsociacionesRStack from "../../components/Navigation/MisAsociacionesRStack"
 
 const Tab = createBottomTabNavigator();
 
@@ -122,6 +123,21 @@ const MainNavigator = () => {
                   <TabBarIcon
                     title="Historial"
                     nameIcon="history"
+                    focused={focused}
+                  />
+                ),
+              }}
+            />
+            <Tab.Screen
+              name="MisAsociacionesStack"
+              component={MisAsociacionesRStack}
+              options={{
+                tabBarLabel: "",
+                headerShown: false,
+                tabBarIcon: ({ focused }) => (
+                  <TabBarIcon
+                    title="Mis Asociaciones"
+                    nameIcon="address-book"
                     focused={focused}
                   />
                 ),

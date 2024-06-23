@@ -12,6 +12,7 @@ const EventosPStack = () => {
   const Colors = useDynamicColors()
   return (
     <Stack.Navigator
+    initialRouteName="Mis Eventos"
       screenOptions={{
         headerStyle: {
           backgroundColor: Colors.Blanco,
@@ -24,13 +25,14 @@ const EventosPStack = () => {
         component={EventosP}
         options={{ headerRight: () => <ConfigNotifiButtom /> }}
       />
+
+      <Stack.Screen name="Config" component={config} />
+      <Stack.Screen name="Notificaciones" component={Notificaciones} />
       <Stack.Screen
-        name="EventoDetalle"
+        name="Detalle Evento"
         component={EventoDetalle}
         options={{ headerRight: () => <ConfigNotifiButtom /> }}
       />
-      <Stack.Screen name="Config" component={config} />
-      <Stack.Screen name="Notificaciones" component={Notificaciones} />
     </Stack.Navigator>
   );
 };

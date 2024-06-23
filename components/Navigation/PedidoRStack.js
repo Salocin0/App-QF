@@ -12,6 +12,7 @@ const PedidoRStack = () => {
   const Colors = useDynamicColors()
   return (
     <Stack.Navigator
+    initialRouteName="Pedidos asignados"
       screenOptions={{
         headerStyle: {
           backgroundColor: Colors.Blanco,

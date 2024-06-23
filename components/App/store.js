@@ -11,6 +11,7 @@ import { pedidoApi } from "./Service/PedidosApi";
 import { valoracionApi } from "./Service/ValoracionApi";
 import { perfilApi } from "./Service/PerfilApi";
 import { puntosEncuentroApi } from "./Service/PuntosEncuentroApi";
+import { asociacionesApi } from "./Service/AsociacionesApi"
 
 export default configureStore({
   reducer: {
@@ -26,6 +27,7 @@ export default configureStore({
     [valoracionApi.reducerPath]:valoracionApi.reducer,
     [perfilApi.reducerPath]:perfilApi.reducer,
     [puntosEncuentroApi.reducerPath]:puntosEncuentroApi.reducer,
+    [asociacionesApi.reducerPath]:asociacionesApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -41,5 +43,6 @@ export default configureStore({
       valoracionApi.middleware,
       perfilApi.middleware,
       puntosEncuentroApi.middleware,
+      asociacionesApi.middleware,
     ),
 });

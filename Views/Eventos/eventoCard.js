@@ -46,7 +46,7 @@ const EventoCard = ({ evento }) => {
   });
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate("EventoDetalle", { evento })}>
+    <TouchableOpacity onPress={() => navigation.navigate("Detalle Evento", { evento })}>
       <View style={styles.card}>
         <Image source={{ uri: evento.img }} style={styles.image} />
         <View style={styles.infoContainer}>

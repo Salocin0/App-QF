@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { REACT_APP_BACK_URL } from '@env';
 
-
 export const eventosApi = createApi({
   reducerPath: "eventosApi",
   baseQuery: fetchBaseQuery({ baseUrl: `${REACT_APP_BACK_URL}`, forceRefetch: true }),
@@ -33,7 +32,37 @@ export const eventosApi = createApi({
         }
       },
     }),
+    getEventosEnPreparacion: builder.query({
+      query: () => ({
+        url: "/evento/enEstado/EnPreparacion/",
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }),
+      transformResponse: (response) => {
+        if (response.status === "success") {
+          return response.data;
+        }
+      },
+    }),
+    getEventosSinAsociacionValida: builder.query({
+      query: ({ estado, idConsumidor }) => ({
+        url: `/evento/enEstado/${estado}/sinAsociacionValida/${idConsumidor}`,
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }),
+      keepUnusedDataFor: 0,
+      transformResponse: (response) => {
+        if (response.status === "success") {
+          return response.data;
+        }
+      },
+    }),
   }),
 });
 
-export const { useGetEventosQuery, useGetAllEventosQuery } = eventosApi;
+export const { 
+  useGetEventosQuery, 
+  useGetAllEventosQuery,
+  useGetEventosEnPreparacionQuery,
+  useGetEventosSinAsociacionValidaQuery 
+} = eventosApi;

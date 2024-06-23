@@ -11,6 +11,7 @@ const HistorialPedidosRStack = () => {
   const Colors = useDynamicColors()
   return (
     <Stack.Navigator
+    initialRouteName="Historial Pedidos"
       screenOptions={{
         headerStyle: {
           backgroundColor: Colors.Blanco,

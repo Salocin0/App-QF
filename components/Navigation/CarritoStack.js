@@ -9,7 +9,9 @@ const Stack = createNativeStackNavigator();
 const CarritoStack = () => {
   const Colors = useDynamicColors()
   return (
-    <Stack.Navigator screenOptions={{
+    <Stack.Navigator 
+    initialRouteName="Carrito"
+    screenOptions={{
       headerStyle: {
         backgroundColor: Colors.Blanco,
       },
