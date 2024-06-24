@@ -8,7 +8,7 @@ const AsociarseButton = () => {
   const navigation = useNavigation();
 
   const handlePress = () => {
-    navigation.navigate("AsociarseEvento");
+    navigation.navigate("Asociarse a Evento");
   };
 
   const styles = {

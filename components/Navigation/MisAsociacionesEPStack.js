@@ -1,14 +1,14 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import MisAsociacionesR from "../../Views/AsociacionesR/MisAsociaciones";
 import ConfigNotifiButtom from "./ConfigNotifiButtom";
 import Config from "../../Views/Config/Config";
 import Notificaciones from "../../Views/Notificaciones/Notificaciones";
 import useDynamicColors from "../../Styles/useDynamicColors";
-import AsociarseEvento from "@/Views/AsociacionesR/AsociarseEvento";
+import MisAsociacionesEP from "../../Views/AsociacionesEP/MisAsociaciones";
+import AsociarseEventoEP from "../../Views/AsociacionesEP/AsociarseEventoEP";
 
 const Stack = createNativeStackNavigator();
 
-const MisAsociacionesRStack = () => {
+const MisAsociacionesEPStack = () => {
   const Colors = useDynamicColors();
   return (
     <Stack.Navigator
@@ -22,14 +22,14 @@ const MisAsociacionesRStack = () => {
     >
       <Stack.Screen
         name="Mis Asociaciones"
-        component={MisAsociacionesR}
+        component={MisAsociacionesEP}
         options={{ headerRight: () => <ConfigNotifiButtom /> }}
       />
-      <Stack.Screen name="Asociarse a Evento" component={AsociarseEvento} />
+      <Stack.Screen name="Asociarse a Evento" component={AsociarseEventoEP} />
       <Stack.Screen name="Config" component={Config} />
       <Stack.Screen name="Notificaciones" component={Notificaciones} />
     </Stack.Navigator>
   );
 };
 
-export default MisAsociacionesRStack;
+export default MisAsociacionesEPStack;

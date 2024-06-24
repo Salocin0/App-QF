@@ -1,9 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { REACT_APP_BACK_URL } from '@env';
+import { REACT_APP_BACK_URL } from "@env";
 
 export const eventosApi = createApi({
   reducerPath: "eventosApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `${REACT_APP_BACK_URL}`, forceRefetch: true }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${REACT_APP_BACK_URL}`,
+    forceRefetch: true,
+  }),
   endpoints: (builder) => ({
     getEventos: builder.query({
       query: () => ({
@@ -18,12 +21,12 @@ export const eventosApi = createApi({
       },
     }),
     getAllEventos: builder.query({
-      query: ({consumidorId}) => ({
+      query: ({ consumidorId }) => ({
         url: "/evento/all",
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          'consumidorid': consumidorId,
+          consumidorid: consumidorId,
         },
       }),
       transformResponse: (response) => {
@@ -57,12 +60,26 @@ export const eventosApi = createApi({
         }
       },
     }),
+    getEventosSinAsociacionValidaPuesto: builder.query({
+      query: ({ estado, idConsumidor, idPuesto }) => ({
+        url: `/evento/enEstado/${estado}/sinAsociacionValida/${idConsumidor}/puesto/${idPuesto}`,
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }),
+      keepUnusedDataFor: 0,
+      transformResponse: (response) => {
+        if (response.status === "success") {
+          return response.data;
+        }
+      },
+    }),
   }),
 });
 
-export const { 
-  useGetEventosQuery, 
+export const {
+  useGetEventosQuery,
   useGetAllEventosQuery,
   useGetEventosEnPreparacionQuery,
-  useGetEventosSinAsociacionValidaQuery 
+  useGetEventosSinAsociacionValidaQuery,
+  useGetEventosSinAsociacionValidaPuestoQuery,
 } = eventosApi;

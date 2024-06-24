@@ -21,6 +21,22 @@ export const asociacionesApi = createApi({
         }
       }
     }),
+    getAsociacionesPuestos: builder.query({
+      query: (consumidorId) => ({
+        url: `/asociacion/buscar/${consumidorId}`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }),
+      transformResponse: (response) => {
+        if (response.status === "success") {
+          return response.data;
+        } else {
+          console.log("error");
+        }
+      }
+    }),
     createAsociacion: builder.mutation({
       query: ({ eventoId, puestoId, consumidorId }) => ({
         url: `/asociacion/evento/${eventoId}/asociarSimple/${puestoId}/${consumidorId}`,
@@ -40,4 +56,4 @@ export const asociacionesApi = createApi({
   })
 });
 
-export const { useGetAsociacionesQuery, useCreateAsociacionMutation } = asociacionesApi;
+export const { useGetAsociacionesQuery, useCreateAsociacionMutation, useGetAsociacionesPuestosQuery } = asociacionesApi;

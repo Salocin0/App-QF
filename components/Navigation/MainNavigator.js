@@ -12,6 +12,7 @@ import PedidoRStack from "./PedidoRStack";
 import HistorialPedidosRStack from "./HistorialPedidosRStack";
 import EventosPStack from "./EventosPStack";
 import MisAsociacionesRStack from "../../components/Navigation/MisAsociacionesRStack"
+import MisAsociacionesEPStack from "./MisAsociacionesEPStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -33,7 +34,7 @@ const MainNavigator = () => {
   return (
     <>
       {isAuthenticated ? (
-        userType === "consumidor" || userType === "encargado" ? (
+        userType === "consumidor" ? (
           <Tab.Navigator screenOptions={{ tabBarStyle: styles.tabBar }}>
             <Tab.Screen
               name="CompraStack"
@@ -159,6 +160,39 @@ const MainNavigator = () => {
               }}
             />
           </Tab.Navigator>
+           ) : userType === "encargado"  ? (
+            <Tab.Navigator screenOptions={{ tabBarStyle: styles.tabBar }}>
+              <Tab.Screen
+                name="MisAsociacionesStack"
+                component={MisAsociacionesEPStack}
+                options={{
+                  tabBarLabel: "",
+                  headerShown: false,
+                  tabBarIcon: ({ focused }) => (
+                    <TabBarIcon
+                      title="Mis Asociaciones"
+                      nameIcon="address-book"
+                      focused={focused}
+                    />
+                  ),
+                }}
+              />
+              <Tab.Screen
+                name="PerfilStack"
+                component={PerfilStack}
+                options={{
+                  tabBarLabel: "",
+                  headerShown: false,
+                  tabBarIcon: ({ focused }) => (
+                    <TabBarIcon
+                      title="Perfil"
+                      nameIcon="user"
+                      focused={focused}
+                    />
+                  ),
+                }}
+              />
+            </Tab.Navigator>
         ) : userType === "productor" ? (
           <Tab.Navigator screenOptions={{ tabBarStyle: styles.tabBar }}>
             <Tab.Screen
