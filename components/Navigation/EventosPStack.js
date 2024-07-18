@@ -5,6 +5,8 @@ import config from "./../../Views/Config/Config";
 import Notificaciones from "./../../Views/Notificaciones/Notificaciones";
 import useDynamicColors from "./../../Styles/useDynamicColors";
 import EventoDetalle from "./../../Views/Eventos/EventoDetalle";
+import AdministrarAsociaciones from "./../../Views/Eventos/AdministrarAsociaciones"
+import AdministrarPuntosEncuentro from "./../../Views/Eventos/AdministrarPuntosEncuentro"
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +33,16 @@ const EventosPStack = () => {
       <Stack.Screen
         name="Detalle Evento"
         component={EventoDetalle}
+        options={{ headerRight: () => <ConfigNotifiButtom /> }}
+      />
+      <Stack.Screen
+        name="Administrar Asociaciones"
+        component={AdministrarAsociaciones}
+        options={{ headerRight: () => <ConfigNotifiButtom /> }}
+      />
+      <Stack.Screen
+        name="Administrar Puntos de encuentro"
+        component={AdministrarPuntosEncuentro}
         options={{ headerRight: () => <ConfigNotifiButtom /> }}
       />
     </Stack.Navigator>

@@ -1,9 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { REACT_APP_BACK_URL } from '@env';
 
 export const puntosEncuentroApi = createApi({
   reducerPath: "puntosEncuentroApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `${REACT_APP_BACK_URL}` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.EXPO_PUBLIC_API_URL}` }),
   endpoints: (builder) => ({
     getAllPuntosEncuentro: builder.query({
       query: () => ({

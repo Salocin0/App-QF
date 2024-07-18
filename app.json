@@ -7,13 +7,22 @@
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "updates": {
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/4d54a9e3-cdd3-4d95-be5f-a9211181f5b3"
+    },
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -21,12 +30,14 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.salocin0.myapp",
-      "googleServicesFile": "./android/app/google-services.json"
+      "googleServicesFile": "./android/app/google-services.json",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "proxy": "http://172.16.0.11:8000"
     },
     "platforms": [
       "ios",
@@ -34,7 +45,13 @@
       "web"
     ],
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "@rnmapbox/maps",
+        {
+          "RNMapboxMapsDownloadToken": "sk.eyJ1Ijoic2Fsb2NpbjAiLCJhIjoiY2x5YnJ4eGpuMWY1cjJscHg5ZWRmd3hmNSJ9.b0xTTyHZeY7GpsxX6rZS6w"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

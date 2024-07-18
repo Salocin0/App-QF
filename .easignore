@@ -1,0 +1,36 @@
+# Ignore node_modules except for the dependencies
+**/node_modules
+!node_modules
+
+# Ignore build directories
+**/build
+**/dist
+**/out
+
+# Ignore log files
+*.log
+**/*.log
+
+# Ignore test directories
+**/__tests__
+**/__mocks__
+**/__snapshots__
+
+# Ignore local environment settings
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore coverage directory
+coverage
+
+# Ignore various IDE specific files
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Ignore other specific files or directories
+path/to/your/large/directory
+path/to/another/unnecessary/file

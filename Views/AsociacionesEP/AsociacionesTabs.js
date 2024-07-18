@@ -11,7 +11,7 @@ const AsociacionesTabs = () => {
   const user = useSelector((state) => state.auth);
   const userId = user?.consumidorId;
   const { data, isLoading, error, refetch } = useGetAsociacionesPuestosQuery(userId);
-
+  console.log(data)
   const tabs = ['Todos', 'PendienteDeAceptacion', 'Aceptada', 'Cancelada', 'Rechazada'];
 
   useEffect(() => {

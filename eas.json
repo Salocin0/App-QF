@@ -4,30 +4,24 @@
   },
   "build": {
     "development": {
-      "developmentClient": true,
-      "distribution": "internal",
       "env": {
-        "ENVFILE": ".env.dev"
+        "EXPO_PUBLIC_API_URL": "http://172.16.0.11:8000"
       },
       "android": {
-        "buildType": "apk"
-      }
-    },
-    "preview": {
-      "distribution": "internal",
-      "env": {
-        "ENVFILE": ".env.preview"
-      },
-      "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "developmentClient": true,
+        "distribution": "internal",
+        "applicationArchivePath": "android/app/build/outputs/apk/debug/app-debug.apk"
       }
     },
     "production": {
       "env": {
-        "ENVFILE": ".env.prod"
+        "EXPO_PUBLIC_API_URL": "https://backendqf.onrender.com"
       },
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "distribution": "internal",
+        "applicationArchivePath": "android/app/build/outputs/apk/release/app-release.apk"
       }
     }
   },

@@ -5,7 +5,7 @@ import useStyles from "../../Styles/useStyles";
 import { useLoginUserMutation } from "./../../components/App/Service/authApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../components/Features/Auth/authSlice";
-import { usePushNotifications } from "./usePushNotifications";
+import { usePushNotifications } from "./../../hooks/usePushNotifications";
 import useDynamicColors from "@/Styles/useDynamicColors";
 
 export default Login = ({ navigation }) => {
@@ -14,7 +14,9 @@ export default Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginUserMutation] = useLoginUserMutation();
-  const { expoPushToken, notification } = usePushNotifications()
+  const { expoPushToken, notification } = usePushNotifications();
+  const data = JSON.stringify(notification, undefined, 2);
+  console.log(expoPushToken?.data)
   const dispatch = useDispatch();
 
   const handleEmailChange = (text) => {
@@ -33,8 +35,9 @@ export default Login = ({ navigation }) => {
     const userData = {
       correoElectronico: email,
       contraseña: password,
+      tokenMobile:expoPushToken?.data ?? "sin token"
     };
-
+    ToastAndroid.show(userData.tokenMobile,ToastAndroid.SHORT);
     const responseData = await loginUserMutation(userData);
     console.log(responseData);
 
@@ -53,7 +56,7 @@ export default Login = ({ navigation }) => {
           id: responseData.data.data.id,
           sessionId: responseData.data.data.sessionId,
           tokenWeb: null,
-          tokenMobile:expoPushToken?.null,
+          tokenMobile:expoPushToken?.data,
         })
       );
       ToastAndroid.show("Login correcto", ToastAndroid.SHORT);
@@ -72,7 +75,7 @@ export default Login = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text h4 style={styles.title} testID="titulo">
-        QuickFood
+        QuickFood {expoPushToken?.data ?? ""}
       </Text>
       <Text style={[styles.label, { alignSelf: 'flex-start',paddingTop:20 }]}>Usuario </Text>
       <TextInput

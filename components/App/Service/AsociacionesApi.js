@@ -1,9 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { REACT_APP_BACK_URL } from '@env';
 
 export const asociacionesApi = createApi({
   reducerPath: "asociacionesApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `${REACT_APP_BACK_URL}`, forceRefetch: true }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.EXPO_PUBLIC_API_URL}`, forceRefetch: true }),
   endpoints: (builder) => ({
     getAsociaciones: builder.query({
       query: (consumidorId) => ({

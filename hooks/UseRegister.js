@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { ToastAndroid } from "react-native";
-import { REACT_APP_BACK_URL } from '@env';
-
 
 const useRegister = (navigation) => {
   const [tipoUsuario, setTipoUsuario] = useState("");
@@ -53,7 +51,7 @@ const useRegister = (navigation) => {
   };
 
   const handleRegister = async () => {
-    const url = `${REACT_APP_BACK_URL}user/`;
+    const url = `${process.env.EXPO_PUBLIC_API_URL}user/`;
 
     const datosRegistro = {
       correoElectronico: userData.email,

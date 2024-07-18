@@ -12,6 +12,7 @@ const AsociacionesTabs = () => {
   const userId = user?.consumidorId;
   const { data, isLoading, error } = useGetAsociacionesQuery(userId);
   const tabs = ['Todos', 'PendienteDeAceptacion', 'Aceptada', 'Cancelada', 'Rechazada'];
+  console.log("data:",data)
 
   const styles = StyleSheet.create({
     container: {

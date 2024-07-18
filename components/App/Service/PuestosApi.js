@@ -1,10 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { REACT_APP_BACK_URL } from "@env";
 
 export const puestosApi = createApi({
   reducerPath: "puestosApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${REACT_APP_BACK_URL}`,
+    baseUrl: `${process.env.EXPO_PUBLIC_API_URL}`,
     forceRefetch: true,
   }),
   endpoints: (builder) => ({

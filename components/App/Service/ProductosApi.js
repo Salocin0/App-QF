@@ -1,9 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { REACT_APP_BACK_URL } from '@env';
 
 export const productoApi = createApi({
   reducerPath: "productoApi",
-  baseQuery: fetchBaseQuery({ baseUrl:`${REACT_APP_BACK_URL}`, forceRefetch: true  }),
+  baseQuery: fetchBaseQuery({ baseUrl:`${process.env.EXPO_PUBLIC_API_URL}`, forceRefetch: true  }),
   endpoints: (builder) => ({
     getProductos: builder.query({
       query: (puestoId) => ({
