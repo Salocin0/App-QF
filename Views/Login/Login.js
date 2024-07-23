@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, TextInput, Text, Button } from "react-native";
 import { ToastAndroid } from "react-native";
 import useStyles from "../../Styles/useStyles";
@@ -9,14 +9,12 @@ import { usePushNotifications } from "./../../hooks/usePushNotifications";
 import useDynamicColors from "@/Styles/useDynamicColors";
 
 export default Login = ({ navigation }) => {
-  const Colors = useDynamicColors()
+  const Colors = useDynamicColors();
   const styles = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginUserMutation] = useLoginUserMutation();
   const { expoPushToken, notification } = usePushNotifications();
-  const data = JSON.stringify(notification, undefined, 2);
-  console.log(expoPushToken?.data)
   const dispatch = useDispatch();
 
   const handleEmailChange = (text) => {
@@ -35,9 +33,8 @@ export default Login = ({ navigation }) => {
     const userData = {
       correoElectronico: email,
       contraseña: password,
-      tokenMobile:expoPushToken?.data ?? "sin token"
+      tokenMobile: expoPushToken?.data,
     };
-    ToastAndroid.show(userData.tokenMobile,ToastAndroid.SHORT);
     const responseData = await loginUserMutation(userData);
     console.log(responseData);
 
@@ -56,7 +53,7 @@ export default Login = ({ navigation }) => {
           id: responseData.data.data.id,
           sessionId: responseData.data.data.sessionId,
           tokenWeb: null,
-          tokenMobile:expoPushToken?.data,
+          tokenMobile: expoPushToken?.data,
         })
       );
       ToastAndroid.show("Login correcto", ToastAndroid.SHORT);
@@ -75,34 +72,51 @@ export default Login = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text h4 style={styles.title} testID="titulo">
-        QuickFood {expoPushToken?.data ?? ""}
+        QuickFood
       </Text>
-      <Text style={[styles.label, { alignSelf: 'flex-start',paddingTop:20 }]}>Usuario </Text>
+      <Text style={[styles.label, { alignSelf: 'flex-start', paddingTop: 20 }]}>
+        Usuario
+      </Text>
       <TextInput
-          style={[styles.input, { color: Colors.Negro,fontSize:13, width:"100%", height:40 }]}
-          placeholderTextColor={Colors.Negro}
-          value={email}
-          onChangeText={(email) => setEmail(email)}
+        style={[styles.input, { color: Colors.Negro, fontSize: 13, width: "100%", height: 40 }]}
+        placeholderTextColor={Colors.Negro}
+        value={email}
+        onChangeText={handleEmailChange}
+      />
+      <Text style={[styles.label, { alignSelf: 'flex-start', paddingTop: 20 }]}>
+        Contraseña
+      </Text>
+      <TextInput
+        style={[styles.input, { color: Colors.Negro, fontSize: 13, width: "100%", height: 40 }]}
+        placeholderTextColor={Colors.Negro}
+        secureTextEntry={true}
+        value={password}
+        onChangeText={handlePasswordChange}
+      />
+      <View style={[styles.ViewButtom, { paddingTop: 20 }]}>
+        <Button
+          testID="botonIngresar"
+          title="Ingresar"
+          buttonStyle={styles.button}
+          onPress={(event) => onPressLogin(event)}
         />
-        <Text style={[styles.label, { alignSelf: 'flex-start',paddingTop:20 }]}>Contraseña </Text>
-        <TextInput
-          style={[styles.input, { color: Colors.Negro,fontSize:13,width:"100%", height:40 }]}
-          placeholderTextColor={Colors.Negro}
-          secureTextEntry={true}
-          value={password}
-          onChangeText={(password) => setPassword(password)}
-        />
-      <View style={[styles.ViewButtom,{paddingTop:20}]}>
-        <Button testID="botonIngresar" title="Ingresar" buttonStyle={styles.button} onPress={(event) => onPressLogin(event)} />
       </View>
       <View style={styles.footer}>
-        <Text testID="recuperarContraseña" style={styles.link} onPress={() => navigation.navigate("Recuperar Contraseña")}>
+        <Text
+          testID="recuperarContraseña"
+          style={styles.link}
+          onPress={() => navigation.navigate("Recuperar Contraseña")}
+        >
           Recuperar Contraseña
         </Text>
       </View>
       <View style={styles.footer}>
         <Text style={styles.text}>¿No tienes cuenta? </Text>
-        <Text testID="registrarse" style={styles.link} onPress={() => navigation.navigate("Seleccion Perfil")}>
+        <Text
+          testID="registrarse"
+          style={styles.link}
+          onPress={() => navigation.navigate("Seleccion Perfil")}
+        >
           Registrarse
         </Text>
       </View>
