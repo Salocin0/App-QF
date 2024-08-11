@@ -1,8 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import useStyles from "../../Styles/useStyles";
 import useDynamicColors from "../../Styles/useDynamicColors";
-import CardAsignacionPedido from "./CardAsignacionPedido";
 
 const PedidosR = () => {
   const Colors = useDynamicColors();
@@ -28,9 +26,6 @@ const PedidosR = () => {
   
   return (
     <View style={styles.container}>
-      <View style={styles.cardContainer}>
-        <CardAsignacionPedido />
-      </View>
       <View style={styles.contentContainer}>
         <Text style={{ color: Colors.Negro, textAlign: 'center' }}>
           Pedidos asignados repartidor
