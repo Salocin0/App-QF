@@ -1,15 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, Modal, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
-import useDynamicColors from '@/Styles/useDynamicColors';
-import { useGetPuntosEncuentroByEventoIdQuery, useDeletePuntoEncuentroByIdMutation, useUpdatePuntoEncuentroByIdMutation, useCreatePuntoEncuentroMutation } from "./../../components/App/Service/PuntosEncuentroApi";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  Modal,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import useDynamicColors from "@/Styles/useDynamicColors";
+import {
+  useGetPuntosEncuentroByEventoIdQuery,
+  useDeletePuntoEncuentroByIdMutation,
+  useUpdatePuntoEncuentroByIdMutation,
+  useCreatePuntoEncuentroMutation,
+} from "./../../components/App/Service/PuntosEncuentroApi";
 import * as Location from "expo-location";
 import Maps from "./Maps";
 
 const AdministrarPuntosEncuentro = ({ route }) => {
   const { evento } = route.params;
-  const { data: puntos, isLoading } = useGetPuntosEncuentroByEventoIdQuery(evento.id);
+  const { data: puntos, isLoading, refetch } = useGetPuntosEncuentroByEventoIdQuery(evento.id);
   const [deletePuntoEncuentro] = useDeletePuntoEncuentroByIdMutation();
   const [createPuntoEncuentro] = useCreatePuntoEncuentroMutation();
   const [updatePuntoEncuentro] = useUpdatePuntoEncuentroByIdMutation();
@@ -27,22 +42,96 @@ const AdministrarPuntosEncuentro = ({ route }) => {
 
   useEffect(() => {
     if (!isLoading && puntos) {
+      console.log('Updating puntosEncuentro with:', puntos);
       setPuntosEncuentro(puntos);
     }
   }, [isLoading, puntos]);
 
   useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert("Permission to access location was denied");
-        return;
+    if (modalType === "create") {
+      const watchPosition = async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          Alert.alert("Permission to access location was denied");
+          return;
+        }
+        Location.watchPositionAsync(
+          { accuracy: Location.Accuracy.High, timeInterval: 1000, distanceInterval: 1 },
+          (location) => {
+            setLatitud(location.coords.latitude.toString());
+            setLongitud(location.coords.longitude.toString());
+          }
+        );
+      };
+      watchPosition();
+    }
+  }, [modalType]);
+
+  const openModal = (type, punto = null) => {
+    setModalType(type);
+    setSelectedPunto(punto);
+    if (punto) {
+      setNombre(punto.nombre);
+      setLatitud(punto.latitud);
+      setLongitud(punto.longitud);
+    }
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setNombre("");
+    setLatitud("");
+    setLongitud("");
+  };
+
+  const handleSave = async () => {
+    if (nombre.trim() === "" || latitud.trim() === "" || longitud.trim() === "") {
+      Alert.alert("Todos los campos son obligatorios");
+      return;
+    }
+
+    try {
+      if (modalType === "create") {
+        await createPuntoEncuentro({
+          nombre,
+          latitud,
+          longitud,
+          eventoId: evento.id,
+        }).unwrap();
+      } else if (modalType === "edit" && selectedPunto) {
+        await updatePuntoEncuentro({
+          id: selectedPunto.id,
+          nombre,
+          latitud,
+          longitud,
+        }).unwrap();
       }
-      let location = await Location.getCurrentPositionAsync({});
-      setLatitud(location.coords.latitude.toString());
-      setLongitud(location.coords.longitude.toString());
-    })();
-  }, []);
+      refetch(); // Refetch data to update map and table
+      closeModal();
+    } catch (error) {
+      console.error("Error saving punto de encuentro:", error);
+      Alert.alert("Error al guardar el punto de encuentro");
+    }
+  };
+
+  const confirmDeletePunto = (punto) => {
+    setSelectedPunto(punto);
+    setConfirmDeleteVisible(true);
+  };
+
+  const handleDelete = async () => {
+    try {
+      if (selectedPunto) {
+        await deletePuntoEncuentro(selectedPunto.id).unwrap();
+        refetch(); // Refetch data to update map and table
+        setConfirmDeleteVisible(false);
+      }
+    } catch (error) {
+      console.error("Error deleting punto de encuentro:", error);
+      Alert.alert("Error al eliminar el punto de encuentro");
+    }
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -105,11 +194,20 @@ const AdministrarPuntosEncuentro = ({ route }) => {
       justifyContent: "center",
       alignItems: "center",
     },
+    buttonRow: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+      width: "100%",
+    },
     modifyButton: {
       backgroundColor: Colors.Azul,
     },
     deleteButton: {
       backgroundColor: Colors.Rojo,
+    },
+    button: {
+      flex: 1,
+      marginHorizontal: 5,
     },
     modalContainer: {
       flex: 1,
@@ -156,64 +254,10 @@ const AdministrarPuntosEncuentro = ({ route }) => {
     },
   });
 
-  const points = puntosEncuentro.map(p => ({
+  const points = puntosEncuentro.map((p) => ({
     lng: parseFloat(p.longitud),
-    lat: parseFloat(p.latitud)
+    lat: parseFloat(p.latitud),
   }));
-
-  const openModal = (type, punto = null) => {
-    setModalType(type);
-    setSelectedPunto(punto);
-    if (punto) {
-      setNombre(punto.nombre);
-      setLatitud(punto.latitud);
-      setLongitud(punto.longitud);
-    }
-    setModalVisible(true);
-  };
-
-  const closeModal = () => {
-    setModalVisible(false);
-    setNombre("");
-    setLatitud("");
-    setLongitud("");
-  };
-
-  const handleSave = async () => {
-    if (nombre.trim() === "" || latitud.trim() === "" || longitud.trim() === "") {
-      Alert.alert("Todos los campos son obligatorios");
-      return;
-    }
-
-    try {
-      if (modalType === "create") {
-        await createPuntoEncuentro({ nombre, latitud, longitud, eventoId: evento.id }).unwrap();
-      } else if (modalType === "edit" && selectedPunto) {
-        await updatePuntoEncuentro({ id: selectedPunto.id, nombre, latitud, longitud }).unwrap();
-      }
-      closeModal();
-    } catch (error) {
-      console.error("Error saving punto de encuentro:", error);
-      Alert.alert("Error al guardar el punto de encuentro");
-    }
-  };
-
-  const confirmDeletePunto = (punto) => {
-    setSelectedPunto(punto);
-    setConfirmDeleteVisible(true);
-  };
-
-  const handleDelete = async () => {
-    try {
-      if (selectedPunto) {
-        await deletePuntoEncuentro(selectedPunto.id).unwrap();
-        setConfirmDeleteVisible(false);
-      }
-    } catch (error) {
-      console.error("Error deleting punto de encuentro:", error);
-      Alert.alert("Error al eliminar el punto de encuentro");
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -225,7 +269,10 @@ const AdministrarPuntosEncuentro = ({ route }) => {
         <>
           <Maps points={points} />
           <View style={styles.contentContainer}>
-            <Button title="Crear Punto de Encuentro" onPress={() => openModal("create")} />
+            <Button
+              title="Crear Punto de Encuentro"
+              onPress={() => openModal("create")}
+            />
             <View style={styles.table}>
               <View style={styles.header}>
                 <Text style={styles.headerText}>Nombre</Text>
@@ -243,7 +290,10 @@ const AdministrarPuntosEncuentro = ({ route }) => {
                       style={[styles.iconButton, styles.modifyButton]}
                       onPress={() => openModal("edit", punto)}
                     >
-                      <FontAwesomeIcon icon={faPenToSquare} color={Colors.Blanco} />
+                      <FontAwesomeIcon
+                        icon={faPenToSquare}
+                        color={Colors.Blanco}
+                      />
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={[styles.iconButton, styles.deleteButton]}
@@ -259,7 +309,12 @@ const AdministrarPuntosEncuentro = ({ route }) => {
         </>
       )}
 
-      <Modal visible={modalVisible} animationType="slide" transparent>
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={closeModal}
+      >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <TextInput
@@ -273,17 +328,17 @@ const AdministrarPuntosEncuentro = ({ route }) => {
               placeholder="Latitud"
               value={latitud}
               onChangeText={setLatitud}
-              keyboardType="numeric"
             />
             <TextInput
               style={styles.input}
               placeholder="Longitud"
               value={longitud}
               onChangeText={setLongitud}
-              keyboardType="numeric"
             />
-            <Button title={modalType === "create" ? "Crear" : "Guardar"} onPress={handleSave} />
-            <Button title="Cancelar" onPress={closeModal} color="red" />
+            <View style={styles.buttonRow}>
+              <Button title="Guardar" onPress={handleSave} style={styles.button} />
+              <Button title="Cancelar" onPress={closeModal} style={styles.button} />
+            </View>
           </View>
         </View>
       </Modal>
@@ -291,9 +346,17 @@ const AdministrarPuntosEncuentro = ({ route }) => {
       <Modal visible={confirmDeleteVisible} animationType="slide" transparent>
         <View style={styles.confirmModalContainer}>
           <View style={styles.confirmModalContent}>
-            <Text style={styles.confirmText}>¿Estás seguro de que deseas eliminar este punto de encuentro?</Text>
-            <Button title="Eliminar" onPress={handleDelete} />
-            <Button title="Cancelar" onPress={() => setConfirmDeleteVisible(false)} color="red" />
+            <Text style={styles.confirmText}>
+              ¿Estás seguro de que deseas eliminar este punto de encuentro?
+            </Text>
+            <View style={styles.buttonRow}>
+              <Button title="Eliminar" onPress={handleDelete} />
+              <Button
+                title="Cancelar"
+                onPress={() => setConfirmDeleteVisible(false)}
+                color="red"
+              />
+            </View>
           </View>
         </View>
       </Modal>
