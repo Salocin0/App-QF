@@ -5,6 +5,7 @@ import { useCreatePedidoMutation } from './../../components/App/Service/PedidosA
 import { useSelector } from 'react-redux';
 import { eliminarProductosPorPuesto } from './../../components/Features/carrito/carritoSlice';
 import { useDispatch } from 'react-redux';
+import { useStripe } from '@stripe/stripe-react-native';
 
 const CardCarrito = ({ puesto, productos }) => {
   const Colors = useDynamicColors();
@@ -12,31 +13,113 @@ const CardCarrito = ({ puesto, productos }) => {
   const user = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.carrito);
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
   const handleComprar = async () => {
-    console.log(user);
-    const detalles = {
-      detalles: productos.map(producto => ({
-        cantidad: producto.cantidad, 
-        productoId: producto.id,
-        precio: Number(producto.precio),
-      })),
-      consumidorId: user.consumidorId,
-      total: calcularTotal(productos),
-      puestoId: Number(puesto),
-    };
-    console.log(detalles);
-    // hacer pago 
-    const responseData = await createPedidoMutation(detalles);
-    if (responseData.data) {
-      console.log('Pedido creado:', responseData.data);
-      dispatch(eliminarProductosPorPuesto({puestoId:puesto}));
-    } else {
-      console.log('Error al crear el pedido:', responseData.error);
-      //tirar toast con error
+    const pago = await mostrarSheetPago();
+    if (pago) {
+      const detalles = {
+        detalles: productos.map(producto => ({
+          cantidad: producto.cantidad,
+          productoId: producto.id,
+          precio: Number(producto.precio),
+        })),
+        consumidorId: user.consumidorId,
+        total: calcularTotal(productos),
+        puestoId: Number(puesto),
+      };
+      const responseData = await createPedidoMutation(detalles);
+      if (responseData.data) {
+        console.log('Pedido creado:', responseData.data);
+        dispatch(eliminarProductosPorPuesto({ puestoId: puesto }));
+      } else {
+        console.log('Error al crear el pedido:', responseData.error);
+        // Mostrar toast con error
+      }
+      console.log(cart);
     }
-    console.log(cart);
   }
+
+  const mostrarSheetPago = async () => {
+    // Aquí debes obtener los detalles de pago desde tu backend
+    const { paymentIntent, ephemeralKey, customer } = await fetchPaymentSheetParams();
+
+    const { error } = await initPaymentSheet({
+      paymentIntentClientSecret: paymentIntent,
+      customerEphemeralKeySecret: ephemeralKey,
+      customerId: customer,
+      appearance: {
+        colors: {
+          primary: Colors.Naranja, 
+          background: Colors.Blanco, 
+          text: Colors.Rojo,
+          link: Colors.Celeste,
+          border: Colors.GrisClaro,
+          secondaryText: Colors.Negro,
+          primaryText: Colors.Negro,
+          componentBackground: Colors.GrisClaroPeroNoTanClaro,
+          componentBorder: Colors.GrisOscuro,
+          componentDivider: Colors.GrisOscuro,
+          componentText: Colors.Negro,
+          placeholderText: Colors.GrisOscuro,
+          disabled: Colors.Negro,
+          disabledText: Colors.Negro,
+        },
+        typography: {
+          fontFamily: 'Arial, sans-serif',
+          fontSize: '16px',
+          fontWeight: '400',
+          headingFontFamily: 'Arial, sans-serif',
+          headingFontSize: '24px',
+          headingFontWeight: '700',
+        },
+        borderRadius: '10px',
+        borderWidth: '1px',
+        spacing: {
+          padding: '16px',
+          margin: '16px',
+        },
+      },
+      locale: 'es', // Configura el idioma a español
+      paymentMethodTypes: [
+        'card',       // Tarjeta de crédito/débito
+        'google_pay', // Google Pay
+        'paypal',     // PayPal
+      ],
+      merchantDisplayName: 'Mi Tienda', // Nombre de tu tienda
+    });
+    
+    
+
+    if (!error) {
+      const { error: paymentError } = await presentPaymentSheet();
+
+      if (paymentError) {
+        console.log('Error en el pago:', paymentError.message);
+        return false;
+      } else {
+        console.log('Pago completado');
+        return true;
+      }
+    } else {
+      console.log('Error al inicializar la hoja de pago:', error.message);
+      return false;
+    }
+  };
+
+  const fetchPaymentSheetParams = async () => {
+    // Llama a tu backend para obtener los parámetros necesarios
+    const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/payment-sheet`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        amount: calcularTotal(productos) * 100, // Convertir a centavos
+      }),
+    });
+    return response.json();
+  };
 
   const calcularTotal = (productos) => {
     const total = productos?.reduce((acc, item) => {
@@ -52,33 +135,33 @@ const CardCarrito = ({ puesto, productos }) => {
       borderRadius: 5,
       padding: 10,
       marginVertical: 10,
-      marginHorizontal:10,
+      marginHorizontal: 10,
       flexDirection: 'column',
       alignItems: 'flex-start',
       backgroundColor: Colors.Blanco,
-      elevation:5
+      elevation: 5
     },
     titulo: {
       fontWeight: 'bold',
       fontSize: 16,
-      color:Colors.Negro
+      color: Colors.Negro
     },
     subtitulo: {
       fontWeight: 'bold',
       fontSize: 14,
       marginTop: 5,
-      color:Colors.Negro
+      color: Colors.Negro
     },
     item: {
       marginLeft: 10,
       marginTop: 5,
       flexDirection: 'row',
       alignItems: 'center',
-      color:Colors.Negro
+      color: Colors.Negro
     },
     nombreCantidad: {
       flex: 1,
-      color:Colors.Negro
+      color: Colors.Negro
     },
     botonFinalizar: {
       backgroundColor: Colors.Azul,
@@ -91,7 +174,7 @@ const CardCarrito = ({ puesto, productos }) => {
       color: Colors.Blanco,
       fontWeight: 'bold',
       textAlign: 'center',
-      color:Colors.Negro
+      color: Colors.Negro
     },
   });
 

@@ -51,6 +51,12 @@
         {
           "RNMapboxMapsDownloadToken": "sk.eyJ1Ijoic2Fsb2NpbjAiLCJhIjoiY2x5YnJ4eGpuMWY1cjJscHg5ZWRmd3hmNSJ9.b0xTTyHZeY7GpsxX6rZS6w"
         }
+      ],
+      [
+        "@stripe/stripe-react-native",
+        {
+          "enableGooglePay": true
+        }
       ]
     ],
     "experiments": {

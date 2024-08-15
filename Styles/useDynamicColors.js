@@ -16,8 +16,8 @@ const useDynamicColors = () => {
     Verde: modoOscuroActivo ? "#45a145" : "#5cb85c",
     Rojo: modoOscuroActivo ? "#ad2925" : "#d9534f",
     Gris: modoOscuroActivo ? "#616161" : "#9d9d9d",
-    Blanco: modoOscuroActivo ? "#000000" : "#fff",
-    Negro: modoOscuroActivo ? "#ffffff" : "#000",
+    Blanco: modoOscuroActivo ? "#000000" : "#ffffff",
+    Negro: modoOscuroActivo ? "#ffffff" : "#000000",
     Info: modoOscuroActivo ? "#45d0e8" : "#17a2b8",
     GrisOscuro: modoOscuroActivo ? "#7a7a7a" : "#838383",
   };
