@@ -2,10 +2,11 @@ import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import useDynamicColors from "../../Styles/useDynamicColors";
 
-const PedidoCard = ({ item, navigation }) => {
+const PedidoCard = ({ item, navigation,manualRefecht }) => {
   const Colors = useDynamicColors();
+
   const seleccionarPedido = (pedido) => {
-    navigation.navigate("Detalle Pedido", { pedido });
+    navigation.navigate("Detalle Pedido", { pedido,manualRefecht });
   };
 
   const styles = StyleSheet.create({
@@ -16,6 +17,7 @@ const PedidoCard = ({ item, navigation }) => {
       padding: 10,
       marginVertical: 5,
       marginHorizontal: 20,
+      backgroundColor: Colors.Blanco,
     },
     title: {
       fontSize: 16,

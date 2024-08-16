@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Button, Modal } from "react-native";
+import React, { useState, useEffect  } from "react";
+import { StyleSheet, Text, View, Button, Modal, TextInput } from "react-native";
 import useDynamicColors from "../../Styles/useDynamicColors";
 import StarsBar from "./StarsBar";
 import { useGetProductosQuery } from "./../../components/App/Service/ProductosApi";
@@ -13,52 +13,101 @@ const CustomButton = ({ title, onPress, color, style }) => (
 
 const DetallePedido = ({ route }) => {
   const Colors = useDynamicColors();
-  const { pedido } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
-  const { data, isLoading, error } = useGetProductosQuery(pedido.puestoId);
-  const [ratingPuntualidad, setRatingPuntualidad] = useState(1);
-  const [ratingEficiencia, setRatingEficiencia] = useState(1);
-  const [ratingCalidad, setRatingCalidad] = useState(1);
-  const [ratingTiempo, setRatingTiempo] = useState(1);
+  const { data, isLoading, error } = useGetProductosQuery(pedido?.puestoId);
   const [CreateValoracionMutation] = useCreateValoracionMutation();
+  const [ratingRepartidor, setRatingRepartidor] = useState(1);
+  const [ratingPuesto, setRatingPuesto] = useState(1);
+  const [opinion, setOpinion] = useState("");
+  const [pedido, setPedidoLocal] = useState(route.params.pedido);
 
-  const handleRatingPuntualidadChange = (value) => {
-    setRatingPuntualidad(value);
+  useEffect(() => {}, [pedido]);
+
+  const handleRatingRepartidorChange = (value) => {
+    setRatingRepartidor(value);
   };
 
-  const handleRatingEficienciaChange = (value) => {
-    setRatingEficiencia(value);
-  };
-
-  const handleRatingCalidadChange = (value) => {
-    setRatingCalidad(value);
-  };
-
-  const handleRatingTiempoChange = (value) => {
-    setRatingTiempo(value);
+  const handleRatingPuestoChange = (value) => {
+    setRatingPuesto(value);
   };
 
   const handleSubmitValoracion = async () => {
     const valoracion = {
-      puntualidad: ratingPuntualidad,
-      eficiencia: ratingEficiencia,
-      calidad: ratingCalidad,
-      tiempo: ratingTiempo,
-    };
-  
-    setModalVisible(false);
-    console.log(valoracion, pedido.id);
-  
+      valoracionRepartidor: ratingRepartidor,
+      valoracionPuesto: ratingPuesto,
+      opinion: opinion,
+    }; 
     try {
-      await CreateValoracionMutation({valoracion, idPuesto:pedido?.id}).unwrap();
-      console.log('Valoración creada exitosamente');
+      await CreateValoracionMutation({
+        valoracion,
+        idPuesto: pedido?.id,
+      }).unwrap();
+      console.log("Valoración creada exitosamente");
+      setModalVisible(false);
+  
+      // Actualizar el estado local
+      setPedidoLocal({ ...pedido, estado: "Valorado" });
     } catch (error) {
-      console.error('Error al crear la valoración:', error);
+      console.error("Error al crear la valoración:", error);
     }
   };
   
+  const handleCancelOrder = () => {
+    console.log("Pedido cancelado");
+    //cambiar el estado en el back
+    setPedidoLocal({ ...pedido, estado: "Cancelado" });
+  };
+
+  const handleViewLocation = () => {
+    console.log("Ver ubicación de entrega");
+  };
 
   const styles = StyleSheet.create({
+    modalView: {
+      flex: 1,
+      backgroundColor: "rgba(0, 0, 0, 0.8)",
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: 30,
+    },
+    modalContent: {
+      backgroundColor: Colors.GrisClaroPeroNoTanClaro,
+      borderRadius: 10,
+      paddingHorizontal: 25,
+      paddingVertical: 15,
+      alignItems: "center",
+      elevation: 5,
+      width: "90%",
+    },
+    centeredTitle: {
+      textAlign: "center",
+      marginBottom: 15,
+    },
+    opinionContainer: {
+      width: "100%",
+      marginVertical: 15,
+    },
+    textInput: {
+      borderColor: Colors.GrisOscuro,
+      backgroundColor: Colors.Gris,
+      color: Colors.Negro,
+      borderWidth: 1,
+      borderRadius: 5,
+      padding: 10,
+      width: "100%",
+      Height: 50, // Adjust height as needed
+    },
+    buttonContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      width: "100%",
+      marginTop: 10,
+    },
+    buttonStyle: {
+      borderRadius: 10,
+      marginHorizontal: 5,
+      flex: 1,
+    },
     container: {
       flex: 1,
       justifyContent: "center",
@@ -81,20 +130,6 @@ const DetallePedido = ({ route }) => {
       marginBottom: 10,
       color: Colors.Negro,
     },
-    modalView: {
-      flex: 1,
-      backgroundColor: "rgba(0, 0, 0, 0.8)",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    modalContent: {
-      backgroundColor: Colors.GrisClaroPeroNoTanClaro,
-      borderRadius: 10,
-      paddingHorizontal: 25,
-      paddingVertical:15,
-      alignItems: "center",
-      elevation: 5,
-    },
     modalText: {
       marginBottom: 15,
       textAlign: "center",
@@ -112,6 +147,26 @@ const DetallePedido = ({ route }) => {
       color: Colors.Negro,
       marginBottom: 5,
     },
+    texttotal: {
+      fontSize: 28,
+      color: Colors.Blanco,
+      fontWeight: "bold",
+    },
+    texttotalcontainer: {
+      alignItems: "center",
+      justifyContent: "center",
+      marginHorizontal: 30,
+      marginVertical: 10,
+      backgroundColor: Colors.Verde,
+      borderRadius: 10,
+      padding: 10,
+    },
+    separator: {
+      width: "100%",
+      height: 1,
+      backgroundColor: Colors.Negro,
+      marginVertical: 10,
+    },
   });
 
   return (
@@ -124,24 +179,81 @@ const DetallePedido = ({ route }) => {
         <Text style={styles.text}>Productos:</Text>
         {pedido?.detalles?.map((detalle, index) => (
           <Text key={index} style={styles.text}>
-             - {data?.filter((producto) => producto.id === detalle.id)[0]?.nombre} - {detalle?.cantidad} x {detalle?.precio}
+            ◉ {detalle.producto?.nombre}: {detalle.cantidad} x {detalle.precio}
           </Text>
         ))}
-        <Text style={styles.text}>Total: ${pedido?.total}</Text>
-        <CustomButton title="Valorar Pedido" onPress={() => setModalVisible(true)} style={styles.buttonStyle} color={Colors.Azul} />
+        <View style={styles.texttotalcontainer}>
+          <Text style={styles.texttotal}>Total: ${pedido?.total}</Text>
+        </View>
+        <View style={styles.separator} />
+        {pedido?.estado === "Entregado" && (
+          <CustomButton
+            title="Valorar Pedido"
+            onPress={() => setModalVisible(true)}
+            style={styles.buttonStyle}
+            color={Colors.Azul}
+          />
+        )}
+        {["Pendiente", "Aceptado"].includes(pedido?.estado) && (
+          <CustomButton
+            title="Cancelar Pedido"
+            onPress={handleCancelOrder}
+            style={styles.buttonStyle}
+            color={Colors.Rojo}
+          />
+        )}
+        {pedido?.estado === "EnCamino" && (
+          <CustomButton
+            title="Ver Ubicación Entrega"
+            onPress={handleViewLocation}
+            style={styles.buttonStyle}
+            color={Colors.Azul}
+          />
+        )}
       </View>
 
-      <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
         <View style={styles.modalView}>
           <View style={styles.modalContent}>
-            <Text style={styles.titleModal}>Repartidor</Text>
-            <StarsBar pregunta="Puntualidad" rating={ratingPuntualidad} onRatingChange={handleRatingPuntualidadChange}/>
-            <StarsBar pregunta="Eficiencia en la entrega" rating={ratingEficiencia} onRatingChange={handleRatingEficienciaChange} />
-            <Text style={styles.titleModal}>Puesto</Text>
-            <StarsBar pregunta="Calidad del productos" rating={ratingCalidad} onRatingChange={handleRatingCalidadChange} />
-            <StarsBar pregunta="Tiempo de preparación" rating={ratingTiempo} onRatingChange={handleRatingTiempoChange} />
-            <CustomButton title="Enviar Valoracion" onPress={() => handleSubmitValoracion()} style={styles.buttonStyle} color={Colors.Azul} />
-            <CustomButton title="Cerrar" onPress={() => setModalVisible(false)} style={styles.buttonStyle} color={Colors.Rojo} />
+            <Text style={styles.titleModal}>
+              Ingrese Valoraciones para mejorar el servicio
+            </Text>
+            <StarsBar
+              pregunta="Calificación del Puesto"
+              rating={ratingPuesto}
+              onRatingChange={handleRatingPuestoChange}
+            />
+            <StarsBar
+              pregunta="Calificación del Repartidor"
+              rating={ratingRepartidor}
+              onRatingChange={handleRatingRepartidorChange}
+            />
+            <TextInput
+              style={styles.textInput}
+              placeholder="Escribe una opinión opcional..."
+              value={opinion}
+              onChangeText={(text) => setOpinion(text)}
+              multiline
+            />
+            <View style={styles.buttonContainer}>
+              <CustomButton
+                title="Enviar Valoracion"
+                onPress={handleSubmitValoracion}
+                style={styles.buttonStyle}
+                color={Colors.Azul}
+              />
+              <CustomButton
+                title="Cerrar"
+                onPress={() => setModalVisible(false)}
+                style={styles.buttonStyle}
+                color={Colors.Rojo}
+              />
+            </View>
           </View>
         </View>
       </Modal>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { View, FlatList, ActivityIndicator } from "react-native";
 import PedidoCard from "./PedidoCard";
 import useDynamicColors from "../../Styles/useDynamicColors";
@@ -6,14 +6,32 @@ import useStyles from "../../Styles/useStyles";
 import Aviso from "../Aviso";
 import { useGetPedidosQuery } from "./../../components/App/Service/PedidosApi";
 import { useSelector } from "react-redux";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Pedido = ({ navigation }) => {
   const Colors = useDynamicColors();
   const styles = useStyles();
   const user = useSelector((state) => state.auth);
-  const { data, error, isLoading } = useGetPedidosQuery(user.consumidorId);
+  const { data, error, isLoading, refetch } = useGetPedidosQuery(user.consumidorId);
 
-  const renderItem = ({ item }) => <PedidoCard item={item} navigation={navigation} />;
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
+
+  const manualRefecht = () => {
+    console.log("llego")
+    refetch();
+  };
+
+  const renderItem = ({ item }) => (
+    <PedidoCard
+      item={item}
+      navigation={navigation}
+      manualRefecht={manualRefecht}
+    />
+  );
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors?.GrisClaro }}>
@@ -22,12 +40,18 @@ const Pedido = ({ navigation }) => {
       ) : error ? (
         <Aviso mensaje="Error al cargar los pedidos" />
       ) : data && data.data?.length > 0 ? (
-        <FlatList data={data.data} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.flatListContainer} />
+        <FlatList
+          data={data.data}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={styles.flatListContainer}
+        />
       ) : (
         <Aviso mensaje="No hay pedidos disponibles" />
       )}
     </View>
   );
 };
+
 
 export default Pedido;
