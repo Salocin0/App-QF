@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import useStyles from "../../Styles/useStyles";
 import useDynamicColors from "../../Styles/useDynamicColors";
@@ -10,6 +10,7 @@ const Carrito = () => {
   const styles = useStyles();
   const Colors = useDynamicColors();
   const carrito = useSelector((state) => state.carrito);
+  const [loadingGlobal, setLoadingGlobal] = useState(false); // Estado global para manejar la carga
 
   const agruparPorPuesto = (productos) => {
     const grupos = {};
@@ -26,7 +27,12 @@ const Carrito = () => {
   const carritoAgrupado = agruparPorPuesto(carrito);
 
   const renderItem = ({ item }) => (
-    <CardCarrito puesto={item.puesto} productos={item.productos} />
+    <CardCarrito 
+      puesto={item.puesto} 
+      productos={item.productos} 
+      setLoadingGlobal={setLoadingGlobal} // Pasar función para actualizar el estado global
+      loadingGlobal={loadingGlobal} // Pasar estado global como prop
+    />
   );
 
   return (

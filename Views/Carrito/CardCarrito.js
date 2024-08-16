@@ -1,13 +1,12 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import useDynamicColors from '../../Styles/useDynamicColors';
 import { useCreatePedidoMutation } from './../../components/App/Service/PedidosApi';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { eliminarProductosPorPuesto } from './../../components/Features/carrito/carritoSlice';
-import { useDispatch } from 'react-redux';
 import { useStripe } from '@stripe/stripe-react-native';
 
-const CardCarrito = ({ puesto, productos }) => {
+const CardCarrito = ({ puesto, productos, setLoadingGlobal, loadingGlobal }) => {
   const Colors = useDynamicColors();
   const [createPedidoMutation] = useCreatePedidoMutation();
   const user = useSelector((state) => state.auth);
@@ -16,6 +15,7 @@ const CardCarrito = ({ puesto, productos }) => {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
   const handleComprar = async () => {
+    setLoadingGlobal(true); // Activa la carga global
     const pago = await mostrarSheetPago();
     if (pago) {
       const detalles = {
@@ -34,14 +34,13 @@ const CardCarrito = ({ puesto, productos }) => {
         dispatch(eliminarProductosPorPuesto({ puestoId: puesto }));
       } else {
         console.log('Error al crear el pedido:', responseData.error);
-        // Mostrar toast con error
       }
       console.log(cart);
     }
-  }
+    setLoadingGlobal(false); // Desactiva la carga global
+  };
 
   const mostrarSheetPago = async () => {
-    // Aquí debes obtener los detalles de pago desde tu backend
     const { paymentIntent, ephemeralKey, customer } = await fetchPaymentSheetParams();
 
     const { error } = await initPaymentSheet({
@@ -80,17 +79,15 @@ const CardCarrito = ({ puesto, productos }) => {
           margin: '16px',
         },
       },
-      locale: 'es', // Configura el idioma a español
+      locale: 'es',
       paymentMethodTypes: [
-        'card',       // Tarjeta de crédito/débito
-        'google_pay', // Google Pay
-        'paypal',     // PayPal
+        'card',
+        'google_pay', 
+        'paypal', 
       ],
       merchantDisplayName: 'Mi Tienda', // Nombre de tu tienda
     });
     
-    
-
     if (!error) {
       const { error: paymentError } = await presentPaymentSheet();
 
@@ -108,7 +105,6 @@ const CardCarrito = ({ puesto, productos }) => {
   };
 
   const fetchPaymentSheetParams = async () => {
-    // Llama a tu backend para obtener los parámetros necesarios
     const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/payment-sheet`, {
       method: 'POST',
       headers: {
@@ -139,29 +135,29 @@ const CardCarrito = ({ puesto, productos }) => {
       flexDirection: 'column',
       alignItems: 'flex-start',
       backgroundColor: Colors.Blanco,
-      elevation: 5
+      elevation: 5,
     },
     titulo: {
       fontWeight: 'bold',
       fontSize: 16,
-      color: Colors.Negro
+      color: Colors.Negro,
     },
     subtitulo: {
       fontWeight: 'bold',
       fontSize: 14,
       marginTop: 5,
-      color: Colors.Negro
+      color: Colors.Negro,
     },
     item: {
       marginLeft: 10,
       marginTop: 5,
       flexDirection: 'row',
       alignItems: 'center',
-      color: Colors.Negro
+      color: Colors.Negro,
     },
     nombreCantidad: {
       flex: 1,
-      color: Colors.Negro
+      color: Colors.Negro,
     },
     botonFinalizar: {
       backgroundColor: Colors.Azul,
@@ -174,7 +170,7 @@ const CardCarrito = ({ puesto, productos }) => {
       color: Colors.Blanco,
       fontWeight: 'bold',
       textAlign: 'center',
-      color: Colors.Negro
+      color: Colors.Negro,
     },
   });
 
@@ -189,8 +185,16 @@ const CardCarrito = ({ puesto, productos }) => {
           </Text>
         </View>
       ))}
-      <TouchableOpacity style={styles.botonFinalizar} onPress={handleComprar}>
-        <Text style={styles.textoBoton}>Finalizar compra</Text>
+      <TouchableOpacity
+        style={[styles.botonFinalizar, loadingGlobal && { backgroundColor: Colors.GrisClaro }]} 
+        onPress={handleComprar}
+        disabled={loadingGlobal}
+      >
+        {loadingGlobal ? (
+          <ActivityIndicator color={Colors.Negro} />
+        ) : (
+          <Text style={styles.textoBoton}>Finalizar compra</Text>
+        )}
       </TouchableOpacity>
     </View>
   );

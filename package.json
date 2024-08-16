@@ -3,7 +3,7 @@
   "main": "node_modules/expo/AppEntry.js",
   "version": "1.0.0",
   "scripts": {
-    "start": "cross-env NODE_ENV=development npx expo start -c",
+    "start": "cross-env NODE_ENV=development npx expo start",
     "start-prod": "cross-env NODE_ENV=production npx expo start -c",
     "start2": "npx expo start -c",
     "reset-project": "node ./scripts/reset-project.js",
