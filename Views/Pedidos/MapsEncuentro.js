@@ -5,7 +5,7 @@ import * as Location from 'expo-location';
 import { Magnetometer } from 'expo-sensors';
 import useDynamicColors from '@/Styles/useDynamicColors';
 
-MapboxGL.setAccessToken('pk.eyJ1Ijoic2Fsb2NpbjAiLCJhIjoiY2x5MzM3cTNjMDRjZTJpb2V6YjIwang2aiJ9.EwY5bcY30BY-DTIeYJzAPg');
+MapboxGL.setAccessToken('your-mapbox-access-token-here');
 
 const { width, height } = Dimensions.get('window');
 
@@ -58,7 +58,7 @@ const MapWithDirection = ({ meetingPoint, user2 }) => {
         const newRotation = (rotation + adjustment + 360) % 360;
         setRotation(newRotation);
         setHeading(newRotation);
-        console.log('Rotación actualizada:', newRotation, adjustment);
+        //console.log('Rotación actualizada:', newRotation, adjustment);
       }
     }
   }, [magnetometerData]);
@@ -109,40 +109,63 @@ const MapWithDirection = ({ meetingPoint, user2 }) => {
         styleURL={MapboxGL.StyleURL.Street}
         onDidFinishLoadingMap={handleMapLoad}
       >
+        <MapboxGL.Images images={{
+          markUser: require('./../../assets/markUser.png'),
+          markR: require('./../../assets/markR.png'),
+        }} />
+        
         {bounds && (
           <MapboxGL.Camera
             bounds={{
               ne: bounds.northEast,
               sw: bounds.southWest
             }}
-            padding={40} // Ajusta el padding si es necesario
-            animationMode="flyTo" // Opcional: para animaciones suaves
-            heading={heading} // Mantiene la rotación basada en la orientación del dispositivo
+            padding={40}
+            animationMode="flyTo"
+            heading={heading}
           />
         )}
-        {/* Marcador para la ubicación actual */}
-        <MapboxGL.PointAnnotation
-          coordinate={[location.longitude, location.latitude]}
-          id="currentLocation"
-        >
-          <MapboxGL.Callout title="Tu ubicación actual" />
-        </MapboxGL.PointAnnotation>
-        {/* Marcador para el punto de encuentro */}
+        {location && (
+          <MapboxGL.ShapeSource id="currentLocationSource" shape={{
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [location.longitude, location.latitude],
+            },
+          }}>
+            <MapboxGL.SymbolLayer
+              id="currentLocationLayer"
+              style={{
+                iconImage: 'markUser',
+                iconSize: 0.05,
+              }}
+            />
+          </MapboxGL.ShapeSource>
+        )}
         <MapboxGL.PointAnnotation
           coordinate={[meetingPoint.lng, meetingPoint.lat]}
           id="meetingPoint"
         >
-          <MapboxGL.ImageSource id="meetingPointImage" url="url-de-tu-imagen-de-punto-de-encontro" />
           <MapboxGL.Callout title="Punto de encuentro" />
         </MapboxGL.PointAnnotation>
-        {/* Marcador para el segundo usuario */}
-        <MapboxGL.PointAnnotation
-          coordinate={[user2.lng, user2.lat]}
-          id="user2"
-        >
-          <MapboxGL.ImageSource id="user2Image" url="url-de-tu-imagen-de-usuario2" />
-          <MapboxGL.Callout title="Usuario 2" />
-        </MapboxGL.PointAnnotation>
+        
+        {user2 && (
+          <MapboxGL.ShapeSource id="user2Source" shape={{
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [user2.lng, user2.lat],
+            },
+          }}>
+            <MapboxGL.SymbolLayer
+              id="user2Layer"
+              style={{
+                iconImage: 'markR',
+                iconSize: 0.05,
+              }}
+            />
+          </MapboxGL.ShapeSource>
+        )}
       </MapboxGL.MapView>
     </View>
   );
@@ -156,7 +179,7 @@ const styles = StyleSheet.create({
   },
   map: {
     width,
-    height: height - 50, // Ajustado para hacer espacio para el botón
+    height: height - 50,
   },
   loadingIndicator: {
     position: 'absolute',
