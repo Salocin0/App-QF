@@ -4,6 +4,7 @@ import useDynamicColors from "../../Styles/useDynamicColors";
 import StarsBar from "./StarsBar";
 import { useGetProductosQuery } from "./../../components/App/Service/ProductosApi";
 import { useCreateValoracionMutation } from "./../../components/App/Service/ValoracionApi";
+import { useNavigation } from "@react-navigation/native";
 
 const CustomButton = ({ title, onPress, color, style }) => (
   <View style={style}>
@@ -13,6 +14,7 @@ const CustomButton = ({ title, onPress, color, style }) => (
 
 const DetallePedido = ({ route }) => {
   const Colors = useDynamicColors();
+  const navigation = useNavigation()
   const [modalVisible, setModalVisible] = useState(false);
   const { data, isLoading, error } = useGetProductosQuery(pedido?.puestoId);
   const [CreateValoracionMutation] = useCreateValoracionMutation();
@@ -20,6 +22,10 @@ const DetallePedido = ({ route }) => {
   const [ratingPuesto, setRatingPuesto] = useState(1);
   const [opinion, setOpinion] = useState("");
   const [pedido, setPedidoLocal] = useState(route.params.pedido);
+
+  const VerUbicacionPedido = (pedido) => {
+    navigation.navigate("Ubicacion Pedido", { });
+  };
 
   useEffect(() => {}, [pedido]);
 
@@ -56,10 +62,6 @@ const DetallePedido = ({ route }) => {
     console.log("Pedido cancelado");
     //cambiar el estado en el back
     setPedidoLocal({ ...pedido, estado: "Cancelado" });
-  };
-
-  const handleViewLocation = () => {
-    console.log("Ver ubicación de entrega");
   };
 
   const styles = StyleSheet.create({
@@ -205,7 +207,7 @@ const DetallePedido = ({ route }) => {
         {pedido?.estado === "EnCamino" && (
           <CustomButton
             title="Ver Ubicación Entrega"
-            onPress={handleViewLocation}
+            onPress={VerUbicacionPedido}
             style={styles.buttonStyle}
             color={Colors.Azul}
           />

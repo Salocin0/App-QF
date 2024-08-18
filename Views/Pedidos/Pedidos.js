@@ -20,16 +20,11 @@ const Pedido = ({ navigation }) => {
     }, [refetch])
   );
 
-  const manualRefecht = () => {
-    console.log("llego")
-    refetch();
-  };
 
   const renderItem = ({ item }) => (
     <PedidoCard
       item={item}
       navigation={navigation}
-      manualRefecht={manualRefecht}
     />
   );
 

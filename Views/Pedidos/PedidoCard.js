@@ -2,11 +2,11 @@ import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import useDynamicColors from "../../Styles/useDynamicColors";
 
-const PedidoCard = ({ item, navigation,manualRefecht }) => {
+const PedidoCard = ({ item, navigation }) => {
   const Colors = useDynamicColors();
 
   const seleccionarPedido = (pedido) => {
-    navigation.navigate("Detalle Pedido", { pedido,manualRefecht });
+    navigation.navigate("Detalle Pedido", { pedido });
   };
 
   const styles = StyleSheet.create({
