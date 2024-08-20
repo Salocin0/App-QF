@@ -25,7 +25,7 @@ export function Counter() {
           }}
           onPress={() => dispatch(increment())}
         >
-          <Text style={{ fontSize: 16,color:Colors.Negro }}>+</Text>
+          <Text style={{ fontSize: 16,color:Colors?.Negro }}>+</Text>
         </TouchableOpacity>
         <View
           style={{
@@ -38,7 +38,7 @@ export function Counter() {
             alignItems: 'center',
           }}
         >
-          <Text style={{ fontSize: 16,color:Colors.Negro }}>{count}</Text>
+          <Text style={{ fontSize: 16,color:Colors?.Negro }}>{count}</Text>
         </View>
         <TouchableOpacity
           style={{
@@ -53,7 +53,7 @@ export function Counter() {
           }}
           onPress={() => dispatch(decrement())}
         >
-          <Text style={{ fontSize: 16,color:Colors.Negro }}>-</Text>
+          <Text style={{ fontSize: 16,color:Colors?.Negro }}>-</Text>
         </TouchableOpacity>
       </View>
     </View>

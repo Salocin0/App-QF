@@ -23,6 +23,7 @@ import * as Location from "expo-location";
 import Maps from "./Maps";
 
 const AdministrarPuntosEncuentro = ({ route }) => {
+  const Colors = useDynamicColors();
   const { evento } = route.params;
   const { data: puntos, isLoading, refetch } = useGetPuntosEncuentroByEventoIdQuery(evento.id);
   const [deletePuntoEncuentro] = useDeletePuntoEncuentroByIdMutation();
@@ -38,7 +39,7 @@ const AdministrarPuntosEncuentro = ({ route }) => {
   const [confirmDeleteVisible, setConfirmDeleteVisible] = useState(false);
 
   const [puntosEncuentro, setPuntosEncuentro] = useState([]);
-  const Colors = useDynamicColors();
+  
 
   useEffect(() => {
     if (!isLoading && puntos) {
@@ -87,7 +88,7 @@ const AdministrarPuntosEncuentro = ({ route }) => {
 
   const handleSave = async () => {
     if (nombre.trim() === "" || latitud.trim() === "" || longitud.trim() === "") {
-      Alert.alert("Todos los campos son obligatorios");
+      Alert.alert("Los campos Nombre, longitud, latitud son obligatorios");
       return;
     }
 
@@ -136,7 +137,7 @@ const AdministrarPuntosEncuentro = ({ route }) => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: Colors.Blanco,
+      backgroundColor: Colors?.Blanco,
     },
     contentContainer: {
       justifyContent: "center",
@@ -153,21 +154,21 @@ const AdministrarPuntosEncuentro = ({ route }) => {
       width: "100%",
       marginTop: 20,
       borderWidth: 1,
-      borderColor: Colors.Gris,
+      borderColor: Colors?.Gris,
       borderBottomWidth: 0,
     },
     header: {
       flexDirection: "row",
       justifyContent: "space-between",
       padding: 10,
-      backgroundColor: Colors.GrisClaro,
-      borderBottomColor: Colors.Gris,
+      backgroundColor: Colors?.GrisClaro,
+      borderBottomColor: Colors?.Gris,
     },
     headerText: {
       flex: 1,
       textAlign: "center",
       fontWeight: "bold",
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     row: {
       flexDirection: "row",
@@ -175,12 +176,12 @@ const AdministrarPuntosEncuentro = ({ route }) => {
       alignItems: "center",
       padding: 10,
       borderBottomWidth: 1,
-      borderBottomColor: Colors.Gris,
+      borderBottomColor: Colors?.Gris,
     },
     cell: {
       flex: 1,
       textAlign: "center",
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     actionsCell: {
       flexDirection: "row",
@@ -200,10 +201,10 @@ const AdministrarPuntosEncuentro = ({ route }) => {
       width: "100%",
     },
     modifyButton: {
-      backgroundColor: Colors.Azul,
+      backgroundColor: Colors?.Azul,
     },
     deleteButton: {
-      backgroundColor: Colors.Rojo,
+      backgroundColor: Colors?.Rojo,
     },
     button: {
       flex: 1,
@@ -216,7 +217,7 @@ const AdministrarPuntosEncuentro = ({ route }) => {
       backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
     modalContent: {
-      backgroundColor: Colors.Blanco,
+      backgroundColor: Colors?.Blanco,
       padding: 20,
       borderRadius: 10,
       width: "80%",
@@ -226,7 +227,7 @@ const AdministrarPuntosEncuentro = ({ route }) => {
       width: "100%",
       padding: 10,
       borderWidth: 1,
-      borderColor: Colors.Gris,
+      borderColor: Colors?.Gris,
       borderRadius: 5,
       marginBottom: 10,
     },
@@ -237,7 +238,7 @@ const AdministrarPuntosEncuentro = ({ route }) => {
       backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
     confirmModalContent: {
-      backgroundColor: Colors.Blanco,
+      backgroundColor: Colors?.Blanco,
       padding: 20,
       borderRadius: 10,
       width: "80%",
@@ -245,7 +246,7 @@ const AdministrarPuntosEncuentro = ({ route }) => {
     },
     confirmText: {
       marginBottom: 20,
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     loadingContainer: {
       flex: 1,
@@ -263,7 +264,7 @@ const AdministrarPuntosEncuentro = ({ route }) => {
     <View style={styles.container}>
       {isLoading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={Colors.Naranja} />
+          <ActivityIndicator size="large" color={Colors?.Naranja} />
         </View>
       ) : (
         <>
@@ -292,14 +293,14 @@ const AdministrarPuntosEncuentro = ({ route }) => {
                     >
                       <FontAwesomeIcon
                         icon={faPenToSquare}
-                        color={Colors.Blanco}
+                        color={Colors?.Blanco}
                       />
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={[styles.iconButton, styles.deleteButton]}
                       onPress={() => confirmDeletePunto(punto)}
                     >
-                      <FontAwesomeIcon icon={faTrashCan} color={Colors.Blanco} />
+                      <FontAwesomeIcon icon={faTrashCan} color={Colors?.Blanco} />
                     </TouchableOpacity>
                   </View>
                 </View>

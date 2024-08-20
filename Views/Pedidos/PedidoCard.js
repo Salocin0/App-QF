@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import useDynamicColors from "../../Styles/useDynamicColors";
+import useDynamicColors from "@/Styles/useDynamicColors";
 
 const PedidoCard = ({ item, navigation }) => {
   const Colors = useDynamicColors();
@@ -12,21 +12,21 @@ const PedidoCard = ({ item, navigation }) => {
   const styles = StyleSheet.create({
     card: {
       borderWidth: 1,
-      borderColor: Colors.Gris,
+      borderColor: Colors?.Gris,
       borderRadius: 8,
       padding: 10,
       marginVertical: 5,
       marginHorizontal: 20,
-      backgroundColor: Colors.Blanco,
+      backgroundColor: Colors?.Blanco,
     },
     title: {
       fontSize: 16,
       fontWeight: "bold",
       marginBottom: 5,
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     text: {
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
   });
 

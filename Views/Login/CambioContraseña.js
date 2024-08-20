@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, TextInput } from "react-native";
 import React, { useState } from "react";
 import useStyles from "../../Styles/useStyles";
-import useDynamicColors from "../../Styles/useDynamicColors";
+import useDynamicColors from "@/Styles/useDynamicColors";
 import { ToastAndroid } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from '@react-navigation/native';

@@ -5,6 +5,7 @@ import useDynamicColors from "../../Styles/useDynamicColors";
 import { StripeProvider } from '@stripe/stripe-react-native';
 import { useSelector } from "react-redux";
 import CardCarrito from "./CardCarrito";
+import Aviso from "../Aviso";
 
 const Carrito = () => {
   const styles = useStyles();
@@ -40,14 +41,12 @@ const Carrito = () => {
       style={{
         width: "100%",
         height: "100%",
-        backgroundColor: Colors.GrisClaro,
+        backgroundColor: Colors?.GrisClaro,
       }}
     >
       <StripeProvider publishableKey="pk_test_51PnpcMRoRlWr6LoNQ4tRgvaMtD4Aqkexi6IhVhxYz75HwgFQYDvO0TX0y7q0bjS5iQ0XQSKzSzLYVrlBCQxBscK600tF3LXOcU">
         {Object.keys(carritoAgrupado).length === 0 ? (
-          <Text style={{ color: Colors.Negro }}>
-            No hay productos en el carrito
-          </Text>
+          <Aviso mensaje="No hay productos en el carrito" />
         ) : (
           <FlatList
             data={Object.keys(carritoAgrupado).map((puesto) => ({

@@ -6,9 +6,10 @@ import useDynamicColors from '@/Styles/useDynamicColors';
 Mapbox.setAccessToken('pk.eyJ1Ijoic2Fsb2NpbjAiLCJhIjoiY2x5MzM3cTNjMDRjZTJpb2V6YjIwang2aiJ9.EwY5bcY30BY-DTIeYJzAPg');
 
 const Maps = ({ points }) => {
+  const Colors = useDynamicColors();
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [bounds, setBounds] = useState(null);
-  const Colors = useDynamicColors();
+  
 
   useEffect(() => {
     if (points.length > 0) {
@@ -40,7 +41,7 @@ const Maps = ({ points }) => {
   return (
     <View style={styles.container}>
       {!isMapLoaded && (
-        <ActivityIndicator size="large" color={Colors.Naranja} style={styles.loadingIndicator} />
+        <ActivityIndicator size="large" color={Colors?.Naranja} style={styles.loadingIndicator} />
       )}
       <Mapbox.MapView
         style={styles.map}

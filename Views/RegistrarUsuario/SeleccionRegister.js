@@ -13,8 +13,10 @@ import {
   faUser,
   faBriefcase,
 } from "@fortawesome/free-solid-svg-icons";
+import useDynamicColors from "@/Styles/useDynamicColors";
 
 const SeleccionRegister = ({ navigation }) => {
+  const Colors = useDynamicColors();
   const styles = useStyles()
   const [selectedType, setSelectedType] = useState("consumidor");
 

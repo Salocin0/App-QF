@@ -11,7 +11,7 @@ const AsociarseButton = () => {
     navigation.navigate("Asociarse a Evento");
   };
 
-  const styles = {
+  const styles = StyleSheet.create({
     button: {
       width: "100%",
       height: 50,
@@ -19,28 +19,31 @@ const AsociarseButton = () => {
       alignItems: "center",
       borderRadius: 10,
       marginVertical: 10,
-      backgroundColor: Colors.Verde,
+      backgroundColor: Colors?.Verde,
       borderWidth: 1,
-      borderColor: Colors.GrisClaroPeroNoTanClaro,
-      shadowColor: Colors.Negro, 
-      shadowOffset: { width: 0, height: 2 }, 
-      shadowOpacity: 0.3, 
-      shadowRadius: 4, 
-      elevation: 5, 
+      borderColor: Colors?.GrisClaroPeroNoTanClaro,
+      shadowColor: Colors?.Negro,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.3,
+      shadowRadius: 4,
+      elevation: 5,
     },
     buttonText: {
       fontSize: 24,
       fontWeight: "bold",
+      color: Colors?.Blanco,
     },
-  };
+  });
 
   return (
     <TouchableOpacity style={styles.button} onPress={handlePress}>
-      <Text style={[styles.buttonText, { color: Colors.Blanco }]}>
+      <Text style={styles.buttonText}>
         Asociarse a un evento
       </Text>
     </TouchableOpacity>
   );
 };
+
+
 
 export default AsociarseButton;

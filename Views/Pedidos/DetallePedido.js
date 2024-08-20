@@ -1,6 +1,6 @@
 import React, { useState, useEffect  } from "react";
 import { StyleSheet, Text, View, Button, Modal, TextInput } from "react-native";
-import useDynamicColors from "../../Styles/useDynamicColors";
+import useDynamicColors from "@/Styles/useDynamicColors";
 import StarsBar from "./StarsBar";
 import { useGetProductosQuery } from "./../../components/App/Service/ProductosApi";
 import { useCreateValoracionMutation } from "./../../components/App/Service/ValoracionApi";
@@ -73,7 +73,7 @@ const DetallePedido = ({ route }) => {
       paddingHorizontal: 30,
     },
     modalContent: {
-      backgroundColor: Colors.GrisClaroPeroNoTanClaro,
+      backgroundColor: Colors?.GrisClaroPeroNoTanClaro,
       borderRadius: 10,
       paddingHorizontal: 25,
       paddingVertical: 15,
@@ -90,9 +90,9 @@ const DetallePedido = ({ route }) => {
       marginVertical: 15,
     },
     textInput: {
-      borderColor: Colors.GrisOscuro,
-      backgroundColor: Colors.Gris,
-      color: Colors.Negro,
+      borderColor: Colors?.GrisOscuro,
+      backgroundColor: Colors?.Gris,
+      color: Colors?.Negro,
       borderWidth: 1,
       borderRadius: 5,
       padding: 10,
@@ -113,45 +113,45 @@ const DetallePedido = ({ route }) => {
     container: {
       flex: 1,
       justifyContent: "center",
-      backgroundColor: Colors.GrisClaro,
+      backgroundColor: Colors?.GrisClaro,
     },
     card: {
       flex: 1,
       padding: 20,
-      backgroundColor: Colors.GrisClaro,
+      backgroundColor: Colors?.GrisClaro,
     },
     title: {
       fontSize: 24,
       fontWeight: "bold",
       marginBottom: 10,
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     titleModal: {
       fontSize: 24,
       fontWeight: "bold",
       marginBottom: 10,
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     modalText: {
       marginBottom: 15,
       textAlign: "center",
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     buttonStyle: {
       borderRadius: 10,
       marginTop: 10,
     },
     buttonText: {
-      color: Colors.Blanco,
+      color: Colors?.Blanco,
     },
     text: {
       fontSize: 16,
-      color: Colors.Negro,
+      color: Colors?.Negro,
       marginBottom: 5,
     },
     texttotal: {
       fontSize: 28,
-      color: Colors.Blanco,
+      color: Colors?.Blanco,
       fontWeight: "bold",
     },
     texttotalcontainer: {
@@ -159,14 +159,14 @@ const DetallePedido = ({ route }) => {
       justifyContent: "center",
       marginHorizontal: 30,
       marginVertical: 10,
-      backgroundColor: Colors.Verde,
+      backgroundColor: Colors?.Verde,
       borderRadius: 10,
       padding: 10,
     },
     separator: {
       width: "100%",
       height: 1,
-      backgroundColor: Colors.Negro,
+      backgroundColor: Colors?.Negro,
       marginVertical: 10,
     },
   });
@@ -193,7 +193,7 @@ const DetallePedido = ({ route }) => {
             title="Valorar Pedido"
             onPress={() => setModalVisible(true)}
             style={styles.buttonStyle}
-            color={Colors.Azul}
+            color={Colors?.Azul}
           />
         )}
         {["Pendiente", "Aceptado"].includes(pedido?.estado) && (
@@ -201,7 +201,7 @@ const DetallePedido = ({ route }) => {
             title="Cancelar Pedido"
             onPress={handleCancelOrder}
             style={styles.buttonStyle}
-            color={Colors.Rojo}
+            color={Colors?.Rojo}
           />
         )}
         {pedido?.estado === "EnCamino" && (
@@ -209,7 +209,7 @@ const DetallePedido = ({ route }) => {
             title="Ver Ubicación Entrega"
             onPress={VerUbicacionPedido}
             style={styles.buttonStyle}
-            color={Colors.Azul}
+            color={Colors?.Azul}
           />
         )}
       </View>
@@ -247,13 +247,13 @@ const DetallePedido = ({ route }) => {
                 title="Enviar Valoracion"
                 onPress={handleSubmitValoracion}
                 style={styles.buttonStyle}
-                color={Colors.Azul}
+                color={Colors?.Azul}
               />
               <CustomButton
                 title="Cerrar"
                 onPress={() => setModalVisible(false)}
                 style={styles.buttonStyle}
-                color={Colors.Rojo}
+                color={Colors?.Rojo}
               />
             </View>
           </View>

@@ -9,10 +9,10 @@ import useStyles from "../../Styles/useStyles";
 import { agregarProducto } from "./../../components/Features/carrito/carritoSlice";
 
 const Detalle = ({navigation}) => {
+  const Colors = useDynamicColors();
   const route = useRoute();
   const styles = useStyles();
   const { producto } = route.params;
-  const Colors = useDynamicColors();
   const dispatch = useDispatch();
   const count = useSelector((state) => state.counter.value);
 
@@ -51,13 +51,13 @@ const Detalle = ({navigation}) => {
   return (
     <View style={styles.container}>
       <Image source={logoevento} style={{ width: 100, height: 100, alignSelf: 'center', marginBottom:20 }} />
-      <Text style={[styles.nombreProducto, { fontWeight: 'bold', fontSize: 24, textAlign: 'center', marginBottom:20,color:Colors.Negro }]}>
+      <Text style={[styles.nombreProducto, { fontWeight: 'bold', fontSize: 24, textAlign: 'center', marginBottom:20,color:Colors?.Negro }]}>
         {producto?.nombre}
       </Text>
-      <Text style={[styles.descripcionProducto, { fontSize: 20, textAlign: 'center',color:Colors.Negro }]}>
+      <Text style={[styles.descripcionProducto, { fontSize: 20, textAlign: 'center',color:Colors?.Negro }]}>
         {producto?.descripcion}
       </Text>
-      <Text style={[styles.precioProducto, { textAlign: 'center',fontSize: 20,color:Colors.Negro }]}>
+      <Text style={[styles.precioProducto, { textAlign: 'center',fontSize: 20,color:Colors?.Negro }]}>
         Precio: ${producto?.precio}
       </Text>
       <View style={styles.centerVertically}>
@@ -65,8 +65,8 @@ const Detalle = ({navigation}) => {
           <Counter />
         </View>
       </View>
-      <TouchableOpacity style={[styles.botonCompra, { backgroundColor: Colors.Azul, borderRadius: 10, marginTop: 20, padding:10 }]} onPress={handleAddProduct}>
-        <Text style={[styles.textoBoton, {color:Colors.Blanco}]}>Comprar</Text>
+      <TouchableOpacity style={[styles.botonCompra, { backgroundColor: Colors?.Azul, borderRadius: 10, marginTop: 20, padding:10 }]} onPress={handleAddProduct}>
+        <Text style={[styles.textoBoton, {color:Colors?.Blanco}]}>Comprar</Text>
       </TouchableOpacity>
     </View>
   );

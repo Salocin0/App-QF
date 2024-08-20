@@ -14,9 +14,9 @@ const HistorialPedidosRStack = () => {
     initialRouteName="Historial Pedidos"
       screenOptions={{
         headerStyle: {
-          backgroundColor: Colors.Blanco,
+          backgroundColor: Colors?.Blanco,
         },
-        headerTintColor: Colors.Negro,
+        headerTintColor: Colors?.Negro,
       }}
     >
       <Stack.Screen

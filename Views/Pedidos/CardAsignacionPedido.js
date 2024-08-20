@@ -21,11 +21,11 @@ import {
 import logo from "../../assets/favicon.png";
 
 const CardAsignacionPedido = () => {
+  const Colors = useDynamicColors();
   const dispatch = useDispatch();
   const [progress] = useState(new Animated.Value(100));
   const [visible, setVisible] = useState(true);
   const [hiddenAssignments, setHiddenAssignments] = useState([]);
-  const Colors = useDynamicColors();
   const user = useSelector((state) => state.auth);
   const userId = user?.consumidorId;
   const { data, isLoading, error } = useGetAsignacionesQuery(userId, {
@@ -100,12 +100,12 @@ const CardAsignacionPedido = () => {
 
   const styles = StyleSheet.create({
     card: {
-      backgroundColor: Colors.Blanco,
+      backgroundColor: Colors?.Blanco,
       width: "90%",
       borderRadius: 8,
       padding: 16,
       margin: 8,
-      shadowColor: Colors.Negro,
+      shadowColor: Colors?.Negro,
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
       shadowRadius: 8,
@@ -119,7 +119,7 @@ const CardAsignacionPedido = () => {
       width: 110,
       height: 110,
       borderRadius: 8,
-      backgroundColor: Colors.GrisClaroPeroNoTanClaro,
+      backgroundColor: Colors?.GrisClaroPeroNoTanClaro,
       resizeMode: "contain", // To ensure the image fits within the bounds
     },
     info: {
@@ -129,26 +129,26 @@ const CardAsignacionPedido = () => {
       fontSize: 16,
       fontWeight: "bold",
       marginEnd: 8,
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     label: {
-      backgroundColor: Colors.GrisClaroPeroNoTanClaro,
+      backgroundColor: Colors?.GrisClaroPeroNoTanClaro,
       borderRadius: 8,
       paddingHorizontal: 6,
       paddingVertical: 2,
       fontSize: 12,
       marginTop: 4,
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     title: {
       fontSize: 16,
       fontWeight: "bold",
       marginTop: 10,
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     subTitle: {
       fontSize: 14,
-      color: Colors.Negro,
+      color: Colors?.Negro,
       marginTop: 4,
     },
     buttons: {
@@ -158,7 +158,7 @@ const CardAsignacionPedido = () => {
     },
     button: {
       flex: 1,
-      backgroundColor: Colors.Azul,
+      backgroundColor: Colors?.Azul,
       padding: 10,
       borderRadius: 8,
       marginHorizontal: 5,
@@ -166,8 +166,8 @@ const CardAsignacionPedido = () => {
     },
     buttonRechazar: {
       flex: 1,
-      backgroundColor: Colors.Blanco,
-      borderColor: Colors.Negro,
+      backgroundColor: Colors?.Blanco,
+      borderColor: Colors?.Negro,
       borderWidth: 1,
       padding: 10,
       borderRadius: 8,
@@ -175,16 +175,16 @@ const CardAsignacionPedido = () => {
       alignItems: "center",
     },
     buttonText: {
-      color: Colors.Blanco,
+      color: Colors?.Blanco,
       fontWeight: "bold",
     },
     buttonText2: {
-      color: Colors.Negro,
+      color: Colors?.Negro,
       fontWeight: "bold",
     },
     progressBar: {
       height: 10,
-      backgroundColor: Colors.Negro,
+      backgroundColor: Colors?.Negro,
       borderRadius: 10,
       marginTop: 15,
     },
@@ -215,17 +215,17 @@ const CardAsignacionPedido = () => {
             <View style={styles.info}>
               <View style={styles.idContainer}>
                 <Text style={styles.id}>
-                  <FontAwesomeIcon icon={faCube} color={Colors.Negro} /> #
+                  <FontAwesomeIcon icon={faCube} color={Colors?.Negro} /> #
                   {assignment?.PedidoId ?? "1234"}
                 </Text>
                 <Text style={styles.label}>Nuevo Pedido</Text>
               </View>
               <Text style={styles.title}>
-                <FontAwesomeIcon icon={faStore} color={Colors.Negro} />{" "}
+                <FontAwesomeIcon icon={faStore} color={Colors?.Negro} />{" "}
                 {assignment?.Pedido?.puesto?.nombreCarro ?? "Puesto 1"}
               </Text>
               <Text style={styles.subTitle}>
-                <FontAwesomeIcon icon={faUserGroup} color={Colors.Negro} />{" "}
+                <FontAwesomeIcon icon={faUserGroup} color={Colors?.Negro} />{" "}
                 {assignment?.Pedido?.consumidore?.nombre +
                   ", " +
                   assignment?.Pedido?.consumidore?.apellido ??

@@ -6,8 +6,10 @@ import FormUsuario from "./Forms/FormUsuario";
 import useRegister from "./../../hooks/UseRegister"
 import FormEncargado from "./Forms/FormEncargado";
 import { useRoute } from '@react-navigation/native';
+import useDynamicColors from "@/Styles/useDynamicColors";
 
 const ProcesoRegistro = ({navigation}) => {
+  const Colors = useDynamicColors();
   const route = useRoute();
   const { tipoUsuario } = route.params;
   const [step, setStep] = useState(1);

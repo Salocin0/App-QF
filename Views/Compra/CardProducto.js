@@ -14,9 +14,9 @@ const CardProducto = ({ item, navigation }) => {
   return (
     <TouchableOpacity
       style={{
-        backgroundColor: Colors.Blanco,
+        backgroundColor: Colors?.Blanco,
         borderRadius: 10,
-        shadowColor: Colors.Negro,
+        shadowColor: Colors?.Negro,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
@@ -37,14 +37,14 @@ const CardProducto = ({ item, navigation }) => {
           left: 0,
           width: 75,
           height: 75,
-          backgroundColor: Colors.Blanco,
+          backgroundColor: Colors?.Blanco,
           borderTopRightRadius: 5,
           borderTopLeftRadius: 5,
           flexDirection: "row",
           width: "100%",
           alignItems: "center",
           borderBottomWidth:1,
-          borderColor:Colors.Negro
+          borderColor:Colors?.Negro
         }}
       >
         <Image source={logoevento} style={{ maxWidth: 75, height: "100%", borderTopLeftRadius: 5 }} resizeMode="cover" />
@@ -54,7 +54,7 @@ const CardProducto = ({ item, navigation }) => {
             fontWeight: "bold",
             marginBottom: 5,
             textAlign: "center",
-            color: Colors.Negro,
+            color: Colors?.Negro,
             width: "100%",
             paddingRight: 75,
           }}
@@ -62,13 +62,13 @@ const CardProducto = ({ item, navigation }) => {
           {item.nombre}
         </Text>
       </View>
-      <View style={{ flex: 1, paddingTop: 80, backgroundColor: Colors.GrisClaro, borderRadius: 5, zIndex: -1 }}>
-        <Text style={{ fontSize: 16, textAlign: "center", color: Colors.Negro }}>{item.descripcion}</Text>
+      <View style={{ flex: 1, paddingTop: 80, backgroundColor: Colors?.GrisClaro, borderRadius: 5, zIndex: -1 }}>
+        <Text style={{ fontSize: 16, textAlign: "center", color: Colors?.Negro }}>{item.descripcion}</Text>
         <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10,justifyContent: "center" }}>
           <View style={{ marginRight: 5 }}>
-            <FontAwesomeIcon icon={faMoneyBillWave} color={Colors.Verde} size={20} />
+            <FontAwesomeIcon icon={faMoneyBillWave} color={Colors?.Verde} size={20} />
           </View>
-          <Text style={{ fontSize: 16, color: Colors.Negro }}>{item.precio || "5.99"}</Text>
+          <Text style={{ fontSize: 16, color: Colors?.Negro }}>{item.precio || "5.99"}</Text>
         </View>
       </View>
     </TouchableOpacity>

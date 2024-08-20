@@ -13,6 +13,7 @@ import useProvincias from "../../../hooks/UseProvincias";
 import RNPickerSelect from "react-native-picker-select";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import useStyles from "../../../Styles/useStyles";
+import useDynamicColors from "@/Styles/useDynamicColors";
 
 const FormConsumidor = ({
   nextStep,
@@ -23,6 +24,7 @@ const FormConsumidor = ({
   navigation,
   setTipoUsuario,
 }) => {
+  const Colors = useDynamicColors();
   const { provincias } = useProvincias();
   const styles = useStyles()
   const { localidades, fetchLocalidades } = useLocalidades();

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, ScrollView, ActivityIndicator } from "react-native";
+import { StyleSheet, View, ScrollView, ActivityIndicator } from "react-native";
 import { useSelector } from "react-redux";
 import { useGetAllEventosQuery } from "./../../components/App/Service/EventosApi";
 import EventoCard from "./eventoCard";
 import useStyles from "../../Styles/useStyles";
-import useDynamicColors from "../../Styles/useDynamicColors";
+import useDynamicColors from "@/Styles/useDynamicColors";
+import Aviso from "../Aviso";
 
 const EventosP = () => {
   const styles = useStyles();
@@ -25,7 +26,7 @@ const EventosP = () => {
     container: {
       flexGrow: 1,
       padding: 20,
-      backgroundColor: Colors.GrisClaro,
+      backgroundColor: Colors?.GrisClaro,
     },
   });
 
@@ -40,7 +41,7 @@ const EventosP = () => {
   if (isError || !eventosData) {
     return (
       <View style={style.container}>
-        <Text style={{ color: Colors.Negro }}>Error al cargar los eventos o no hay eventos</Text>
+        <Aviso mensaje="Error al cargar los eventos o no hay eventos" />
       </View>
     );
   }
@@ -48,7 +49,7 @@ const EventosP = () => {
   return (
     <ScrollView contentContainerStyle={style.container}>
       {eventos.length === 0 ? (
-        <Text style={{ color: Colors.Negro }}>No hay eventos</Text>
+        <Aviso mensaje="No hay eventos" />
       ) : (
         eventos.map((evento, index) => (
           <EventoCard key={index} evento={evento} />

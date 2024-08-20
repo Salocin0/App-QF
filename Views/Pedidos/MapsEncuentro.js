@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Dimensions } from 'react-native';
 import MapboxGL from '@rnmapbox/maps';
 import * as Location from 'expo-location';
 import { Magnetometer } from 'expo-sensors';
@@ -10,13 +10,15 @@ MapboxGL.setAccessToken('your-mapbox-access-token-here');
 const { width, height } = Dimensions.get('window');
 
 const MapWithDirection = ({ meetingPoint, user2 }) => {
+  const Colors = useDynamicColors();
   const [location, setLocation] = useState(null);
   const [heading, setHeading] = useState(0);
   const [rotation, setRotation] = useState(0);
   const [magnetometerData, setMagnetometerData] = useState(null);
   const [bounds, setBounds] = useState(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
-  const Colors = useDynamicColors();
+  const [isDataLoaded, setIsDataLoaded] = useState(false); // Estado para manejar la carga de datos
+  
 
   useEffect(() => {
     const getLocation = async () => {
@@ -47,18 +49,17 @@ const MapWithDirection = ({ meetingPoint, user2 }) => {
   useEffect(() => {
     if (magnetometerData !== null) {
       let adjustment = magnetometerData - 90 - (rotation % 360);
-  
+
       if (adjustment > 180) {
         adjustment -= 360;
       } else if (adjustment < -180) {
         adjustment += 360;
       }
-  
+
       if (Math.abs(adjustment) >= 15) {
         const newRotation = (rotation + adjustment + 360) % 360;
         setRotation(newRotation);
         setHeading(newRotation);
-        //console.log('Rotación actualizada:', newRotation, adjustment);
       }
     }
   }, [magnetometerData]);
@@ -88,6 +89,8 @@ const MapWithDirection = ({ meetingPoint, user2 }) => {
         northEast: [maxLng + margin, maxLat + margin],
         southWest: [minLng - margin, minLat - margin]
       });
+
+      setIsDataLoaded(true); // Indica que los datos están listos
     }
   }, [location, meetingPoint, user2]);
 
@@ -95,14 +98,18 @@ const MapWithDirection = ({ meetingPoint, user2 }) => {
     setIsMapLoaded(true);
   };
 
-  if (!location || !bounds) {
-    return <View style={styles.container} />;
+  if (!isDataLoaded) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color={Colors?.Naranja} />
+      </View>
+    );
   }
 
   return (
     <View style={styles.container}>
       {!isMapLoaded && (
-        <ActivityIndicator size="large" color={Colors.Naranja} style={styles.loadingIndicator} />
+        <ActivityIndicator size="large" color={Colors?.Naranja} style={styles.loadingIndicator} />
       )}
       <MapboxGL.MapView
         style={styles.map}
@@ -174,15 +181,15 @@ const MapWithDirection = ({ meetingPoint, user2 }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   map: {
-    width,
-    height: height - 50,
+    flex: 1,
   },
   loadingIndicator: {
     position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -25 }, { translateY: -25 }], // Center the loading indicator
   },
 });
 

@@ -12,7 +12,7 @@ const Main = () => {
     <>
       <StatusBar
         barStyle={modoOscuroActivo ? "light-content" : "dark-content"}
-        backgroundColor={modoOscuroActivo ? Colors.Blanco : Colors.Blanco}
+        backgroundColor={modoOscuroActivo ? Colors?.Blanco : Colors?.Blanco}
       />
       <MainNavigator />
     </>

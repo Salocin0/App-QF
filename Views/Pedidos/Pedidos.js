@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { View, FlatList, ActivityIndicator } from "react-native";
 import PedidoCard from "./PedidoCard";
-import useDynamicColors from "../../Styles/useDynamicColors";
+import useDynamicColors from "@/Styles/useDynamicColors";
 import useStyles from "../../Styles/useStyles";
 import Aviso from "../Aviso";
 import { useGetPedidosQuery } from "./../../components/App/Service/PedidosApi";
@@ -12,6 +12,7 @@ const Pedido = ({ navigation }) => {
   const Colors = useDynamicColors();
   const styles = useStyles();
   const user = useSelector((state) => state.auth);
+  console.log(user)
   const { data, error, isLoading, refetch } = useGetPedidosQuery(user.consumidorId);
 
   useFocusEffect(

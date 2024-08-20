@@ -2,10 +2,11 @@ import { StyleSheet, Text, View, ActivityIndicator, Button, Modal, TouchableOpac
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useGetPerfilQuery } from "./../../components/App/Service/PerfilApi"
-import useDynamicColors from "../../Styles/useDynamicColors";
 import { useNavigation } from "@react-navigation/native";
 import { useDeleteUserMutation } from "./../../components/App/Service/authApi";
 import { clearUser } from "./../../components/Features/Auth/authSlice";
+import Aviso from "../Aviso";
+import useDynamicColors from "@/Styles/useDynamicColors";
 
 const Perfil = () => {
   const Colors = useDynamicColors();
@@ -43,14 +44,14 @@ const Perfil = () => {
       flex: 1,
       padding: 8,
       paddingHorizontal: 16,
-      backgroundColor: Colors.GrisClaro,
+      backgroundColor: Colors?.GrisClaro,
     },
     card: {
-      backgroundColor: Colors.Blanco,
+      backgroundColor: Colors?.Blanco,
       borderRadius: 8,
       padding: 16,
       marginVertical: 8,
-      shadowColor: Colors.Negro,
+      shadowColor: Colors?.Negro,
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
       shadowRadius: 8,
@@ -59,7 +60,7 @@ const Perfil = () => {
     title: {
       fontSize: 20,
       fontWeight: "bold",
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     button: {
       marginTop: 4,
@@ -67,13 +68,13 @@ const Perfil = () => {
     buttonInfo: {
       marginTop: 20,
       borderWidth: 3,
-      borderColor: Colors.Info,
+      borderColor: Colors?.Info,
       padding: 10,
       borderRadius: 5,
       alignItems: "center",
     },
     buttonInfoText: {
-      color: Colors.Info,
+      color: Colors?.Info,
       fontWeight: "800",
       fontSize: 15,
     },
@@ -85,7 +86,7 @@ const Perfil = () => {
     },
     modalContent: {
       width: "80%",
-      backgroundColor: Colors.Blanco,
+      backgroundColor: Colors?.Blanco,
       borderRadius: 10,
       padding: 20,
       alignItems: "center",
@@ -93,7 +94,7 @@ const Perfil = () => {
     modalText: {
       marginBottom: 15,
       textAlign: "center",
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     buttonRow: {
       flexDirection: "row",
@@ -107,21 +108,21 @@ const Perfil = () => {
       alignItems: "center",
     },
     confirmButton: {
-      backgroundColor: Colors.Verde,
+      backgroundColor: Colors?.Verde,
       marginRight: 10,
     },
     closeButton: {
-      backgroundColor: Colors.Rojo,
+      backgroundColor: Colors?.Rojo,
     },
     buttonText: {
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
   });
 
   if (isLoading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color={Colors.Naranja} />
+        <ActivityIndicator size="large" color={Colors?.Naranja} />
       </View>
     );
   }
@@ -130,7 +131,7 @@ const Perfil = () => {
     console.log(error);
     return (
       <View style={styles.container}>
-        <Text style={{ color: Colors.Negro }}>Error al cargar los datos del perfil</Text>
+        <Aviso style={{ color: Colors?.Negro }}>Error al cargar los datos del perfil</Aviso>
       </View>
     );
   }
@@ -141,12 +142,12 @@ const Perfil = () => {
         <>
           <Text style={styles.title}>Usuario</Text>
           <View style={styles.card}>
-            <Text style={{ color: Colors.Negro }}>Nombre: {data.nombre}</Text>
-            <Text style={{ color: Colors.Negro }}>Apellido: {data.apellido}</Text>
-            <Text style={{ color: Colors.Negro }}>DNI: {data.dni}</Text>
-            <Text style={{ color: Colors.Negro }}>Teléfono: {data.telefono}</Text>
-            <Text style={{ color: Colors.Negro }}>Localidad: {data.localidad}</Text>
-            <Text style={{ color: Colors.Negro }}>Provincia: {data.provincia}</Text>
+            <Text style={{ color: Colors?.Negro }}>Nombre: {data.nombre}</Text>
+            <Text style={{ color: Colors?.Negro }}>Apellido: {data.apellido}</Text>
+            <Text style={{ color: Colors?.Negro }}>DNI: {data.dni}</Text>
+            <Text style={{ color: Colors?.Negro }}>Teléfono: {data.telefono}</Text>
+            <Text style={{ color: Colors?.Negro }}>Localidad: {data.localidad}</Text>
+            <Text style={{ color: Colors?.Negro }}>Provincia: {data.provincia}</Text>
           </View>
         </>
       )}
@@ -155,9 +156,9 @@ const Perfil = () => {
         <>
           <Text style={styles.title}>Productor</Text>
           <View style={styles.card}>
-            <Text style={{ color: Colors.Negro }}>Condición IVA: {data.productor.condicionIva}</Text>
-            <Text style={{ color: Colors.Negro }}>CUIT: {data.productor.cuit}</Text>
-            <Text style={{ color: Colors.Negro }}>Razón Social: {data.productor.razonSocial}</Text>
+            <Text style={{ color: Colors?.Negro }}>Condición IVA: {data.productor.condicionIva}</Text>
+            <Text style={{ color: Colors?.Negro }}>CUIT: {data.productor.cuit}</Text>
+            <Text style={{ color: Colors?.Negro }}>Razón Social: {data.productor.razonSocial}</Text>
           </View>
         </>
       )}
@@ -165,18 +166,18 @@ const Perfil = () => {
         <>
           <Text style={styles.title}>Encargado</Text>
           <View style={styles.card}>
-            <Text style={{ color: Colors.Negro }}>Condición IVA: {data.encargado.condicionIva}</Text>
-            <Text style={{ color: Colors.Negro }}>CUIT: {data.encargado.cuit}</Text>
-            <Text style={{ color: Colors.Negro }}>Razón Social: {data.encargado.razonSocial}</Text>
+            <Text style={{ color: Colors?.Negro }}>Condición IVA: {data.encargado.condicionIva}</Text>
+            <Text style={{ color: Colors?.Negro }}>CUIT: {data.encargado.cuit}</Text>
+            <Text style={{ color: Colors?.Negro }}>Razón Social: {data.encargado.razonSocial}</Text>
           </View>
         </>
       )}
       <View style={styles.button}>
-        <Button title="Editar Datos" color={Colors.Azul} onPress={handleEditarUser} />
+        <Button title="Editar Datos" color={Colors?.Azul} onPress={handleEditarUser} />
       </View>
 
       <View style={styles.button}>
-        <Button title="Deshabilitar usuario" color={Colors.Rojo} onPress={() => setModalVisible(true)} />
+        <Button title="Deshabilitar usuario" color={Colors?.Rojo} onPress={() => setModalVisible(true)} />
       </View>
 
       <TouchableOpacity style={styles.buttonInfo} onPress={handleCerrarSesion}>

@@ -17,9 +17,9 @@ const PedidoStack = () => {
     initialRouteName="Pedidos"
       screenOptions={{
         headerStyle: {
-          backgroundColor: Colors.Blanco,
+          backgroundColor: Colors?.Blanco,
         },
-        headerTintColor: Colors.Negro,
+        headerTintColor: Colors?.Negro,
       }}
     >
       <Stack.Screen name="Pedidos" component={Pedidos} options={{ headerRight: () => <ConfigNotifiButtom /> }} />

@@ -8,7 +8,7 @@ const Compra = () => {
   const Colors = useDynamicColors();
   return (
     <View style={styles.container}>
-      <Text style={{ color: Colors.Negro }}>Compra</Text>
+      <Text style={{ color: Colors?.Negro }}>Compra</Text>
     </View>
   );
 }

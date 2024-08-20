@@ -49,20 +49,20 @@ const CardCarrito = ({ puesto, productos, setLoadingGlobal, loadingGlobal }) => 
       customerId: customer,
       appearance: {
         colors: {
-          primary: Colors.Naranja, 
-          background: Colors.Blanco, 
-          text: Colors.Rojo,
-          link: Colors.Celeste,
-          border: Colors.GrisClaro,
-          secondaryText: Colors.Negro,
-          primaryText: Colors.Negro,
-          componentBackground: Colors.GrisClaroPeroNoTanClaro,
-          componentBorder: Colors.GrisOscuro,
-          componentDivider: Colors.GrisOscuro,
-          componentText: Colors.Negro,
-          placeholderText: Colors.GrisOscuro,
-          disabled: Colors.Negro,
-          disabledText: Colors.Negro,
+          primary: Colors?.Naranja, 
+          background: Colors?.Blanco, 
+          text: Colors?.Rojo,
+          link: Colors?.Celeste,
+          border: Colors?.GrisClaro,
+          secondaryText: Colors?.Negro,
+          primaryText: Colors?.Negro,
+          componentBackground: Colors?.GrisClaroPeroNoTanClaro,
+          componentBorder: Colors?.GrisOscuro,
+          componentDivider: Colors?.GrisOscuro,
+          componentText: Colors?.Negro,
+          placeholderText: Colors?.GrisOscuro,
+          disabled: Colors?.Negro,
+          disabledText: Colors?.Negro,
         },
         typography: {
           fontFamily: 'Arial, sans-serif',
@@ -127,50 +127,50 @@ const CardCarrito = ({ puesto, productos, setLoadingGlobal, loadingGlobal }) => 
   const styles = StyleSheet.create({
     card: {
       borderWidth: 1,
-      borderColor: Colors.GrisOscuro,
+      borderColor: Colors?.GrisOscuro,
       borderRadius: 5,
       padding: 10,
       marginVertical: 10,
       marginHorizontal: 10,
       flexDirection: 'column',
       alignItems: 'flex-start',
-      backgroundColor: Colors.Blanco,
+      backgroundColor: Colors?.Blanco,
       elevation: 5,
     },
     titulo: {
       fontWeight: 'bold',
       fontSize: 16,
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     subtitulo: {
       fontWeight: 'bold',
       fontSize: 14,
       marginTop: 5,
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     item: {
       marginLeft: 10,
       marginTop: 5,
       flexDirection: 'row',
       alignItems: 'center',
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     nombreCantidad: {
       flex: 1,
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     botonFinalizar: {
-      backgroundColor: Colors.Azul,
+      backgroundColor: Colors?.Azul,
       padding: 10,
       borderRadius: 5,
       marginTop: 10,
       alignSelf: 'flex-end',
     },
     textoBoton: {
-      color: Colors.Blanco,
+      color: Colors?.Blanco,
       fontWeight: 'bold',
       textAlign: 'center',
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
   });
 
@@ -186,12 +186,12 @@ const CardCarrito = ({ puesto, productos, setLoadingGlobal, loadingGlobal }) => 
         </View>
       ))}
       <TouchableOpacity
-        style={[styles.botonFinalizar, loadingGlobal && { backgroundColor: Colors.GrisClaro }]} 
+        style={[styles.botonFinalizar, loadingGlobal && { backgroundColor: Colors?.GrisClaro }]} 
         onPress={handleComprar}
         disabled={loadingGlobal}
       >
         {loadingGlobal ? (
-          <ActivityIndicator color={Colors.Negro} />
+          <ActivityIndicator color={Colors?.Negro} />
         ) : (
           <Text style={styles.textoBoton}>Finalizar compra</Text>
         )}

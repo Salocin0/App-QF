@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, ImageBackground } from "react-native";
 import { ToastAndroid } from "react-native";
 import useStyles from "../../../Styles/useStyles";
 import { CheckBox } from "@rneui/themed";
+import useDynamicColors from "@/Styles/useDynamicColors";
 
 const FormRepartidor = ({
   nextStep,
@@ -10,6 +11,7 @@ const FormRepartidor = ({
   handleRegistro,
   activarRegistro,
 }) => {
+  const Colors = useDynamicColors();
   const styles = useStyles()
   const [confirmacionMayorDeEdad, setconfirmacionMayorDeEdad] = useState(false);
 

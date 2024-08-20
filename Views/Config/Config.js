@@ -5,7 +5,7 @@ import {
   desactivarModoOscuro,
 } from "./../../components/Features/modoOscuro/modoOscuroSlice";
 import { Switch, Text, View } from "react-native";
-import useDynamicColors from "../../Styles/useDynamicColors";
+import useDynamicColors from "@/Styles/useDynamicColors";
 
 const Config = () => {
   const Colors = useDynamicColors();
@@ -29,7 +29,7 @@ const Config = () => {
         backgroundColor: Colors?.GrisClaro,
       }}
     >
-      <Text style={{ fontSize: 24, marginVertical: 10, marginLeft: 10,color:Colors.Negro}}>
+      <Text style={{ fontSize: 24, marginVertical: 10, marginLeft: 10,color:Colors?.Negro}}>
         Configuraciones
       </Text>
       <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 10 }}>

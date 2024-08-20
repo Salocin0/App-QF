@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import useDynamicColors from "../Styles/useDynamicColors";
+import useDynamicColors from "@/Styles/useDynamicColors";
 
 const Aviso = ({ mensaje }) => {
   const Colors = useDynamicColors();
@@ -15,7 +15,7 @@ const Aviso = ({ mensaje }) => {
       fontSize: 20,
       fontWeight: "bold",
       textAlign: "center",
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
   });
   
@@ -25,7 +25,5 @@ const Aviso = ({ mensaje }) => {
     </View>
   );
 };
-
-
 
 export default Aviso;

@@ -78,8 +78,8 @@ export default Login = ({ navigation }) => {
         Usuario
       </Text>
       <TextInput
-        style={[styles.input, { color: Colors.Negro, fontSize: 13, width: "100%", height: 40 }]}
-        placeholderTextColor={Colors.Negro}
+        style={[styles.input, { color: Colors?.Negro, fontSize: 13, width: "100%", height: 40 }]}
+        placeholderTextColor={Colors?.Negro}
         value={email}
         onChangeText={handleEmailChange}
       />
@@ -87,8 +87,8 @@ export default Login = ({ navigation }) => {
         Contraseña
       </Text>
       <TextInput
-        style={[styles.input, { color: Colors.Negro, fontSize: 13, width: "100%", height: 40 }]}
-        placeholderTextColor={Colors.Negro}
+        style={[styles.input, { color: Colors?.Negro, fontSize: 13, width: "100%", height: 40 }]}
+        placeholderTextColor={Colors?.Negro}
         secureTextEntry={true}
         value={password}
         onChangeText={handlePasswordChange}

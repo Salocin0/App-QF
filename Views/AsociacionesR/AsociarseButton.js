@@ -19,10 +19,10 @@ const AsociarseButton = () => {
       alignItems: "center",
       borderRadius: 10,
       marginVertical: 10,
-      backgroundColor: Colors.Verde,
+      backgroundColor: Colors?.Verde,
       borderWidth: 1,
-      borderColor: Colors.GrisClaroPeroNoTanClaro,
-      shadowColor: Colors.Negro, 
+      borderColor: Colors?.GrisClaroPeroNoTanClaro,
+      shadowColor: Colors?.Negro, 
       shadowOffset: { width: 0, height: 2 }, 
       shadowOpacity: 0.3, 
       shadowRadius: 4, 
@@ -36,7 +36,7 @@ const AsociarseButton = () => {
 
   return (
     <TouchableOpacity style={styles.button} onPress={handlePress}>
-      <Text style={[styles.buttonText, { color: Colors.Blanco }]}>
+      <Text style={[styles.buttonText, { color: Colors?.Blanco }]}>
         Asociarse a un evento
       </Text>
     </TouchableOpacity>

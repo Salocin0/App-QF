@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Modal,
 } from "react-native";
-import useDynamicColors from "../Styles/useDynamicColors";
+import useDynamicColors from "@/Styles/useDynamicColors";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
   faArrowDownWideShort,
@@ -132,26 +132,26 @@ const BuscadorPuestos = () => {
     <View style={styles.container}>
       <View style={styles.searchContainer}>
         <TextInput
-          style={[styles.input, { color: Colors.Negro,fontSize:13 }]}
+          style={[styles.input, { color: Colors?.Negro,fontSize:13 }]}
           placeholder="Buscar..."
-          placeholderTextColor={Colors.Negro}
+          placeholderTextColor={Colors?.Negro}
           value={searchText}
           onChangeText={(text) => setSearchText(text)}
         />
         <TouchableOpacity style={styles.button} onPress={handleSearch}>
-          <FontAwesomeIcon icon={faMagnifyingGlass} color={Colors.Negro} />
+          <FontAwesomeIcon icon={faMagnifyingGlass} color={Colors?.Negro} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleOpenOrderModal}>
-          <FontAwesomeIcon icon={faArrowDownWideShort} color={Colors.Negro}/>
+          <FontAwesomeIcon icon={faArrowDownWideShort} color={Colors?.Negro}/>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleOpenFilterModal}>
-          <FontAwesomeIcon icon={faFilter} color={Colors.Negro}/>
+          <FontAwesomeIcon icon={faFilter} color={Colors?.Negro}/>
         </TouchableOpacity>
       </View>
       <Modal visible={showOrderModal} animationType="none" transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={{ color: Colors.Negro }}>Orden:</Text>
+            <Text style={{ color: Colors?.Negro }}>Orden:</Text>
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity
                 style={[
@@ -160,7 +160,7 @@ const BuscadorPuestos = () => {
                 ]}
                 onPress={() => handleSelectOrder("ASC")}
               >
-                <Text style={{ textAlign: "center", color: Colors.Negro }}>
+                <Text style={{ textAlign: "center", color: Colors?.Negro }}>
                   ASC
                 </Text>
               </TouchableOpacity>
@@ -171,12 +171,12 @@ const BuscadorPuestos = () => {
                 ]}
                 onPress={() => handleSelectOrder("DESC")}
               >
-                <Text style={{ textAlign: "center", color: Colors.Negro }}>
+                <Text style={{ textAlign: "center", color: Colors?.Negro }}>
                   DESC
                 </Text>
               </TouchableOpacity>
             </View>
-            <Text style={{ color: Colors.Negro }}>Categoria:</Text>
+            <Text style={{ color: Colors?.Negro }}>Categoria:</Text>
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity
                 style={[
@@ -186,7 +186,7 @@ const BuscadorPuestos = () => {
                 ]}
                 onPress={() => handleSelectCategotia("TiempoEntrega")}
               >
-                <Text style={{ textAlign: "center", color: Colors.Negro }}>
+                <Text style={{ textAlign: "center", color: Colors?.Negro }}>
                   Tiempo
                 </Text>
               </TouchableOpacity>
@@ -198,7 +198,7 @@ const BuscadorPuestos = () => {
                 ]}
                 onPress={() => handleSelectCategotia("porNombre")}
               >
-                <Text style={{ textAlign: "center", color: Colors.Negro }}>
+                <Text style={{ textAlign: "center", color: Colors?.Negro }}>
                   Nombre
                 </Text>
               </TouchableOpacity>
@@ -210,7 +210,7 @@ const BuscadorPuestos = () => {
                 ]}
                 onPress={() => handleSelectCategotia("Estrellas")}
               >
-                <Text style={{ textAlign: "center", color: Colors.Negro }}>
+                <Text style={{ textAlign: "center", color: Colors?.Negro }}>
                   Estrellas
                 </Text>
               </TouchableOpacity>
@@ -238,8 +238,8 @@ const BuscadorPuestos = () => {
               <View style={styles.inputContainer}>
                 <Text style={{ color: Colors?.Negro }}>Mínimo:</Text>
                 <TextInput
-                  style={[styles.input, { color: Colors.Negro }]}
-                  placeholderTextColor={Colors.Negro}
+                  style={[styles.input, { color: Colors?.Negro }]}
+                  placeholderTextColor={Colors?.Negro}
                   onChangeText={(text) => {}}
                   placeholder="0"
                   keyboardType="numeric"
@@ -248,8 +248,8 @@ const BuscadorPuestos = () => {
               <View style={styles.inputContainer}>
                 <Text style={{ color: Colors?.Negro }}>Máximo:</Text>
                 <TextInput
-                  style={[styles.input, { color: Colors.Negro }]}
-                  placeholderTextColor={Colors.Negro}
+                  style={[styles.input, { color: Colors?.Negro }]}
+                  placeholderTextColor={Colors?.Negro}
                   onChangeText={(text) => {}}
                   placeholder="5"
                   keyboardType="numeric"
@@ -263,8 +263,8 @@ const BuscadorPuestos = () => {
               <View style={styles.inputContainer}>
                 <Text style={{ color: Colors?.Negro }}>Mínimo:</Text>
                 <TextInput
-                  style={[styles.input, { color: Colors.Negro }]}
-                  placeholderTextColor={Colors.Negro}
+                  style={[styles.input, { color: Colors?.Negro }]}
+                  placeholderTextColor={Colors?.Negro}
                   onChangeText={(text) => {}}
                   placeholder="0 min"
                   keyboardType="numeric"
@@ -273,8 +273,8 @@ const BuscadorPuestos = () => {
               <View style={styles.inputContainer}>
                 <Text style={{ color: Colors?.Negro }}>Máximo:</Text>
                 <TextInput
-                  style={[styles.input, { color: Colors.Negro }]}
-                  placeholderTextColor={Colors.Negro}
+                  style={[styles.input, { color: Colors?.Negro }]}
+                  placeholderTextColor={Colors?.Negro}
                   onChangeText={(text) => {}}
                   placeholder="∞ min"
                   keyboardType="numeric"

@@ -20,7 +20,7 @@ const ConfigNotifiButtom = ({ islogin = true }) => {
   if (islogin === false) {
     return (
       <TouchableOpacity onPress={goToConfig}>
-        <FontAwesomeIcon icon={faGear} color={Colors.Negro} size={24} />
+        <FontAwesomeIcon icon={faGear} color={Colors?.Negro} size={24} />
       </TouchableOpacity>
     );
   }
@@ -29,10 +29,10 @@ const ConfigNotifiButtom = ({ islogin = true }) => {
     <View>
       <View style={{ flexDirection: "row" }}>
         <TouchableOpacity onPress={goToNotify} style={{ paddingHorizontal: 5 }}>
-          <FontAwesomeIcon icon={faBell} color={Colors.Negro} size={24} />
+          <FontAwesomeIcon icon={faBell} color={Colors?.Negro} size={24} />
         </TouchableOpacity>
         <TouchableOpacity onPress={goToConfig}>
-          <FontAwesomeIcon icon={faGear} color={Colors.Negro} size={24} />
+          <FontAwesomeIcon icon={faGear} color={Colors?.Negro} size={24} />
         </TouchableOpacity>
       </View>
     </View>

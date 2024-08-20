@@ -15,9 +15,9 @@ const CardPuesto = ({ item, navigation }) => {
   return (
     <TouchableOpacity
       style={{
-        backgroundColor: Colors.Blanco,
+        backgroundColor: Colors?.Blanco,
         borderRadius: 10,
-        shadowColor: Colors.Negro,
+        shadowColor: Colors?.Negro,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
@@ -60,7 +60,7 @@ const CardPuesto = ({ item, navigation }) => {
             left: 0,
             width: 80,
             height: 80,
-            backgroundColor: Colors.Blanco,
+            backgroundColor: Colors?.Blanco,
             borderTopLeftRadius: 5,
           }}
         >
@@ -73,12 +73,12 @@ const CardPuesto = ({ item, navigation }) => {
               fontWeight: "bold",
               marginBottom: 5,
               textAlign: "center",
-              color: Colors.Negro,
+              color: Colors?.Negro,
             }}
           >
             {item.nombreCarro}
           </Text>
-          <Text style={{ fontSize: 16, textAlign: "center", color: Colors.Negro }}>{item.tipoNegocio}</Text>
+          <Text style={{ fontSize: 16, textAlign: "center", color: Colors?.Negro }}>{item.tipoNegocio}</Text>
           <View
             style={{
               flexDirection: "row",
@@ -88,16 +88,16 @@ const CardPuesto = ({ item, navigation }) => {
           >
             <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>
               <View style={{ marginRight: 5 }}>
-                <FontAwesomeIcon icon={faClock} color={Colors.Negro} size={20} />
+                <FontAwesomeIcon icon={faClock} color={Colors?.Negro} size={20} />
               </View>
-              <Text style={{ fontSize: 16, color: Colors.Negro }}>{item.time || "32 min"}</Text>
+              <Text style={{ fontSize: 16, color: Colors?.Negro }}>{item.time || "32 min"}</Text>
             </View>
 
             <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>
               <View style={{ marginRight: 5 }}>
-                <FontAwesomeIcon icon={faStar} color={Colors.NaranjaDetalle} size={20} />
+                <FontAwesomeIcon icon={faStar} color={Colors?.NaranjaDetalle} size={20} />
               </View>
-              <Text style={{ fontSize: 16, color: Colors.Negro }}>{item.estrellas || "4.4"}</Text>
+              <Text style={{ fontSize: 16, color: Colors?.Negro }}>{item.estrellas || "4.4"}</Text>
             </View>
           </View>
         </View>

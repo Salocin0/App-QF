@@ -18,9 +18,9 @@ const PedidoRStack = () => {
         initialRouteName="Pedidos asignados"
         screenOptions={{
           headerStyle: {
-            backgroundColor: Colors.Blanco,
+            backgroundColor: Colors?.Blanco,
           },
-          headerTintColor: Colors.Negro,
+          headerTintColor: Colors?.Negro,
         }}
       >
         <Stack.Screen

@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 
-import useDynamicColors from "../../Styles/useDynamicColors";
+import useDynamicColors from "@/Styles/useDynamicColors";
 import { useRoute } from "@react-navigation/native";
 
 import {
@@ -27,7 +27,7 @@ const EventoDetalle = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: Colors.Blanco,
+      backgroundColor: Colors?.Blanco,
     },
     contentContainer: {
       justifyContent: "center",
@@ -35,10 +35,10 @@ const EventoDetalle = () => {
       padding: 20,
     },
     card: {
-      backgroundColor: Colors.GrisClaro,
+      backgroundColor: Colors?.GrisClaro,
       borderRadius: 10,
       marginBottom: 20,
-      shadowColor: Colors.Negro,
+      shadowColor: Colors?.Negro,
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.2,
       shadowRadius: 2,
@@ -53,7 +53,7 @@ const EventoDetalle = () => {
       resizeMode: "contain",
       borderRadius: 10,
       borderWidth: 1,
-      borderColor: Colors.Gris,
+      borderColor: Colors?.Gris,
     },
     infoContainer: {
       padding: 10,
@@ -62,23 +62,23 @@ const EventoDetalle = () => {
     title: {
       fontSize: 24,
       fontWeight: "bold",
-      color: Colors.Negro,
+      color: Colors?.Negro,
       textAlign: "center",
     },
     description: {
       fontSize: 16,
-      color: Colors.Gris,
+      color: Colors?.Gris,
       marginVertical: 5,
       textAlign: "center",
     },
     detail: {
       fontSize: 14,
-      color: Colors.GrisOscuro,
+      color: Colors?.GrisOscuro,
       textAlign: "center",
     },
     buttonContainer: {
       marginVertical: 10,
-      backgroundColor: Colors.Info,
+      backgroundColor: Colors?.Info,
       padding: 10,
       width: 300,
       borderRadius: 5,
@@ -87,7 +87,7 @@ const EventoDetalle = () => {
       justifyContent: "center",
     },
     buttonText: {
-      color: Colors.Blanco,
+      color: Colors?.Blanco,
       marginLeft: 5,
     },
   });
@@ -116,7 +116,7 @@ const EventoDetalle = () => {
         }}
       >
         <Text style={styles.buttonText}>Administrar Puntos de encuentro </Text>
-        <FontAwesomeIcon icon={faLocationDot} color={Colors.Blanco} size={16} />
+        <FontAwesomeIcon icon={faLocationDot} color={Colors?.Blanco} size={16} />
       </TouchableOpacity>
       {evento.estado !== "EnCurso" && (
         <TouchableOpacity
@@ -126,7 +126,7 @@ const EventoDetalle = () => {
           }}
         >
           <Text style={styles.buttonText}>Administrar Asociaciones </Text>
-          <FontAwesomeIcon icon={faAddressBook} color={Colors.Blanco} size={16} />
+          <FontAwesomeIcon icon={faAddressBook} color={Colors?.Blanco} size={16} />
         </TouchableOpacity>
       )}
     </ScrollView>

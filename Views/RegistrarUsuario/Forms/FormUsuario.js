@@ -11,7 +11,6 @@ import useStyles from "../../../Styles/useStyles";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faEye,faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
-
 const FormUsuario = ({
   tipoUsuario,
   nextStep,

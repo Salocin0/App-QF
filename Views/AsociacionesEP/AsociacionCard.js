@@ -7,28 +7,28 @@ const AsociacionCard = ({ asociacion, evento }) => {
   
   const styles = StyleSheet.create({
     card: {
-      backgroundColor: Colors.Blanco,
+      backgroundColor: Colors?.Blanco,
       borderRadius: 10,
       marginVertical: 5,
       padding: 10,
-      shadowColor: Colors.Negro,
+      shadowColor: Colors?.Negro,
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.2,
       shadowRadius: 2,
       elevation: 3,
       borderWidth: 1,
-      borderColor: Colors.GrisClaroPeroNoTanClaro,
+      borderColor: Colors?.GrisClaroPeroNoTanClaro,
     },
     title: {
       fontSize: 18,
       fontWeight: 'bold',
       marginBottom: 5,
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     detail: {
       fontSize: 14,
       marginBottom: 5,
-      color: Colors.GrisOscuro,
+      color: Colors?.GrisOscuro,
     },
   });
 

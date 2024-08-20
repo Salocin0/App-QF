@@ -2,12 +2,13 @@ import { StyleSheet, Text, View, ActivityIndicator, Button, TextInput } from "re
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useGetPerfilQuery, useUpdateConsumidorMutation, useUpdateEncargadoMutation, useUpdateProductorMutation } from "./../../components/App/Service/PerfilApi";
-import useDynamicColors from "../../Styles/useDynamicColors";
+import useDynamicColors from "@/Styles/useDynamicColors";
 import RNPickerSelect from "react-native-picker-select";
 import useLocalidades from "./../../hooks/UseLocalidades";
 import useProvincias from "./../../hooks/UseProvincias";
 import { useNavigation } from "@react-navigation/native";
 import { ToastAndroid } from "react-native";
+import Aviso from "../Aviso";
 
 const EditarPerfil = () => {
   const Colors = useDynamicColors();
@@ -147,14 +148,14 @@ const EditarPerfil = () => {
       flex: 1,
       padding: 8,
       paddingHorizontal: 16,
-      backgroundColor: Colors.GrisClaro,
+      backgroundColor: Colors?.GrisClaro,
     },
     card: {
-      backgroundColor: Colors.Blanco,
+      backgroundColor: Colors?.Blanco,
       borderRadius: 8,
       padding: 16,
       marginVertical: 8,
-      shadowColor: Colors.Negro,
+      shadowColor: Colors?.Negro,
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
       shadowRadius: 8,
@@ -163,7 +164,7 @@ const EditarPerfil = () => {
     title: {
       fontSize: 20,
       fontWeight: "bold",
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     button: {
       marginTop: 4,
@@ -171,19 +172,19 @@ const EditarPerfil = () => {
     label: {
       fontSize: 14,
       fontWeight: "bold",
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     input: {
       fontSize: 14,
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     inputSelect: {
       fontSize: 14,
-      color: Colors.Negro,
+      color: Colors?.Negro,
       minWidth: 100,
     },
     placeholder: {
-      color: Colors.Negro,
+      color: Colors?.Negro,
     },
     inputContainer: {
       flexDirection: "row",
@@ -195,7 +196,7 @@ const EditarPerfil = () => {
   if (isLoading && !isFormReady) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color={Colors.Naranja} />
+        <ActivityIndicator size="large" color={Colors?.Naranja} />
       </View>
     );
   }
@@ -204,7 +205,7 @@ const EditarPerfil = () => {
     console.log(error);
     return (
       <View style={styles.container}>
-        <Text style={{ color: Colors.Negro }}>Error al cargar los datos del perfil</Text>
+        <Aviso style={{ color: Colors?.Negro }}>Error al cargar los datos del perfil</Aviso>
       </View>
     );
   }

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import useDynamicColors from "../../Styles/useDynamicColors";
+import useDynamicColors from "@/Styles/useDynamicColors";
+import Aviso from "../Aviso";
 
 const PedidosR = () => {
   const Colors = useDynamicColors();
@@ -10,7 +11,7 @@ const PedidosR = () => {
       justifyContent: 'flex-start',
       alignItems: 'center',
       padding: 16,
-      backgroundColor:Colors.GrisClaro
+      backgroundColor:Colors?.GrisClaro
     },
     cardContainer: {
       width: '100%',
@@ -27,9 +28,9 @@ const PedidosR = () => {
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
-        <Text style={{ color: Colors.Negro, textAlign: 'center' }}>
+        <Aviso>
           Pedidos asignados repartidor
-        </Text>
+        </Aviso>
       </View>
     </View>
   );
