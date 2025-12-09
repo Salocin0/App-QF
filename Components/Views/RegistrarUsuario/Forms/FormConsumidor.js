@@ -29,11 +29,19 @@ const FormConsumidor = ({
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedLocalidad, setSelectedLocalidad] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
+  
+  // Crear fecha por defecto: 18 años atrás
+  const getDefaultDate = () => {
+    const date = new Date();
+    date.setFullYear(date.getFullYear() - 18);
+    return date;
+  };
+  
   const [consumidorData, setConsumidorData] = useState({
     nombre: "",
     apellido: "",
     dni: "",
-    fechaNacimiento: new Date().setFullYear(new Date().getFullYear() - 18),
+    fechaNacimiento: getDefaultDate(),
     provincia: "",
     localidad: "",
     telefono: "",

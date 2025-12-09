@@ -12,9 +12,11 @@ export const puestosApi = createApi({
         headers: { "Content-Type": "application/json" },
       }),
       transformResponse: (response) => {
-        if (response.status="success"){
-          return response.data;
-        }         
+        // Defensive parsing: accept API shape { status: 'success', data: [...] }
+        if (!response) return [];
+        if (response && response.status === "success" && response.data) return response.data;
+        if (Array.isArray(response)) return response;
+        return [];
       },
     }),
   }),

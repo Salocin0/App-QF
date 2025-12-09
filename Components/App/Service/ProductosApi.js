@@ -15,11 +15,14 @@ export const productoApi = createApi({
         }
       }),
       transformResponse: (response) => {
-        if (response.status="success"){
-          return response.data;
-        }else{
-          console.log("error")
+        try {
+          if (!response) return [];
+          if (response && response.status === "success" && response.data) return response.data;
+          if (Array.isArray(response)) return response;
+        } catch (e) {
+          console.warn('ProductosApi.transformResponse failed', e);
         }
+        return [];
       }
     }),
   })

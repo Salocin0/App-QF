@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Image, Button, Modal, TextInput, FlatList, Alert } from "react-native";
+import { StyleSheet, Text, View, Image, Modal, TextInput, FlatList, Alert, TouchableOpacity } from "react-native";
 import * as Location from 'expo-location';
 import useDynamicColors from "../../Styles/useDynamicColors";
 import { useRoute } from "@react-navigation/native";
@@ -93,13 +93,11 @@ const EventoDetalle = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      padding: 20,
-      backgroundColor: "white",
+      padding: 16,
+      backgroundColor: Colors.GrisClaro,
     },
     card: {
-      backgroundColor: "white",
+      backgroundColor: Colors.Blanco,
       borderRadius: 10,
       overflow: "hidden",
       marginBottom: 20,
@@ -112,8 +110,9 @@ const EventoDetalle = () => {
       alignItems: "center",
     },
     image: {
-      width: 100,
-      height: 100,
+      width: '100%',
+      height: 200,
+      resizeMode: 'cover',
     },
     infoContainer: {
       padding: 10,
@@ -136,10 +135,21 @@ const EventoDetalle = () => {
       color: Colors.GrisOscuro,
       textAlign: "center",
     },
-    buttonContainer: {
-      marginTop: 20,
-      width: "100%",
-      alignItems: "center",
+    // action buttons removed (kept smallButton for list actions)
+    smallButton: {
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      borderRadius: 6,
+      backgroundColor: Colors.Azul,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minWidth: 80,
+      marginHorizontal: 4,
+    },
+    smallButtonText: {
+      color: Colors.OnPrimary,
+      fontWeight: '600',
+      textAlign: 'center',
     },
     table: {
       width: "100%",
@@ -147,14 +157,28 @@ const EventoDetalle = () => {
     },
     row: {
       flexDirection: "row",
-      justifyContent: "space-between",
-      padding: 10,
+      alignItems: 'center',
+      paddingVertical: 10,
+      paddingHorizontal: 6,
       borderBottomWidth: 1,
-      borderBottomColor: "#ccc",
+      borderBottomColor: Colors.GrisClaroPeroNoTanClaro,
     },
     cell: {
       flex: 1,
-      textAlign: "center",
+      paddingHorizontal: 6,
+    },
+    cellTitle: {
+      fontSize: 16,
+      color: Colors.Negro,
+    },
+    cellSubtitle: {
+      fontSize: 12,
+      color: Colors.Gris,
+    },
+    actions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
     },
     modalContainer: {
       flex: 1,
@@ -163,7 +187,7 @@ const EventoDetalle = () => {
       backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
     modalContent: {
-      backgroundColor: "white",
+      backgroundColor: Colors.Blanco,
       padding: 20,
       borderRadius: 10,
       width: "80%",
@@ -177,23 +201,32 @@ const EventoDetalle = () => {
       borderRadius: 5,
       marginBottom: 10,
     },
+    modalActions: {
+      flexDirection: 'row',
+      width: '100%',
+      justifyContent: 'space-between',
+      marginTop: 10,
+    }
   });
 
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <Image source={{ uri: evento.img }} style={styles.image} />
+        <Image source={{ uri: evento?.img || undefined }} style={styles.image} />
         <View style={styles.infoContainer}>
           <Text style={styles.title}>{evento.nombre}</Text>
           <Text style={styles.description}>{evento.descripcion}</Text>
           <Text style={styles.detail}>Tipo: {evento.tipoEvento}</Text>
           <Text style={styles.detail}>Estado: {evento.estado}</Text>
-          <Text style={styles.detail}>Fecha de inicio: {new Date(evento.fechaInicio).toLocaleDateString()}</Text>
+          <Text style={styles.detail}>Fecha de inicio: {evento.fechaInicio ? new Date(evento.fechaInicio).toLocaleDateString() : '-'}</Text>
         </View>
       </View>
-      {evento.estado === "EnPreparacion" && (
-        <View style={styles.buttonContainer}>
-          <Button title="Crear Punto de encuentro" onPress={handleAgregarPuntoEncuentro} color={Colors.Verde} />
+
+      {String(evento.estado).toLowerCase().includes('prepar') && (
+        <View style={{ width: '100%', marginTop: 12, alignItems: 'center' }}>
+          <TouchableOpacity style={[styles.smallButton, { backgroundColor: Colors.Verde, paddingVertical: 12, paddingHorizontal: 16 }]} onPress={handleAgregarPuntoEncuentro}>
+            <Text style={[styles.smallButtonText, { fontWeight: '700' }]}>Crear Punto de encuentro</Text>
+          </TouchableOpacity>
         </View>
       )}
       {puntosEncuentro && puntosEncuentro.length > 0 && (
@@ -203,11 +236,18 @@ const EventoDetalle = () => {
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <View style={styles.row}>
-                <Text style={styles.cell}>{item.nombre}</Text>
-                <Text style={styles.cell}>{item.latitud}</Text>
-                <Text style={styles.cell}>{item.longitud}</Text>
-                <Button title="Modificar" onPress={() => handleModificarPuntoEncuentro(item)} />
-                <Button title="Eliminar" onPress={() => handleEliminarPuntoEncuentro(item.id)} />
+                <View style={styles.cell}>
+                  <Text style={styles.cellTitle}>{item.nombre}</Text>
+                  <Text style={styles.cellSubtitle}>Lat: {item.latitud} · Lon: {item.longitud}</Text>
+                </View>
+                <View style={styles.actions}>
+                  <TouchableOpacity style={[styles.smallButton, { backgroundColor: Colors.Azul }]} onPress={() => handleModificarPuntoEncuentro(item)}>
+                    <Text style={styles.smallButtonText}>Modificar</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.smallButton, { backgroundColor: Colors.Rojo }]} onPress={() => handleEliminarPuntoEncuentro(item.id)}>
+                    <Text style={styles.smallButtonText}>Eliminar</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
           />
@@ -219,13 +259,13 @@ const EventoDetalle = () => {
             <TextInput placeholder="Nombre" value={nombre} onChangeText={setNombre} style={styles.input} />
             <Text>Latitud: {latitud}</Text>
             <Text>Longitud: {longitud}</Text>
-            <View style={{ flexDirection: "row" }}>
-              <View style={{ paddingHorizontal: 10 }}>
-                <Button title="Cancelar" onPress={() => setModalVisible(false)} color={Colors.Azul} />
-              </View>
-              <View style={{ paddingHorizontal: 10 }}>
-                <Button title="Guardar" onPress={handleGuardarPuntoEncuentro} color={Colors.Verde} />
-              </View>
+            <View style={styles.modalActions}>
+              <TouchableOpacity style={[styles.smallButton, { backgroundColor: Colors.Azul }]} onPress={() => setModalVisible(false)}>
+                <Text style={styles.smallButtonText}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.smallButton, { backgroundColor: Colors.Verde }]} onPress={handleGuardarPuntoEncuentro}>
+                <Text style={styles.smallButtonText}>Guardar</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>

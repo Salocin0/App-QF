@@ -4,6 +4,7 @@ import PedidosR from "../Views/Pedidos/PedidosR";
 import ConfigNotifiButtom from "./ConfigNotifiButtom";
 import Config from "../Views/Config/Config";
 import Notificaciones from "../Views/Notificaciones/Notificaciones";
+import DetallePedido from "../Views/Pedidos/DetallePedido";
 import useDynamicColors from "../Styles/useDynamicColors";
 
 const Stack = createNativeStackNavigator();
@@ -24,6 +25,7 @@ const PedidoRStack = () => {
         component={PedidosR}
         options={{ headerRight: () => <ConfigNotifiButtom /> }}
       />
+      <Stack.Screen name="Detalle Pedido" component={DetallePedido} options={{ headerRight: () => <ConfigNotifiButtom /> }} />
       <Stack.Screen name="Config" component={Config} />
       <Stack.Screen name="Notificaciones" component={Notificaciones} />
     </Stack.Navigator>

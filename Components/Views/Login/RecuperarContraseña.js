@@ -30,27 +30,31 @@ const RecuperarContraseña = () => {
   return (
     <ImageBackground source={require("../../../assets/QuickFoodCortado.png")} style={styles.backgroundImage}>
       <View style={styles.containerCard}>
-        <View style={styles.card}>
+        <View style={[styles.card, { borderWidth: 1, borderColor: Colors.Gris }]}> 
           <View style={styles.cardheader}>
             <Text style={styles.title}>Enviar codigo al Email</Text>
           </View>
-          <View style={styles.cardBody}>
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Email </Text>
-              <TextInput style={styles.inputAlternativo} value={email} onChangeText={setEmail} />
+          <View style={[styles.cardBody, { alignItems: 'stretch' }]}> 
+            <View style={styles.inputContainerAlternativa}>
+              <Text style={[styles.label, { alignSelf: 'flex-start', marginLeft: 4, marginBottom: 6 } ]}>Email</Text>
+              <TextInput
+                style={[styles.inputAlternativo, { width: '100%', paddingVertical: 12, fontSize: 15, color: Colors.Negro }]}
+                placeholder="Correo Electrónico"
+                placeholderTextColor={Colors.Gris}
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoComplete="email"
+              />
             </View>
           </View>
-          <View style={styles.buttonsContainer}>
-            <TouchableOpacity style={styles.containerCard}>
-              <Text style={styles.buttonEndForm} onPress={() => handleTengoUnCodigo()}>
-                Tengo un codigo
-              </Text>
+          <View style={{ marginTop: 12, flexDirection: 'row', justifyContent: 'space-between', gap: 8 }}>
+            <TouchableOpacity onPress={() => handleTengoUnCodigo()} style={{ flex: 1, backgroundColor: Colors.Verde, padding: 12, borderRadius: 6, marginRight: 6 }}>
+              <Text style={{ color: '#fff', textAlign: 'center' }}>Tengo un codigo</Text>
             </TouchableOpacity>
-
-            <TouchableOpacity style={styles.containerCard}>
-              <Text style={styles.buttonForm} onPress={() => handleRecuperarContraseña()}>
-                Enviar
-              </Text>
+            <TouchableOpacity style={[styles.button, { flex: 1, marginLeft: 6 }]} onPress={() => handleRecuperarContraseña()}>
+              <Text style={{ color: '#fff', textAlign: 'center', padding: 12 }}>Enviar</Text>
             </TouchableOpacity>
           </View>
         </View>

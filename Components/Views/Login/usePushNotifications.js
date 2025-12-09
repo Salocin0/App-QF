@@ -24,24 +24,38 @@ export const usePushNotifications = () => {
   async function registerForPushNotificationsAsync() {
     let token;
     if (Device.isDevice) {
-      const { status: existingStatus } =
-        await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
+      try {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
 
-      if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification");
-        return;
-      }
+        if (existingStatus !== "granted") {
+          const { status } = await Notifications.requestPermissionsAsync();
+          finalStatus = status;
+        }
+        if (finalStatus !== "granted") {
+          // Do not show alerts to the user here; just return and allow app to continue
+          console.debug("Push notifications permission not granted");
+          return;
+        }
 
-      token = await Notifications.getExpoPushTokenAsync({
-        projectId: Constants.expoConfig?.extra?.eas.projectId,
-      });
+        const projectId = Constants.expoConfig?.extra?.eas?.projectId;
+        if (!projectId) {
+          // Avoid calling getExpoPushTokenAsync without projectId to prevent deprecation warnings
+          console.debug("No projectId available for Expo push token; skipping token retrieval");
+          return;
+        }
+
+        try {
+          token = await Notifications.getExpoPushTokenAsync({ projectId });
+        } catch (err) {
+          console.warn("Failed to get Expo push token:", err?.message || err);
+        }
+      } catch (err) {
+        console.warn("Error during push notification registration:", err?.message || err);
+      }
     } else {
-      alert("Must be using a physical device for Push notifications");
+      // Running in emulator/simulator; skip showing alerts
+      console.debug("Push notifications require a physical device; skipping");
     }
 
     if (Platform.OS === "android") {
@@ -57,9 +71,15 @@ export const usePushNotifications = () => {
   }
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) => {
-      setExpoPushToken(token);
-    });
+    (async () => {
+      try {
+        const token = await registerForPushNotificationsAsync();
+        setExpoPushToken(token);
+      } catch (err) {
+        // Avoid unhandled promise rejection; log at debug level
+        console.debug("registerForPushNotificationsAsync error:", err?.message || err);
+      }
+    })();
 
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {

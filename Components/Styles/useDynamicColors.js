@@ -22,6 +22,10 @@ const useDynamicColors = () => {
     GrisOscuro: modoOscuroActivo ? "#7a7a7a" : "#838383",
   };
 
+  // Semantic color for text placed on primary / colored buttons.
+  // In light mode primary buttons have white text; in dark mode we map to Colors.Negro (which is white in dark mode).
+  Colors.OnPrimary = modoOscuroActivo ? Colors.Negro : Colors.Blanco;
+
   return Colors;
 };
 

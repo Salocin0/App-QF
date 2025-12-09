@@ -17,24 +17,26 @@ const ConfigNotifiButtom = ({ islogin = true }) => {
     navigation.navigate("Notificaciones");
   };
 
+  const iconStyle = { marginHorizontal: 8, padding: 6 };
+
   if (islogin === false) {
     return (
-      <TouchableOpacity onPress={goToConfig}>
-        <FontAwesomeIcon icon={faGear} color={Colors.Negro} />
+      <TouchableOpacity onPress={goToConfig} accessibilityLabel="Configuración" hitSlop={{top:10,bottom:10,left:10,right:10}} style={iconStyle}>
+        <FontAwesomeIcon icon={faGear} color={Colors.Negro} size={20} />
       </TouchableOpacity>
     );
   }
 
   return (
-    <View>
-      <View style={{ flexDirection: "row" }}>
-        <TouchableOpacity onPress={goToNotify}>
-          <FontAwesomeIcon icon={faGear} color={Colors.Negro} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={goToConfig}>
-          <FontAwesomeIcon icon={faBell} color={Colors.Negro} />
-        </TouchableOpacity>
-      </View>
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
+      {/* Notifications first (bell), then settings (gear). Add spacing and larger touch area. */}
+      <TouchableOpacity onPress={goToNotify} accessibilityLabel="Notificaciones" hitSlop={{top:10,bottom:10,left:10,right:10}} style={iconStyle}>
+        <FontAwesomeIcon icon={faBell} color={Colors.Negro} size={20} />
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={goToConfig} accessibilityLabel="Configuración" hitSlop={{top:10,bottom:10,left:10,right:10}} style={iconStyle}>
+        <FontAwesomeIcon icon={faGear} color={Colors.Negro} size={20} />
+      </TouchableOpacity>
     </View>
   );
 };

@@ -11,49 +11,54 @@ export function Counter() {
 
   return (
     <View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
         <TouchableOpacity
+          accessibilityLabel="increment"
           style={{
-            width: 30,
-            height: 30,
-            borderTopLeftRadius: 10,
-            borderBottomLeftRadius: 10,
+            width: 44,
+            height: 44,
+            borderTopLeftRadius: 8,
+            borderBottomLeftRadius: 8,
             borderWidth: 1,
-            borderColor: 'gray',
+            borderColor: Colors?.Gris || 'gray',
             justifyContent: 'center',
             alignItems: 'center',
+            backgroundColor: Colors?.Blanco,
           }}
           onPress={() => dispatch(increment())}
         >
-          <Text style={{ fontSize: 16,color:Colors.Negro }}>+</Text>
+          <Text style={{ fontSize: 20, color: Colors.Negro, fontWeight: '700' }}>+</Text>
         </TouchableOpacity>
         <View
           style={{
-            width: 30,
-            height: 30,
+            minWidth: 48,
+            height: 44,
             borderTopWidth: 1,
             borderBottomWidth: 1,
-            borderColor: 'gray',
+            borderColor: Colors?.Gris || 'gray',
             justifyContent: 'center',
             alignItems: 'center',
+            backgroundColor: Colors?.Blanco,
           }}
         >
-          <Text style={{ fontSize: 16,color:Colors.Negro }}>{count}</Text>
+          <Text style={{ fontSize: 18, color: Colors.Negro }}>{count}</Text>
         </View>
         <TouchableOpacity
+          accessibilityLabel="decrement"
           style={{
-            width: 30,
-            height: 30,
-            borderTopRightRadius: 10,
-            borderBottomRightRadius: 10,
+            width: 44,
+            height: 44,
+            borderTopRightRadius: 8,
+            borderBottomRightRadius: 8,
             borderWidth: 1,
-            borderColor: 'gray',
+            borderColor: Colors?.Gris || 'gray',
             justifyContent: 'center',
             alignItems: 'center',
+            backgroundColor: Colors?.Blanco,
           }}
           onPress={() => dispatch(decrement())}
         >
-          <Text style={{ fontSize: 16,color:Colors.Negro }}>-</Text>
+          <Text style={{ fontSize: 20, color: Colors.Negro, fontWeight: '700' }}>-</Text>
         </TouchableOpacity>
       </View>
     </View>

@@ -15,12 +15,12 @@ import {
   faFilter,
 } from "@fortawesome/free-solid-svg-icons";
 
-const BuscadorProductos = () => {
+const BuscadorProductos = ({ onSearch, onFilter, onOrder }) => {
   const Colors = useDynamicColors();
   const [searchText, setSearchText] = useState("");
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
-  const [selectedCategoria, setSelectedCategotia] = useState("porNombre");
+  const [selectedCategoria, setSelectedCategoria] = useState("porNombre");
   const [selectedOrder, setSelectedOrder] = useState("ASC");
 
   const handleSearch = () => {
@@ -43,8 +43,8 @@ const BuscadorProductos = () => {
     setShowFilterModal(false);
   };
 
-  const handleSelectCategotia = (order) => {
-    setSelectedCategotia(order);
+  const handleSelectCategoria = (order) => {
+    setSelectedCategoria(order);
     setShowOrderModal(false);
   };
 
@@ -88,16 +88,20 @@ const BuscadorProductos = () => {
     },
     modalContainer: {
       flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      justifyContent: "flex-end",
+      backgroundColor: "rgba(0, 0, 0, 0.4)",
     },
     modalContent: {
-      width: "80%",
+      width: "100%",
       backgroundColor: Colors?.Blanco,
-      borderRadius: 10,
-      padding: 20,
-      alignItems: "center",
+      borderTopLeftRadius: 16,
+      borderTopRightRadius: 16,
+      padding: 18,
+      alignItems: "flex-start",
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: -2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 6,
     },
     closeButton: {
       marginTop: 20,
@@ -137,8 +141,9 @@ const BuscadorProductos = () => {
           placeholderTextColor={Colors.Negro}
           value={searchText}
           onChangeText={(text) => setSearchText(text)}
+          onSubmitEditing={() => { if (typeof onSearch === 'function') onSearch(searchText.trim()); }}
         />
-        <TouchableOpacity style={styles.button} onPress={handleSearch}>
+        <TouchableOpacity style={styles.button} onPress={() => { if (typeof onSearch === 'function') onSearch(searchText.trim()); }}>
           <FontAwesomeIcon icon={faMagnifyingGlass} color={Colors.Negro} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleOpenOrderModal}>
@@ -148,8 +153,8 @@ const BuscadorProductos = () => {
           <FontAwesomeIcon icon={faFilter} color={Colors.Negro}/>
         </TouchableOpacity>
       </View>
-      <Modal visible={showOrderModal} animationType="none" transparent={true}>
-        <View style={styles.modalContainer}>
+      <Modal visible={showOrderModal} animationType="slide" transparent={true}>
+        <TouchableOpacity style={styles.modalContainer} activeOpacity={1} onPress={() => setShowOrderModal(false)}>
           <View style={styles.modalContent}>
             <Text style={{ color: Colors.Negro }}>Orden:</Text>
             <View style={{ flexDirection: "row" }}>
@@ -184,7 +189,7 @@ const BuscadorProductos = () => {
                   selectedCategoria === "porNombre" &&
                     styles.radioButtonSelected,
                 ]}
-                onPress={() => handleSelectCategotia("porNombre")}
+                onPress={() => handleSelectCategoria("porNombre")}
               >
                 <Text style={{ textAlign: "center", color: Colors.Negro }}>
                   Nombre
@@ -196,7 +201,7 @@ const BuscadorProductos = () => {
                   selectedCategoria === "porPrecio" &&
                     styles.radioButtonSelected,
                 ]}
-                onPress={() => handleSelectCategotia("porPrecio")}
+                onPress={() => handleSelectCategoria("porPrecio")}
               >
                 <Text style={{ textAlign: "center", color: Colors.Negro }}>
                   Precio
@@ -208,13 +213,13 @@ const BuscadorProductos = () => {
               style={styles.closeButton}
               onPress={handleCloseOrderModal}
             >
-              <Text style={{ color: Colors?.Negro }}>Cerrar</Text>
+              <Text style={{ color: Colors?.Blanco }}>Cerrar</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
-      <Modal visible={showFilterModal} animationType="none" transparent={true}>
-        <View style={styles.modalContainer}>
+      <Modal visible={showFilterModal} animationType="slide" transparent={true}>
+        <TouchableOpacity style={styles.modalContainer} activeOpacity={1} onPress={() => setShowFilterModal(false)}>
           <View style={styles.modalContent}>
             <Text style={{ fontSize: 18, color: Colors?.Negro }}>
               Filtrar por
@@ -244,14 +249,22 @@ const BuscadorProductos = () => {
                 />
               </View>
             </View>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={handleCloseFilterModal}
-            >
-              <Text style={{ color: Colors?.Blanco }}>Cerrar</Text>
-            </TouchableOpacity>
+            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-between' }}>
+              <TouchableOpacity
+                style={[styles.closeButton, { flex: 1, marginRight: 8 }]}
+                onPress={() => { if (typeof onFilter === 'function') onFilter({ categoria: selectedCategoria, selectedOrder }); }}
+              >
+                <Text style={{ color: Colors?.Blanco }}>Aplicar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.closeButton, { flex: 1, marginLeft: 8, backgroundColor: Colors?.Rojo }]}
+                onPress={() => setShowFilterModal(false)}
+              >
+                <Text style={{ color: Colors?.Blanco }}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
     </View>
   );

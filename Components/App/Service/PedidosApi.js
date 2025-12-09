@@ -23,7 +23,31 @@ export const pedidoApi = createApi({
         }
       }),
     }),
+    // Repartidor endpoints
+    getPedidosRepartidor: builder.query({
+      // Hits the backend endpoint that returns pedidos asignados a un repartidor
+      query: (repartidorid) => ({
+        url: "/pedido/repartidor",
+        method: "GET",
+        headers: {
+          'Content-Type': 'application/json',
+          // example usage: backend expects 'consumidorid' header per API examples
+          'consumidorid': repartidorid
+        }
+      }),
+    }),
+    // For historial we fetch /pedido/ and filter entregados client-side
+    getHistorialPedidosRepartidor: builder.query({
+      query: (repartidorid) => ({
+        url: "/pedido/",
+        method: "GET",
+        headers: {
+          'Content-Type': 'application/json',
+          'consumidorid': repartidorid
+        }
+      }),
+    }),
   }),
 });
 
-export const { useCreatePedidoMutation, useGetPedidosQuery } = pedidoApi;
+export const { useCreatePedidoMutation, useGetPedidosQuery, useGetPedidosRepartidorQuery, useGetHistorialPedidosRepartidorQuery } = pedidoApi;

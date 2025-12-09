@@ -53,6 +53,11 @@ const useRegister = (navigation) => {
 
   const handleRegister = async () => {
     const url = `${REACT_APP_BACK_URL}user/`;
+    
+    // Log de la URL completa
+    console.log("=== REGISTRO ===");
+    console.log("URL completa del fetch:", url);
+    console.log("REACT_APP_BACK_URL:", REACT_APP_BACK_URL);
 
     const datosRegistro = {
       correoElectronico: userData.email,
@@ -88,6 +93,8 @@ const useRegister = (navigation) => {
       },
     };
 
+    console.log("Datos a enviar:", JSON.stringify(datosRegistro, null, 2));
+
     const options = {
       method: "POST",
       headers: {
@@ -97,10 +104,15 @@ const useRegister = (navigation) => {
     };
 
     try {
+      console.log("Iniciando fetch...");
       const response = await fetch(url, options);
+      console.log("Response status:", response.status);
+      console.log("Response ok:", response.ok);
 
       const responseData = await response.json();
-      if (responseData.status === "sucess") {
+      console.log("Response data:", JSON.stringify(responseData, null, 2));
+      
+      if (responseData.status === "success") {
         ToastAndroid.show("Registro exitoso", ToastAndroid.SHORT);
         ToastAndroid.show(
           "Se envió un email de validación a su correo",
@@ -108,12 +120,17 @@ const useRegister = (navigation) => {
         );
         navigation.navigate("Login");
       } else {
+        console.error("Error del servidor:", responseData.msg || "Error en el servidor");
         throw new Error(responseData.msg || "Error en el servidor");
       }
     } catch (error) {
+      console.error("=== ERROR EN REGISTRO ===");
+      console.error("Tipo de error:", error.name);
+      console.error("Mensaje:", error.message);
+      console.error("Stack:", error.stack);
       ToastAndroid.show(
-        "Error al registrar. Por favor, vuelva a intentar.",
-        ToastAndroid.SHORT
+        `Error al registrar: ${error.message}`,
+        ToastAndroid.LONG
       );
       navigation.navigate("Login");
     }

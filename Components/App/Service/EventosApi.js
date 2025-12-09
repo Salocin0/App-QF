@@ -7,29 +7,35 @@ export const eventosApi = createApi({
   endpoints: (builder) => ({
     getEventos: builder.query({
       query: () => ({
-        url: "/evento/enEstado/EnCurso/",
+        // Removed trailing slash to match backend routing
+        url: "/evento/enEstado/EnCurso",
         method: "GET",
         headers: { "Content-Type": "application/json" },
       }),
       transformResponse: (response) => {
-        if (response.status === "success") {
+        if (response && response.status === "success") {
           return response.data;
         }
+        console.debug("EventosApi.getEventos: respuesta no exitosa", response);
+        return [];
       },
     }),
     getAllEventos: builder.query({
-      query: ({consumidorId}) => ({
+      // consumerId passed directly from components: useGetAllEventosQuery(userId)
+      query: (consumidorId) => ({
         url: "/evento/all",
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          'consumidorid': consumidorId,
+          consumidorid: consumidorId,
         },
       }),
       transformResponse: (response) => {
-        if (response.status === "success") {
+        if (response && response.status === "success") {
           return response.data;
         }
+        // return empty array as fallback so components can handle no-data gracefully
+        return [];
       },
     }),
   }),

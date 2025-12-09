@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ActivityIndicator, Button, Modal, TouchableOpacity, ToastAndroid } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator, Button, Modal, TouchableOpacity, ToastAndroid, ScrollView, RefreshControl } from "react-native";
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useGetPerfilQuery } from "../../App/Service/PerfilApi";
@@ -16,7 +16,8 @@ const Perfil = () => {
   const [deleteUser] = useDeleteUserMutation();
   const [modalVisible, setModalVisible] = useState(false);
 
-  const { data, error, isLoading } = useGetPerfilQuery(userId);
+  const { data, error, isLoading, refetch, isFetching } = useGetPerfilQuery(userId);
+  const [refreshing, setRefreshing] = useState(false);
 
   const handleDisableUser = async () => {
     try {
@@ -45,6 +46,12 @@ const Perfil = () => {
       paddingHorizontal: 16,
       backgroundColor: Colors.GrisClaro,
     },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: Colors.GrisClaro,
+    },
     card: {
       backgroundColor: Colors.Blanco,
       borderRadius: 8,
@@ -60,6 +67,25 @@ const Perfil = () => {
       fontSize: 20,
       fontWeight: "bold",
       color: Colors.Negro,
+    },
+    row: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingVertical: 8,
+      borderBottomWidth: 1,
+      borderBottomColor: Colors.Gris,
+    },
+    label: {
+      color: Colors.GrisOscuro,
+      fontSize: 14,
+      flex: 0.45,
+    },
+    value: {
+      color: Colors.Negro,
+      fontSize: 15,
+      fontWeight: '600',
+      flex: 0.55,
+      textAlign: 'right'
     },
     button: {
       marginTop: 4,
@@ -116,12 +142,35 @@ const Perfil = () => {
     buttonText: {
       color: Colors.Negro,
     },
+    primaryButton: {
+      backgroundColor: Colors.Azul,
+      padding: 12,
+      borderRadius: 8,
+      alignItems: 'center',
+      marginTop: 8,
+    },
+    primaryButtonText: {
+      color: Colors.OnPrimary,
+      fontWeight: '700',
+    },
+    secondaryButton: {
+      backgroundColor: Colors.Rojo,
+      padding: 12,
+      borderRadius: 8,
+      alignItems: 'center',
+      marginTop: 8,
+    },
+    secondaryButtonText: {
+      color: Colors.OnPrimary,
+      fontWeight: '700',
+    },
   });
 
-  if (isLoading) {
+  // Show a centered blue spinner while loading or when a refresh is in progress
+  if (isLoading || isFetching || refreshing) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color={Colors.Naranja} />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Colors.Azul} />
       </View>
     );
   }
@@ -136,17 +185,35 @@ const Perfil = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing || isFetching} onRefresh={async () => { setRefreshing(true); try { await refetch(); } catch(e){ console.error(e); } setRefreshing(false); }} />}>
       {data.habilitado && (
         <>
           <Text style={styles.title}>Usuario</Text>
           <View style={styles.card}>
-            <Text style={{ color: Colors.Negro }}>Nombre: {data.nombre}</Text>
-            <Text style={{ color: Colors.Negro }}>Apellido: {data.apellido}</Text>
-            <Text style={{ color: Colors.Negro }}>DNI: {data.dni}</Text>
-            <Text style={{ color: Colors.Negro }}>Teléfono: {data.telefono}</Text>
-            <Text style={{ color: Colors.Negro }}>Localidad: {data.localidad}</Text>
-            <Text style={{ color: Colors.Negro }}>Provincia: {data.provincia}</Text>
+            <View style={styles.row}>
+              <Text style={styles.label}>Nombre</Text>
+              <Text style={styles.value}>{data.nombre}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Apellido</Text>
+              <Text style={styles.value}>{data.apellido}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>DNI</Text>
+              <Text style={styles.value}>{data.dni}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Teléfono</Text>
+              <Text style={styles.value}>{data.telefono}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Localidad</Text>
+              <Text style={styles.value}>{data.localidad}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Provincia</Text>
+              <Text style={styles.value}>{data.provincia}</Text>
+            </View>
           </View>
         </>
       )}
@@ -155,9 +222,18 @@ const Perfil = () => {
         <>
           <Text style={styles.title}>Productor</Text>
           <View style={styles.card}>
-            <Text style={{ color: Colors.Negro }}>Condición IVA: {data.productor.condicionIva}</Text>
-            <Text style={{ color: Colors.Negro }}>CUIT: {data.productor.cuit}</Text>
-            <Text style={{ color: Colors.Negro }}>Razón Social: {data.productor.razonSocial}</Text>
+            <View style={styles.row}>
+              <Text style={styles.label}>Condición IVA</Text>
+              <Text style={styles.value}>{data.productor.condicionIva}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>CUIT</Text>
+              <Text style={styles.value}>{data.productor.cuit}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Razón Social</Text>
+              <Text style={styles.value}>{data.productor.razonSocial}</Text>
+            </View>
           </View>
         </>
       )}
@@ -165,19 +241,28 @@ const Perfil = () => {
         <>
           <Text style={styles.title}>Encargado</Text>
           <View style={styles.card}>
-            <Text style={{ color: Colors.Negro }}>Condición IVA: {data.encargado.condicionIva}</Text>
-            <Text style={{ color: Colors.Negro }}>CUIT: {data.encargado.cuit}</Text>
-            <Text style={{ color: Colors.Negro }}>Razón Social: {data.encargado.razonSocial}</Text>
+            <View style={styles.row}>
+              <Text style={styles.label}>Condición IVA</Text>
+              <Text style={styles.value}>{data.encargado.condicionIva}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>CUIT</Text>
+              <Text style={styles.value}>{data.encargado.cuit}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Razón Social</Text>
+              <Text style={styles.value}>{data.encargado.razonSocial}</Text>
+            </View>
           </View>
         </>
       )}
-      <View style={styles.button}>
-        <Button title="Editar Datos" color={Colors.Azul} onPress={handleEditarUser} />
-      </View>
+      <TouchableOpacity style={styles.primaryButton} onPress={handleEditarUser} accessibilityLabel="Editar datos">
+        <Text style={styles.primaryButtonText}>Editar Datos</Text>
+      </TouchableOpacity>
 
-      <View style={styles.button}>
-        <Button title="Deshabilitar usuario" color={Colors.Rojo} onPress={() => setModalVisible(true)} />
-      </View>
+      <TouchableOpacity style={styles.secondaryButton} onPress={() => setModalVisible(true)} accessibilityLabel="Deshabilitar usuario">
+        <Text style={styles.secondaryButtonText}>Deshabilitar usuario</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity style={styles.buttonInfo} onPress={handleCerrarSesion}>
         <Text style={styles.buttonInfoText}>Cerrar Sesion</Text>
@@ -195,16 +280,16 @@ const Perfil = () => {
                   handleDisableUser();
                 }}
               >
-                <Text style={styles.buttonText}>Sí</Text>
+                <Text style={{ color: Colors.OnPrimary }}>Sí</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.buttonModal, styles.closeButton]} onPress={() => setModalVisible(false)}>
-                <Text style={styles.buttonText}>No</Text>
+                <Text style={{ color: Colors.OnPrimary }}>No</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
-    </View>
+    </ScrollView>
   );
 };
 

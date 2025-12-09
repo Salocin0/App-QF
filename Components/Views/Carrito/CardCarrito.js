@@ -49,14 +49,14 @@ const CardCarrito = ({ puesto, productos }) => {
     card: {
       borderWidth: 1,
       borderColor: Colors.GrisOscuro,
-      borderRadius: 5,
-      padding: 10,
+      borderRadius: 8,
+      padding: 12,
       marginVertical: 10,
-      marginHorizontal:10,
+      marginHorizontal: 10,
       flexDirection: 'column',
-      alignItems: 'flex-start',
+      alignItems: 'stretch',
       backgroundColor: Colors.Blanco,
-      elevation:5
+      elevation: 5,
     },
     titulo: {
       fontWeight: 'bold',
@@ -69,46 +69,83 @@ const CardCarrito = ({ puesto, productos }) => {
       marginTop: 5,
       color:Colors.Negro
     },
-    item: {
-      marginLeft: 10,
-      marginTop: 5,
+    headerRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      color:Colors.Negro
+      justifyContent: 'flex-start',
+      gap: 8,
+      marginBottom: 6,
+    },
+    /* pedidoIcon removed per user request */
+    item: {
+      marginTop: 8,
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: Colors.GrisClaroPeroNoTanClaro,
+      padding: 8,
+      borderRadius: 6,
+    },
+    itemBullet: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: Colors.Celeste,
+      marginRight: 8,
     },
     nombreCantidad: {
       flex: 1,
-      color:Colors.Negro
+      color: Colors.Negro,
     },
     botonFinalizar: {
       backgroundColor: Colors.Azul,
       padding: 10,
       borderRadius: 5,
-      marginTop: 10,
+      marginTop: 0,
       alignSelf: 'flex-end',
     },
     textoBoton: {
-      color: Colors.Blanco,
+      color: Colors.OnPrimary,
       fontWeight: 'bold',
       textAlign: 'center',
-      color:Colors.Negro
+    },
+    footerRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginTop: 12,
+    },
+    totalText: {
+      fontSize: 16,
+      fontWeight: '700',
+      color: Colors.Negro,
     },
   });
 
   return (
     <View style={styles.card}>
-      <Text style={styles.titulo}>Pedido: {puesto}</Text>
-      <Text style={styles.subtitulo}>Productos:</Text>
+      <View style={styles.headerRow}>
+        <View>
+          <Text style={styles.titulo}>Pedido: {puesto}</Text>
+          <Text style={styles.subtitulo}>{productos.length} items</Text>
+        </View>
+      </View>
+
+      <Text style={[styles.subtitulo, { marginTop: 8 }]}>Productos:</Text>
       {productos.map((producto, index) => (
         <View key={index} style={styles.item}>
+          <View style={styles.itemBullet} />
           <Text style={styles.nombreCantidad}>
-            {producto.nombre} X {producto.cantidad} : ${producto.precio * producto.cantidad}
+            {producto.nombre} x {producto.cantidad} — ${producto.precio * producto.cantidad}
           </Text>
         </View>
       ))}
-      <TouchableOpacity style={styles.botonFinalizar} onPress={handleComprar}>
-        <Text style={styles.textoBoton}>Finalizar compra</Text>
-      </TouchableOpacity>
+
+      <View style={styles.footerRow}>
+        <Text style={styles.totalText}>Total: ${calcularTotal(productos)}</Text>
+        <TouchableOpacity style={styles.botonFinalizar} onPress={handleComprar}>
+          <Text style={styles.textoBoton}>Finalizar compra</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

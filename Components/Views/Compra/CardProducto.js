@@ -7,68 +7,45 @@ import { faMoneyBillWave } from "@fortawesome/free-solid-svg-icons";
 
 const CardProducto = ({ item, navigation }) => {
   const Colors = useDynamicColors();
-  const seleccionarPuesto = (producto) => {
-    navigation.navigate("Detalle", { producto, puesto:item });
-  };
+  const seleccionarPuesto = (producto) => navigation.navigate("Detalle", { producto, puesto: item });
 
   return (
     <TouchableOpacity
+      activeOpacity={0.9}
       style={{
         backgroundColor: Colors.Blanco,
-        borderRadius: 10,
+        borderRadius: 12,
         shadowColor: Colors.Negro,
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        shadowOpacity: 0.18,
+        shadowRadius: 6,
+        elevation: 3,
         flexDirection: "row",
-        height: 170,
-        marginVertical: 5,
+        height: 140,
+        marginVertical: 8,
         marginHorizontal: 20,
         borderColor: Colors?.GrisClaroPeroNoTanClaro,
-        borderWidth: 2,
+        borderWidth: 1,
+        overflow: 'hidden'
       }}
       onPress={() => seleccionarPuesto(item)}
     >
-      <View
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: 75,
-          height: 75,
-          backgroundColor: Colors.Blanco,
-          borderTopRightRadius: 5,
-          borderTopLeftRadius: 5,
-          flexDirection: "row",
-          width: "100%",
-          alignItems: "center",
-          borderBottomWidth:1,
-          borderColor:Colors.Negro
-        }}
-      >
-        <Image source={logoevento} style={{ maxWidth: 75, height: "100%", borderTopLeftRadius: 5 }} resizeMode="cover" />
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: "bold",
-            marginBottom: 5,
-            textAlign: "center",
-            color: Colors.Negro,
-            width: "100%",
-            paddingRight: 75,
-          }}
-        >
-          {item.nombre}
-        </Text>
-      </View>
-      <View style={{ flex: 1, paddingTop: 80, backgroundColor: Colors.GrisClaro, borderRadius: 5, zIndex: -1 }}>
-        <Text style={{ fontSize: 16, textAlign: "center", color: Colors.Negro }}>{item.descripcion}</Text>
-        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10,justifyContent: "center" }}>
-          <View style={{ marginRight: 5 }}>
-            <FontAwesomeIcon icon={faMoneyBillWave} color={Colors.Verde} size={20} />
+      <Image
+        source={logoevento}
+        style={{ width: 120, height: "100%" }}
+        resizeMode="cover"
+      />
+      <View style={{ flex: 1, padding: 12, justifyContent: 'space-between' }}>
+        <View>
+          <Text style={{ fontSize: 18, fontWeight: '700', color: Colors.Negro }}>{item.nombre}</Text>
+          <Text numberOfLines={2} style={{ fontSize: 14, color: Colors.Negro, marginTop: 6 }}>{item.descripcion}</Text>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <FontAwesomeIcon icon={faMoneyBillWave} color={Colors.Verde} size={18} />
+            <Text style={{ fontSize: 16, color: Colors.Negro, marginLeft: 8 }}>${item.precio ?? '5.99'}</Text>
           </View>
-          <Text style={{ fontSize: 16, color: Colors.Negro }}>{item.precio || "5.99"}</Text>
+          <Text style={{ fontSize: 12, color: Colors.Gris }}>{item.categoria ?? ''}</Text>
         </View>
       </View>
     </TouchableOpacity>
