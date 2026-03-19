@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View, Image, TouchableOpacity } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faMoneyBillWave } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import logoevento from "./../../assets/logoevento.webp";
 import useDynamicColors from "../../Styles/useDynamicColors";
 
@@ -9,67 +9,110 @@ const CardProducto = ({ item, navigation, precompra, fecha, evento }) => {
   const Colors = useDynamicColors();
 
   const seleccionarPuesto = (producto) => {
-    navigation.navigate("Detalle", { producto, puesto: item, precompra, fecha, evento });
+    navigation.navigate("Detalle", {
+      producto,
+      puesto: item,
+      precompra,
+      fecha,
+      evento,
+    });
   };
 
   return (
     <TouchableOpacity
       style={{
-        backgroundColor: Colors.Blanco,
-        borderRadius: 10,
-        shadowColor: Colors.Negro,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-        marginVertical: 10,
-        marginHorizontal: 20,
-        borderColor: Colors.GrisClaroPeroNoTanClaro,
-        borderWidth: 1,
-        overflow: "hidden",
+        ...Colors.Styles.card,
         flexDirection: "row",
         alignItems: "center",
-        padding: 10,
+        padding: 12,
+        marginVertical: 8,
+        marginHorizontal: 20,
+        height: 130, // Más compacto como en la web
+        borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : Colors.GrisClaroPeroNoTanClaro,
+        borderWidth: 1,
+        backgroundColor: Colors.Blanco,
       }}
       onPress={() => seleccionarPuesto(item)}
     >
       {/* Imagen del producto */}
-      <Image
-        source={logoevento}
+      <View
         style={{
-          width: 100,
-          height: 100,
-          borderRadius: 10,
-          marginRight: 10,
+          width: 90,
+          height: 90,
+          borderRadius: 8,
+          overflow: "hidden",
+          backgroundColor: Colors.GrisClaro,
+          marginRight: 15,
         }}
-        resizeMode="cover"
-      />
+      >
+        <Image
+          source={
+            item?.img
+              ? { uri: item?.img }
+              : logoevento
+          }
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+          resizeMode="cover"
+        />
+      </View>
 
       {/* Información del producto */}
-      <View style={{ flex: 1 }}>
-        <Text
+      <View style={{ flex: 1, justifyContent: "space-between", height: "100%" }}>
+        <View>
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: "bold",
+              color: Colors.Negro,
+              marginBottom: 2,
+            }}
+            numberOfLines={1}
+          >
+            {item.nombre}
+          </Text>
+          <Text
+            style={{
+              fontSize: 13,
+              color: Colors.Gris,
+              lineHeight: 16,
+            }}
+            numberOfLines={2}
+          >
+            {item.descripcion}
+          </Text>
+        </View>
+
+        <View
           style={{
-            fontSize: 18,
-            fontWeight: "bold",
-            color: Colors.Negro,
-            marginBottom: 5,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          {item.nombre}
-        </Text>
-        <Text style={{ fontSize: 14, color: Colors.Negro, marginBottom: 10 }}>
-          {item.descripcion}
-        </Text>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <FontAwesomeIcon
-            icon={faMoneyBillWave}
-            color={Colors.Verde}
-            size={20}
-            style={{ marginRight: 5 }}
-          />
-          <Text style={{ fontSize: 16, color: Colors.Negro }}>
-            {item.precio || "5.99"}
-          </Text>
+          <View style={{ flexDirection: "row", alignItems: "baseline" }}>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: "bold",
+                color: Colors.Naranja,
+                marginRight: 2,
+              }}
+            >
+              $
+            </Text>
+            <Text
+              style={{
+                fontSize: 24,
+                fontWeight: "bold",
+                color: Colors.Negro,
+              }}
+            >
+              {item.precio}
+            </Text>
+          </View>
         </View>
       </View>
     </TouchableOpacity>

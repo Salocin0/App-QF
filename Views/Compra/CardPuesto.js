@@ -6,99 +6,89 @@ import useDynamicColors from "../../Styles/useDynamicColors";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faStar, faClock } from "@fortawesome/free-solid-svg-icons";
 
-const CardPuesto = ({ item, navigation,precompra,fecha, evento}) => {
+const CardPuesto = ({ item, navigation, precompra, fecha, evento }) => {
   const Colors = useDynamicColors();
   const seleccionarPuesto = (puesto) => {
-    navigation.navigate("Productos", { evento, puesto: puesto,precompra,fecha });
+    navigation.navigate("Productos", {
+      evento,
+      puesto: puesto,
+      precompra,
+      fecha,
+    });
   };
 
   return (
     <TouchableOpacity
       style={{
-        backgroundColor: Colors.Blanco,
-        borderRadius: 10,
-        shadowColor: Colors.Negro,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        ...Colors.Styles.card,
         flexDirection: "row",
-        height: 200,
-        marginVertical: 5,
+        alignItems: "center",
+        padding: 15,
+        height: 140, // Altura más compacta como en la web
+        marginVertical: 8,
         marginHorizontal: 20,
-        borderColor: Colors?.GrisClaroPeroNoTanClaro,
-        borderWidth: 2,
+        borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : Colors?.GrisClaroPeroNoTanClaro,
+        borderWidth: 1,
       }}
       onPress={() => seleccionarPuesto(item)}
     >
       <View
         style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          alignItems: "center",
+          width: 100,
+          height: 100,
+          borderRadius: 10,
+          overflow: "hidden",
+          marginRight: 15,
         }}
       >
         <Image
-          source={imgevento}
+          source={
+            item?.img
+              ? { uri: item?.img }
+              : require("./../../assets/logoevento.webp")
+          }
           style={{
             width: "100%",
-            height: "40%",
-            borderTopLeftRadius: 5,
-            borderTopRightRadius: 5,
+            height: "100%",
           }}
           resizeMode="cover"
         />
       </View>
-      <View style={{ flex: 1, padding: 10,marginTop:70 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
-          <Image
-            source={logoevento}
-            style={{
-              width: 60,
-              height: 60,
-              borderRadius: 30,
-              marginRight: 10,
-            }}
-            resizeMode="cover"
-          />
-          <View>
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: "bold",
-                marginBottom: 5,
-                color: Colors.Negro,
-              }}
-            >
-              {item.nombreCarro}
-            </Text>
-            <Text style={{ fontSize: 16, color: Colors.Negro }}>{item.tipoNegocio}</Text>
-          </View>
-        </View>
 
-        <View
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        <Text
           style={{
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            marginTop: 15,
+            fontSize: 20,
+            fontWeight: "bold",
+            color: Colors.Naranja, // Título naranja como en la web
+            marginBottom: 4,
           }}
         >
+          {item.nombreCarro}
+        </Text>
+        <Text
+          style={{
+            fontSize: 16,
+            color: Colors.Negro,
+            marginBottom: 8,
+          }}
+        >
+          {item.tipoNegocio}
+        </Text>
+
+        <View style={{ flexDirection: "row", gap: 15 }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <View style={{ marginRight: 5 }}>
-              <FontAwesomeIcon icon={faClock} color={Colors.Negro} size={20} />
-            </View>
-            <Text style={{ fontSize: 16, color: Colors.Negro }}>{item.time || "32 min"}</Text>
+            <FontAwesomeIcon icon={faClock} color={Colors.Negro} size={14} />
+            <Text style={{ fontSize: 14, color: Colors.Negro, marginLeft: 5 }}>
+              {item.time || "30"} Min
+            </Text>
           </View>
 
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <View style={{ marginRight: 5 }}>
-              <FontAwesomeIcon icon={faStar} color={Colors.NaranjaDetalle} size={20} />
-            </View>
-            <Text style={{ fontSize: 16, color: Colors.Negro }}>{item.estrellas || "4.4"}</Text>
+            <FontAwesomeIcon icon={faStar} color={Colors.NaranjaDetalle} size={14} />
+            <Text style={{ fontSize: 14, color: Colors.Negro, marginLeft: 5 }}>
+              {item.estrellas || "4.5"}
+            </Text>
           </View>
         </View>
       </View>

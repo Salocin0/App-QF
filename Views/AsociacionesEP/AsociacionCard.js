@@ -26,17 +26,7 @@ const AsociacionCard = ({ asociacion, evento }) => {
 
   const styles = StyleSheet.create({
     card: {
-      backgroundColor: Colors.Blanco,
-      borderRadius: 10,
-      marginVertical: 5,
-      padding: 10,
-      shadowColor: Colors.Negro,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.2,
-      shadowRadius: 2,
-      elevation: 3,
-      borderWidth: 1,
-      borderColor: Colors.GrisClaroPeroNoTanClaro,
+      ...Colors.Styles.card,
       position: "relative",
     },
     title: {

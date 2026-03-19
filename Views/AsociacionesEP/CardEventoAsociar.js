@@ -30,18 +30,13 @@ const CardEventoAsociar = ({ item, navigation, selectedPuestoId }) => {
   return (
     <TouchableOpacity
       style={{
-        backgroundColor: Colors.Blanco,
-        borderRadius: 10,
-        shadowColor: Colors.Negro,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        ...Colors.Styles.card,
         flexDirection: "column",
         height: 200,
         marginVertical: 5,
         marginHorizontal: 20,
-        borderColor: Colors?.Gris,
+        overflow: "hidden",
+        borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : Colors?.Gris,
         borderWidth: 1,
       }}
       onPress={() => seleccionarPuesto(item)}
@@ -119,10 +114,10 @@ const CardEventoAsociar = ({ item, navigation, selectedPuestoId }) => {
           borderBottomRightRadius: 10,
         }}
       >
-        <Text style={{ fontSize: 16, color: Colors.Blanco }}>
+        <Text style={{ fontSize: 16, color: Colors.BlancoEnBlanco }}>
           Empieza en 3 días
         </Text>
-        <Text style={{ fontSize: 16, color: Colors.Blanco }}>A 30 Km</Text>
+        <Text style={{ fontSize: 16, color: Colors.BlancoEnBlanco }}>A 30 Km</Text>
       </View>
     </TouchableOpacity>
   );

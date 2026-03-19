@@ -13,122 +13,187 @@ import {
   faArrowDownWideShort,
   faMagnifyingGlass,
   faFilter,
+  faCheck,
+  faStar,
 } from "@fortawesome/free-solid-svg-icons";
 
 const BuscadorPuestos = ({ onUpdate }) => {
   const Colors = useDynamicColors();
   const [searchText, setSearchText] = useState("");
   const [showOrderModal, setShowOrderModal] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
   const [selectedCategoria, setSelectedCategoria] = useState("porNombre");
+  const [tempCategoria, setTempCategoria] = useState(selectedCategoria);
+  const [selectedStars, setSelectedStars] = useState(0);
+  const [tempStars, setTempStars] = useState(0);
 
   const handleSearch = () => {
-    onUpdate(selectedCategoria, searchText);
+    onUpdate(selectedCategoria, searchText, selectedStars);
   };
 
   const handleOpenOrderModal = () => {
+    setTempCategoria(selectedCategoria);
     setShowOrderModal(true);
   };
 
-  const handleCloseOrderModal = () => {
-    setShowOrderModal(false);
-    handleSearch();
+  const handleOpenFilterModal = () => {
+    setTempStars(selectedStars);
+    setShowFilterModal(true);
   };
 
-  const handleSelectCategoria = (categoria) => {
-    setSelectedCategoria(categoria);
+  const handleApplyOrder = () => {
+    setSelectedCategoria(tempCategoria);
+    setShowOrderModal(false);
+    onUpdate(tempCategoria, searchText, selectedStars);
+  };
+
+  const handleApplyFilter = () => {
+    setSelectedStars(tempStars);
+    setShowFilterModal(false);
+    onUpdate(selectedCategoria, searchText, tempStars);
+  };
+
+  const handleSelectStars = (stars) => {
+    setTempStars(stars === tempStars ? 0 : stars);
   };
 
   const styles = StyleSheet.create({
     container: {
       marginHorizontal: 20,
+      marginVertical: 10,
     },
     searchContainer: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      backgroundColor: Colors.GrisClaro,
+      backgroundColor: "transparent",
       borderRadius: 10,
-      padding: 10,
-      paddingHorizontal: 0,
+      paddingVertical: 5,
     },
     input: {
       flex: 1,
-      height: 40,
-      paddingHorizontal: 10,
+      height: 45,
+      paddingHorizontal: 15,
       backgroundColor: Colors?.Blanco,
-      borderRadius: 5,
+      borderRadius: 10,
       marginRight: 10,
       borderWidth: 1,
-      borderColor: Colors.GrisClaroPeroNoTanClaro,
+      borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : Colors.GrisClaroPeroNoTanClaro,
+      color: Colors.Negro,
+      fontSize: 16,
     },
     buttonContainer: {
       flexDirection: "row",
-      justifyContent: "space-around",
-      marginTop: 0,
+      justifyContent: "space-between",
+      marginTop: 5,
+      gap: 10,
     },
     button: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
-      padding: 10,
+      paddingVertical: 10,
       backgroundColor: Colors?.Blanco,
-      borderRadius: 5,
+      borderRadius: 10,
       flex: 1,
-      marginHorizontal: 0,
       borderWidth: 1,
-      marginBottom: 10,
-      borderColor: Colors?.GrisClaroPeroNoTanClaro,
+      borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : Colors.GrisClaroPeroNoTanClaro,
+      ...Colors.Styles.card,
+      marginVertical: 0,
+      marginHorizontal: 0,
+      height: 45,
+    },
+    buttonActive: {
+      borderColor: Colors.Naranja,
+      backgroundColor: Colors.modoOscuroActivo ? "#3a2e10" : "#fff9e6",
     },
     buttonBuscar: {
-      flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: Colors?.Blanco,
-      borderRadius: 5,
-      marginHorizontal: 0,
-      borderWidth: 1,
-      borderColor: Colors?.GrisClaroPeroNoTanClaro,
-      width: 40,
-      height: 40,
+      backgroundColor: Colors?.Naranja,
+      borderRadius: 10,
+      width: 45,
+      height: 45,
+      elevation: 2,
     },
     buttonText: {
-      marginLeft: 5,
+      marginLeft: 8,
       color: Colors?.Negro,
+      fontWeight: "500",
     },
     modalContainer: {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      backgroundColor: "rgba(0, 0, 0, 0.7)",
     },
     modalContent: {
       backgroundColor: Colors.Blanco,
-      padding: 20,
-      borderRadius: 10,
-      width: "80%",
-      alignItems: "center",
+      padding: 25,
+      borderRadius: 20,
+      width: "85%",
+      ...Colors.Styles.card,
     },
-    radioButton: {
-      padding: 10,
+    modalTitle: {
+      fontSize: 20,
+      fontWeight: "bold",
+      color: Colors.Negro,
+      marginBottom: 20,
+      textAlign: "center",
+    },
+    optionItem: {
+      flexDirection: "row",
+      alignItems: "center",
+      padding: 15,
+      borderRadius: 10,
       borderWidth: 1,
-      borderColor: Colors.Gris,
-      borderRadius: 5,
-      marginHorizontal: 5,
+      borderColor: Colors.GrisClaroPeroNoTanClaro,
+      marginBottom: 10,
+      width: "100%",
+    },
+    optionItemSelected: {
+      borderColor: Colors.Naranja,
+      backgroundColor: Colors.modoOscuroActivo ? "#3a2e10" : "#fff9e6",
+    },
+    optionText: {
+      color: Colors.Negro,
+      fontSize: 16,
+      flex: 1,
+    },
+    starsContainer: {
+      flexDirection: "row",
+      justifyContent: "center",
+      gap: 10,
+      marginVertical: 10,
+    },
+    starButton: {
+      padding: 5,
+    },
+    actionButtons: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginTop: 20,
+      width: "100%",
+      gap: 10,
+    },
+    cancelButton: {
+      padding: 12,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: Colors.Rojo,
       flex: 1,
       alignItems: "center",
     },
-    radioButtonSelected: {
-      backgroundColor: Colors.Verde,
-      color: Colors.Blanco,
-    },
     applyButton: {
-      padding: 10,
+      padding: 12,
+      borderRadius: 10,
       backgroundColor: Colors.Verde,
-      borderRadius: 5,
-      marginTop: 20,
-      width: "100%",
+      flex: 1,
       alignItems: "center",
-      marginBottom: 10,
+    },
+    buttonActionText: {
+      fontWeight: "bold",
+      fontSize: 16,
     },
   });
 
@@ -137,85 +202,110 @@ const BuscadorPuestos = ({ onUpdate }) => {
       {/* Buscador */}
       <View style={styles.searchContainer}>
         <TextInput
-          style={[styles.input, { color: Colors.Negro }]}
+          style={styles.input}
           placeholder="Buscar puestos..."
-          placeholderTextColor={Colors.Negro}
+          placeholderTextColor={Colors.Gris}
           value={searchText}
-          onChangeText={(text) => setSearchText(text)}
+          onChangeText={setSearchText}
         />
-        <TouchableOpacity onPress={handleSearch} style={styles.buttonBuscar}>
-          <FontAwesomeIcon icon={faMagnifyingGlass} color={Colors.Negro} />
+        <TouchableOpacity style={styles.buttonBuscar} onPress={handleSearch}>
+          <FontAwesomeIcon icon={faMagnifyingGlass} color="white" size={18} />
         </TouchableOpacity>
       </View>
 
-      {/* Botones de Ordenar por y Filtrar */}
+      {/* Botones de Ordenar y Filtrar */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button, { marginEnd: 5 }]}
-          onPress={handleOpenOrderModal}
-        >
-          <FontAwesomeIcon icon={faArrowDownWideShort} color={Colors.Negro} />
+        <TouchableOpacity style={styles.button} onPress={handleOpenOrderModal}>
+          <FontAwesomeIcon icon={faArrowDownWideShort} color={Colors.Naranja} size={16} />
           <Text style={styles.buttonText}>Ordenar por</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.button, { marginStart: 5 }]}
-          onPress={() => {}}
-          disabled
+        <TouchableOpacity 
+          style={[styles.button, selectedStars > 0 && styles.buttonActive]} 
+          onPress={handleOpenFilterModal}
         >
-          <FontAwesomeIcon icon={faFilter} color={Colors.Negro} />
-          <Text style={styles.buttonText}>Filtrar</Text>
+          <FontAwesomeIcon icon={faFilter} color={Colors.Naranja} size={16} />
+          <Text style={styles.buttonText}>
+            {selectedStars > 0 ? `Estrellas: ${selectedStars}` : "Filtrar"}
+          </Text>
         </TouchableOpacity>
       </View>
 
-      <Modal visible={showOrderModal} animationType="none" transparent={true}>
+      {/* Modal de Ordenar */}
+      <Modal visible={showOrderModal} transparent animationType="fade">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            {/* Categoría */}
-            <Text style={{ color: Colors.Negro, marginBottom: 10 }}>
-              Ordenar por:
-            </Text>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-around", width: '100%' }}
+            <Text style={styles.modalTitle}>Ordenar por</Text>
+            
+            <TouchableOpacity 
+              style={[styles.optionItem, tempCategoria === "porNombre" && styles.optionItemSelected]} 
+              onPress={() => setTempCategoria("porNombre")}
             >
-              <TouchableOpacity
-                style={[
-                  styles.radioButton,
-                  selectedCategoria === "porNombre" &&
-                    styles.radioButtonSelected,
-                ]}
-                onPress={() => handleSelectCategoria("porNombre")}
-              >
-                <Text style={{ color: Colors.Negro }}>Nombre</Text>
+              <Text style={styles.optionText}>Nombre</Text>
+              {tempCategoria === "porNombre" && <FontAwesomeIcon icon={faCheck} color={Colors.Naranja} size={14} />}
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.optionItem, tempCategoria === "TiempoEntrega" && styles.optionItemSelected]} 
+              onPress={() => setTempCategoria("TiempoEntrega")}
+            >
+              <Text style={styles.optionText}>Tiempo de entrega</Text>
+              {tempCategoria === "TiempoEntrega" && <FontAwesomeIcon icon={faCheck} color={Colors.Naranja} size={14} />}
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.optionItem, tempCategoria === "Estrellas" && styles.optionItemSelected]} 
+              onPress={() => setTempCategoria("Estrellas")}
+            >
+              <Text style={styles.optionText}>Estrellas</Text>
+              {tempCategoria === "Estrellas" && <FontAwesomeIcon icon={faCheck} color={Colors.Naranja} size={14} />}
+            </TouchableOpacity>
+
+            <View style={styles.actionButtons}>
+              <TouchableOpacity style={styles.cancelButton} onPress={() => setShowOrderModal(false)}>
+                <Text style={[styles.buttonActionText, { color: Colors.Rojo }]}>Cancelar</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.radioButton,
-                  selectedCategoria === "TiempoEntrega" &&
-                    styles.radioButtonSelected,
-                ]}
-                onPress={() => handleSelectCategoria("TiempoEntrega")}
-              >
-                <Text style={{ color: Colors.Negro }}>Tiempo</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.radioButton,
-                  selectedCategoria === "Estrellas" &&
-                    styles.radioButtonSelected,
-                ]}
-                onPress={() => handleSelectCategoria("Estrellas")}
-              >
-                <Text style={{ color: Colors.Negro }}>Estrellas</Text>
+              <TouchableOpacity style={styles.applyButton} onPress={handleApplyOrder}>
+                <Text style={[styles.buttonActionText, { color: "white" }]}>Aceptar</Text>
               </TouchableOpacity>
             </View>
+          </View>
+        </View>
+      </Modal>
 
-            {/* Botón de aplicar */}
-            <TouchableOpacity
-              style={styles.applyButton}
-              onPress={handleCloseOrderModal}
-            >
-              <Text style={{ color: Colors.Blanco }}>Aplicar</Text>
-            </TouchableOpacity>
+      {/* Modal de Filtrar por Estrellas */}
+      <Modal visible={showFilterModal} transparent animationType="fade">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Filtrar por Estrellas</Text>
+            
+            <View style={styles.starsContainer}>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <TouchableOpacity 
+                  key={star} 
+                  style={styles.starButton} 
+                  onPress={() => handleSelectStars(star)}
+                >
+                  <FontAwesomeIcon 
+                    icon={faStar} 
+                    color={star <= tempStars ? Colors.Naranja : Colors.GrisClaroPeroNoTanClaro} 
+                    size={32} 
+                  />
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <Text style={{ textAlign: 'center', color: Colors.Gris, marginTop: 10 }}>
+              {tempStars > 0 ? `${tempStars} estrellas seleccionadas` : "Seleccioná la puntuación mínima"}
+            </Text>
+
+            <View style={styles.actionButtons}>
+              <TouchableOpacity style={styles.cancelButton} onPress={() => setShowFilterModal(false)}>
+                <Text style={[styles.buttonActionText, { color: Colors.Rojo }]}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.applyButton} onPress={handleApplyFilter}>
+                <Text style={[styles.buttonActionText, { color: "white" }]}>Aceptar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>

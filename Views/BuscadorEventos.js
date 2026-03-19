@@ -14,6 +14,7 @@ import {
   faArrowDownWideShort,
   faMagnifyingGlass,
   faFilter,
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 
 const BuscadorEventos = ({ onUpdate }) => {
@@ -34,162 +35,186 @@ const BuscadorEventos = ({ onUpdate }) => {
   };
 
   const handleOpenOrderModal = () => {
+    setTempCategoria(selectedCategoria);
     setShowOrderModal(true);
   };
 
   const handleCloseOrderModal = () => {
     setShowOrderModal(false);
-    handleSearch();
+  };
+
+  const handleApplyOrder = () => {
+    setSelectedCategoria(tempCategoria);
+    setShowOrderModal(false);
+    onUpdate(tempCategoria, filters, searchText);
   };
 
   const handleOpenFilterModal = () => {
+    setTempFilters({ ...filters });
     setShowFilterModal(true);
   };
 
   const handleCloseFilterModal = () => {
     setShowFilterModal(false);
-    handleSearch();
+  };
+
+  const handleApplyFilters = () => {
+    setFilters(tempFilters);
+    setShowFilterModal(false);
+    onUpdate(selectedCategoria, tempFilters, searchText);
   };
 
   const handleSelectCategoria = (order) => {
-    setSelectedCategoria(order);
+    setTempCategoria(order);
   };
 
   const handleToggleFilter = (filterKey) => {
-    setFilters((prevFilters) => ({
+    setTempFilters((prevFilters) => ({
       ...prevFilters,
       [filterKey]: !prevFilters[filterKey],
     }));
   };
 
-  const handleApplyFilters = () => {
-    setShowFilterModal(false);
-    handleSearch();
-  };
+  const [tempCategoria, setTempCategoria] = useState(selectedCategoria);
+  const [tempFilters, setTempFilters] = useState({ ...filters });
 
   const styles = StyleSheet.create({
     container: {
       marginHorizontal: 20,
+      marginVertical: 10,
     },
     searchContainer: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      backgroundColor: Colors.GrisClaro,
+      backgroundColor: "transparent",
       borderRadius: 10,
-      padding: 10,
-      paddingHorizontal: 0,
+      paddingVertical: 5,
     },
     input: {
       flex: 1,
-      height: 40,
-      paddingHorizontal: 10,
+      height: 45,
+      paddingHorizontal: 15,
       backgroundColor: Colors?.Blanco,
-      borderRadius: 5,
+      borderRadius: 10,
       marginRight: 10,
       borderWidth: 1,
-      borderColor: Colors.GrisClaroPeroNoTanClaro,
+      borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : Colors.GrisClaroPeroNoTanClaro,
+      color: Colors.Negro,
+      fontSize: 16,
     },
     buttonContainer: {
       flexDirection: "row",
-      justifyContent: "space-around",
-      marginTop: 0,
+      justifyContent: "space-between",
+      marginTop: 5,
+      gap: 10,
     },
     button: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
-      padding: 10,
+      paddingVertical: 10,
       backgroundColor: Colors?.Blanco,
-      borderRadius: 5,
+      borderRadius: 10,
       flex: 1,
-      marginHorizontal: 0,
       borderWidth: 1,
-      marginBottom: 10,
-      borderColor: Colors?.GrisClaroPeroNoTanClaro,
+      borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : Colors.GrisClaroPeroNoTanClaro,
+      ...Colors.Styles.card,
+      marginVertical: 0,
+      marginHorizontal: 0,
+      height: 45,
     },
     buttonBuscar: {
-      flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: Colors?.Blanco,
-      borderRadius: 5,
-      marginHorizontal: 0,
-      borderWidth: 1,
-      borderColor: Colors?.GrisClaroPeroNoTanClaro,
-      width: 40,
-      height: 40,
+      backgroundColor: Colors?.Naranja,
+      borderRadius: 10,
+      width: 45,
+      height: 45,
+      elevation: 2,
     },
     buttonText: {
-      marginLeft: 5,
+      marginLeft: 8,
       color: Colors?.Negro,
-    },
-    filterContainer: {
-      flexDirection: "row",
+      fontWeight: "500",
     },
     modalContainer: {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      backgroundColor: "rgba(0, 0, 0, 0.7)",
     },
     modalContent: {
       backgroundColor: Colors.Blanco,
-      padding: 20,
+      padding: 25,
+      borderRadius: 20,
+      width: "85%",
+      ...Colors.Styles.card,
+    },
+    modalTitle: {
+      fontSize: 20,
+      fontWeight: "bold",
+      color: Colors.Negro,
+      marginBottom: 20,
+      textAlign: "center",
+    },
+    optionItem: {
+      flexDirection: "row",
+      alignItems: "center",
+      padding: 15,
       borderRadius: 10,
-      width: "80%",
-      alignItems: "center",
-    },
-    radioButton: {
-      padding: 10,
       borderWidth: 1,
-      borderColor: Colors.Gris,
-      borderRadius: 5,
-      marginHorizontal: 5,
-    },
-    radioButtonSelected: {
-      backgroundColor: Colors.Verde,
-      color: Colors.Blanco,
-    },
-    closeButton: {
-      marginTop: 20,
-      padding: 10,
-      backgroundColor: Colors.Verde,
-      borderRadius: 5,
-      width: "100%",
-      alignItems: "center",
-    },
-    filterItem: {
-      padding: 10,
-      borderWidth: 1,
-      borderColor: Colors.Gris,
-      borderRadius: 5,
+      borderColor: Colors.GrisClaroPeroNoTanClaro,
       marginBottom: 10,
       width: "100%",
     },
-    filterText: {
+    optionItemSelected: {
+      borderColor: Colors.Naranja,
+      backgroundColor: Colors.modoOscuroActivo ? "#3a2e10" : "#fff9e6",
+    },
+    optionText: {
       color: Colors.Negro,
-      fontSize: 18,
+      fontSize: 16,
+      flex: 1,
     },
-    filterItemActive: {
-      backgroundColor: Colors.Gris,
+    actionButtons: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginTop: 20,
+      width: "100%",
+      gap: 10,
     },
-    filterItemInactive: {
-      backgroundColor: Colors.Blanco,
+    cancelButton: {
+      padding: 12,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: Colors.Rojo,
+      flex: 1,
+      alignItems: "center",
+    },
+    applyButton: {
+      padding: 12,
+      borderRadius: 10,
+      backgroundColor: Colors.Verde,
+      flex: 1,
+      alignItems: "center",
+    },
+    buttonActionText: {
+      fontWeight: "bold",
+      fontSize: 16,
     },
     filterItemContainer: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
       width: '100%',
-      paddingVertical: 10,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: Colors.GrisClaroPeroNoTanClaro,
     },
-    uppercaseText: {
-      textTransform: 'uppercase',
-    },
-    spacedText: {
-      textTransform: 'uppercase',
-      letterSpacing: 1,
+    filterText: {
+      color: Colors.Negro,
+      fontSize: 16,
     },
   });
 
@@ -198,243 +223,113 @@ const BuscadorEventos = ({ onUpdate }) => {
       {/* Buscador */}
       <View style={styles.searchContainer}>
         <TextInput
-          style={[styles.input, { color: Colors.Negro }]}
+          style={styles.input}
           placeholder="Buscar eventos..."
-          placeholderTextColor={Colors.Negro}
+          placeholderTextColor={Colors.Gris}
           value={searchText}
-          onChangeText={(text) => setSearchText(text)}
+          onChangeText={setSearchText}
         />
-        <TouchableOpacity onPress={handleSearch} style={styles.buttonBuscar}>
-          <FontAwesomeIcon icon={faMagnifyingGlass} color={Colors.Negro} />
+        <TouchableOpacity style={styles.buttonBuscar} onPress={handleSearch}>
+          <FontAwesomeIcon icon={faMagnifyingGlass} color="white" size={18} />
         </TouchableOpacity>
       </View>
 
-      {/* Botones de Ordenar por y Filtrar */}
+      {/* Botones de Ordenar y Filtrar */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button, { marginEnd: 5 }]}
-          onPress={handleOpenOrderModal}
-        >
-          <FontAwesomeIcon icon={faArrowDownWideShort} color={Colors.Negro} />
-          <Text style={styles.buttonText}>Ordenar por</Text>
+        <TouchableOpacity style={styles.button} onPress={handleOpenOrderModal}>
+          <FontAwesomeIcon icon={faArrowDownWideShort} color={Colors.Naranja} size={16} />
+          <Text style={styles.buttonText}>Ordenar</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.button, { marginStart: 5 }]}
-          onPress={handleOpenFilterModal}
-        >
-          <FontAwesomeIcon icon={faFilter} color={Colors.Negro} />
+        <TouchableOpacity style={styles.button} onPress={handleOpenFilterModal}>
+          <FontAwesomeIcon icon={faFilter} color={Colors.Naranja} size={16} />
           <Text style={styles.buttonText}>Filtrar</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Modal para ordenar */}
-      <Modal visible={showOrderModal} animationType="none" transparent={true}>
+      {/* Modal de Ordenar */}
+      <Modal visible={showOrderModal} transparent animationType="fade">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text
-              style={{
-                color: Colors.Negro,
-                fontSize: 20,
-                fontWeight: "bold",
-                alignSelf: "flex-start",
-                paddingBottom: 10,
-              }}
+            <Text style={styles.modalTitle}>Ordenar por</Text>
+            
+            <TouchableOpacity 
+              style={[styles.optionItem, tempCategoria === "porDistancia" && styles.optionItemSelected]} 
+              onPress={() => handleSelectCategoria("porDistancia")}
             >
-              Ordenar por:
-            </Text>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
+              <Text style={styles.optionText}>Distancia</Text>
+              {tempCategoria === "porDistancia" && <FontAwesomeIcon icon={faPlus} color={Colors.Naranja} size={14} />}
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.optionItem, tempCategoria === "porFecha" && styles.optionItemSelected]} 
+              onPress={() => handleSelectCategoria("porFecha")}
             >
-              <TouchableOpacity
-                style={[
-                  styles.radioButton,
-                  selectedCategoria === "porDistancia" &&
-                    styles.radioButtonSelected,
-                ]}
-                onPress={() => handleSelectCategoria("porDistancia")}
-              >
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color:
-                      selectedCategoria === "porDistancia"
-                        ? Colors.Blanco
-                        : Colors.Negro,
-                  }}
-                >
-                  Distancia
-                </Text>
+              <Text style={styles.optionText}>Fecha</Text>
+              {tempCategoria === "porFecha" && <FontAwesomeIcon icon={faPlus} color={Colors.Naranja} size={14} />}
+            </TouchableOpacity>
+
+            <View style={styles.actionButtons}>
+              <TouchableOpacity style={styles.cancelButton} onPress={handleCloseOrderModal}>
+                <Text style={[styles.buttonActionText, { color: Colors.Rojo }]}>Cancelar</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.radioButton,
-                  selectedCategoria === "porNombre" &&
-                    styles.radioButtonSelected,
-                ]}
-                onPress={() => handleSelectCategoria("porNombre")}
-              >
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color:
-                      selectedCategoria === "porNombre"
-                        ? Colors.Blanco
-                        : Colors.Negro,
-                  }}
-                >
-                  Nombre
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.radioButton,
-                  selectedCategoria === "porFecha" &&
-                    styles.radioButtonSelected,
-                ]}
-                onPress={() => handleSelectCategoria("porFecha")}
-              >
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color:
-                      selectedCategoria === "porFecha"
-                        ? Colors.Blanco
-                        : Colors.Negro,
-                  }}
-                >
-                  Fecha
-                </Text>
+              <TouchableOpacity style={styles.applyButton} onPress={handleApplyOrder}>
+                <Text style={[styles.buttonActionText, { color: "white" }]}>Aceptar</Text>
               </TouchableOpacity>
             </View>
-
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={handleCloseOrderModal}
-            >
-              <Text style={{ color: Colors.Blanco }}>Aplicar</Text>
-            </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      {/* Modal de Filtros */}
-      <Modal visible={showFilterModal} animationType="none" transparent={true}>
+      {/* Modal de Filtrar */}
+      <Modal visible={showFilterModal} transparent animationType="fade">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text
-              style={{
-                color: Colors.Negro,
-                fontSize: 20,
-                fontWeight: "bold",
-                alignSelf: "flex-start",
-                paddingBottom: 10,
-              }}
-            >
-              Filtros:
-            </Text>
+            <Text style={styles.modalTitle}>Filtrar eventos</Text>
+            
+            <View style={styles.filterItemContainer}>
+              <Text style={styles.filterText}>Iniciados</Text>
+              <Switch
+                value={tempFilters.iniciados}
+                onValueChange={() => handleToggleFilter("iniciados")}
+                trackColor={{ false: Colors.Gris, true: Colors.Verde }}
+              />
+            </View>
 
-            <TouchableOpacity
-              style={[
-                styles.filterItem,
-                filters.iniciados && styles.filterItemActive,
-              ]}
-              onPress={() => handleToggleFilter("iniciados")}
-            >
-              <View style={styles.filterItemContainer}>
-                <Text
-                  style={[
-                    styles.filterText,
-                    styles.uppercaseText,
-                    { color: filters.iniciados ? Colors.Blanco : Colors.Negro },
-                  ]}
-                >
-                  Iniciados
-                </Text>
-                <Switch
-                  value={filters.iniciados}
-                  onValueChange={() => handleToggleFilter("iniciados")}
-                />
-              </View>
-            </TouchableOpacity>
+            <View style={styles.filterItemContainer}>
+              <Text style={styles.filterText}>Próximos</Text>
+              <Switch
+                value={tempFilters.proximos}
+                onValueChange={() => handleToggleFilter("proximos")}
+                trackColor={{ false: Colors.Gris, true: Colors.Verde }}
+              />
+            </View>
 
-            <TouchableOpacity
-              style={[
-                styles.filterItem,
-                filters.proximos && styles.filterItemActive,
-              ]}
-              onPress={() => handleToggleFilter("proximos")}
-            >
-              <View style={styles.filterItemContainer}>
-                <Text
-                  style={[
-                    styles.filterText,
-                    styles.uppercaseText,
-                    { color: filters.proximos ? Colors.Blanco : Colors.Negro },
-                  ]}
-                >
-                  Próximos
-                </Text>
-                <Switch
-                  value={filters.proximos}
-                  onValueChange={() => handleToggleFilter("proximos")}
-                />
-              </View>
-            </TouchableOpacity>
+            <View style={styles.filterItemContainer}>
+              <Text style={styles.filterText}>Con Preventa</Text>
+              <Switch
+                value={tempFilters.conPreventa}
+                onValueChange={() => handleToggleFilter("conPreventa")}
+                trackColor={{ false: Colors.Gris, true: Colors.Verde }}
+              />
+            </View>
 
-            <TouchableOpacity
-              style={[
-                styles.filterItem,
-                filters.conPreventa && styles.filterItemActive,
-              ]}
-              onPress={() => handleToggleFilter("conPreventa")}
-            >
-              <View style={styles.filterItemContainer}>
-                <Text
-                  style={[
-                    styles.filterText,
-                    styles.spacedText,
-                    { color: filters.conPreventa ? Colors.Blanco : Colors.Negro },
-                  ]}
-                >
-                  Con preventa
-                </Text>
-                <Switch
-                  value={filters.conPreventa}
-                  onValueChange={() => handleToggleFilter("conPreventa")}
-                />
-              </View>
-            </TouchableOpacity>
+            <View style={styles.filterItemContainer}>
+              <Text style={styles.filterText}>Sin Preventa</Text>
+              <Switch
+                value={tempFilters.sinPreventa}
+                onValueChange={() => handleToggleFilter("sinPreventa")}
+                trackColor={{ false: Colors.Gris, true: Colors.Verde }}
+              />
+            </View>
 
-            <TouchableOpacity
-              style={[
-                styles.filterItem,
-                filters.sinPreventa && styles.filterItemActive,
-              ]}
-              onPress={() => handleToggleFilter("sinPreventa")}
-            >
-              <View style={styles.filterItemContainer}>
-                <Text
-                  style={[
-                    styles.filterText,
-                    styles.spacedText,
-                    { color: filters.sinPreventa ? Colors.Blanco : Colors.Negro },
-                  ]}
-                >
-                  Sin preventa
-                </Text>
-                <Switch
-                  value={filters.sinPreventa}
-                  onValueChange={() => handleToggleFilter("sinPreventa")}
-                />
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={handleApplyFilters}
-            >
-              <Text style={{ color: Colors.Blanco }}>Aplicar</Text>
-            </TouchableOpacity>
+            <View style={styles.actionButtons}>
+              <TouchableOpacity style={styles.cancelButton} onPress={handleCloseFilterModal}>
+                <Text style={[styles.buttonActionText, { color: Colors.Rojo }]}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.applyButton} onPress={handleApplyFilters}>
+                <Text style={[styles.buttonActionText, { color: "white" }]}>Aceptar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>

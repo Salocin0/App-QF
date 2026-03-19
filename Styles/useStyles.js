@@ -28,6 +28,8 @@ const useStyles = () => {
       padding: 15,
       borderRadius: 10,
       elevation: 3,
+      borderWidth: Colors.modoOscuroActivo ? 1 : 0,
+      borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : "transparent",
     },
     title: {
       fontSize: 24,

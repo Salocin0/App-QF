@@ -4,27 +4,30 @@ import {
   Text,
   View,
   TouchableOpacity,
-  ScrollView,
   Dimensions,
+  ScrollView,
   Modal,
 } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import useDynamicColors from "@/Styles/useDynamicColors";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faCalendarDays, faCheckCircle, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import useDynamicColors from "../../Styles/useDynamicColors";
 
 const PrecompraCard = ({ setfecha, nextNavigate, evento }) => {
   const Colors = useDynamicColors();
   const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedEventDay, setSelectedEventDay] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedEventDay, setSelectedEventDay] = useState(null);
+  
+  const now = new Date();
 
   useEffect(() => {
-    setfecha(selectedDate);
-
-    // Busca el día de evento correspondiente a la fecha seleccionada
-    const eventDay = evento.diaEventos.find(dia => 
-      new Date(dia.fechaHoraInicioDiaEvento).getTime() === new Date(selectedDate).getTime()
-    );
-    setSelectedEventDay(eventDay);
+    if (selectedDate) {
+      setfecha(selectedDate);
+      const eventDay = evento.diaEventos.find(dia => 
+        dia.fechaHoraInicioDiaEvento === selectedDate
+      );
+      setSelectedEventDay(eventDay);
+    }
   }, [selectedDate]);
 
   const handleConfirmar = () => {
@@ -32,13 +35,17 @@ const PrecompraCard = ({ setfecha, nextNavigate, evento }) => {
     nextNavigate();
   };
 
-  const { height } = Dimensions.get("window");
+  const formatDateLabel = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("es-AR", {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short'
+    }).toUpperCase();
+  };
 
-  // Get current date and time
-  const now = new Date();
-
-  // Function to format date to DD/MM/YY HH:MM
-  const formatDate = (date) => {
+  const formatFullDate = (dateString) => {
+    if (!dateString) return "";
     const options = {
       day: "2-digit",
       month: "2-digit",
@@ -46,233 +53,234 @@ const PrecompraCard = ({ setfecha, nextNavigate, evento }) => {
       hour: "2-digit",
       minute: "2-digit",
     };
-    return new Date(date).toLocaleDateString("es-ES", options).replace(",", "");
+    return new Date(dateString).toLocaleDateString("es-AR", options).replace(",", "");
   };
 
   const styles = StyleSheet.create({
     card: {
       borderWidth: 1,
-      borderColor: Colors.Gris,
-      borderRadius: 8,
-      padding: 20,
+      borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : Colors.GrisClaroPeroNoTanClaro,
+      borderRadius: 25,
+      padding: 25,
       backgroundColor: Colors.Blanco,
-      shadowColor: Colors.Negro,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 3,
-      margin: 20,
-      height: height * 0.55,
+      marginHorizontal: 15,
+      marginTop: 20,
+      minHeight: 380,
+      ...Colors.Styles.card,
     },
     header: {
       alignItems: "center",
-      marginBottom: 15,
+      marginBottom: 20,
     },
-    icon: {
-      marginBottom: 10,
-      color: Colors.Negro,
+    iconContainer: {
+      width: 70,
+      height: 70,
+      borderRadius: 35,
+      backgroundColor: Colors.modoOscuroActivo ? "#3a2e10" : "#fff9e6",
+      justifyContent: "center",
+      alignItems: "center",
+      marginBottom: 15,
+      borderWidth: 1,
+      borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : "transparent",
     },
     title: {
-      fontSize: 20,
+      fontSize: 22,
       fontWeight: "bold",
       color: Colors.Negro,
       marginBottom: 5,
     },
     subtitle: {
-      fontSize: 16,
-      color: Colors.Negro,
+      fontSize: 15,
+      color: Colors.Gris,
       textAlign: "center",
+      marginBottom: 10,
     },
-    scrollContainer: {
-      flex: 1,
+    scrollWrapper: {
+      maxHeight: 180,
     },
     datesContainer: {
       flexDirection: "row",
-      flexWrap: "wrap", // This allows the buttons to wrap to the next line
-      justifyContent: "space-between", // Adjust spacing between buttons
-    },
-    row: {
-      flexDirection: "row",
+      flexWrap: "wrap",
       justifyContent: "space-between",
-      marginBottom: 10,
+      paddingBottom: 10,
     },
     dateButton: {
+      width: '48%',
       borderWidth: 1,
       borderColor: Colors.GrisClaroPeroNoTanClaro,
-      borderRadius: 8,
-      padding: 10,
-      width: "30%", // Set width to 30% to allow for three buttons per row
-      alignItems: "center",
       backgroundColor: Colors.GrisClaro,
-      marginBottom: 10, // Add margin to create space between rows
+      borderRadius: 15,
+      padding: 15,
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: 10,
+    },
+    selectedDateButton: {
+      borderColor: Colors.Naranja,
+      backgroundColor: Colors.modoOscuroActivo ? "#3a2e10" : "#fff9e6",
+      borderWidth: 2,
     },
     disabledDateButton: {
-      backgroundColor: Colors.Gris,
-    },
-    currentDateButton: {
-      backgroundColor: Colors.Naranja, // Different color for current date
+      opacity: 0.4,
+      backgroundColor: Colors.GrisClaroPeroNoTanClaro,
     },
     dateText: {
+      fontSize: 13,
+      fontWeight: "bold",
       color: Colors.Negro,
     },
     selectedDateText: {
-      color: Colors.Blanco,
-      
+      color: Colors.Naranja,
     },
-    selectedDateButton: {
-      backgroundColor: Colors.Gris,
-      
-    },
-    selectedText: {
-      textAlign: "center",
-      fontSize: 16,
-      color: Colors.Negro,
-      marginVertical: 10,
+    footer: {
+      marginTop: 15,
+      borderTopWidth: 1,
+      borderTopColor: Colors.GrisClaroPeroNoTanClaro,
+      paddingTop: 15,
     },
     confirmButton: {
       backgroundColor: Colors.Naranja,
-      padding: 15,
-      borderRadius: 8,
+      borderRadius: 15,
+      padding: 18,
+      flexDirection: "row",
       alignItems: "center",
-      marginTop: 10,
+      justifyContent: "center",
     },
-    confirmButtonText: {
-      color: Colors.Negro,
+    disabledButton: {
+      backgroundColor: Colors.GrisClaroPeroNoTanClaro,
+      opacity: 0.6,
+    },
+    confirmText: {
+      color: "white",
       fontSize: 16,
       fontWeight: "bold",
+      marginLeft: 10,
     },
+    // Modal Styles
     modalContainer: {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      backgroundColor: "rgba(0, 0, 0, 0.7)",
     },
     modalContent: {
-      width: "80%",
+      width: "85%",
       backgroundColor: Colors.Blanco,
-      borderRadius: 8,
-      padding: 20,
+      borderRadius: 25,
+      padding: 25,
       alignItems: "center",
+      borderWidth: 1,
+      borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : "transparent",
+    },
+    modalIcon: {
+      marginBottom: 15,
     },
     modalTitle: {
       fontSize: 20,
       fontWeight: "bold",
-      marginBottom: 10,
+      color: Colors.Negro,
+      marginBottom: 15,
     },
     modalMessage: {
-      fontSize: 16,
+      fontSize: 15,
       color: Colors.Negro,
       textAlign: "center",
-      marginBottom: 20,
+      lineHeight: 22,
+      marginBottom: 25,
     },
     modalButtons: {
       flexDirection: "row",
-      justifyContent: "space-between",
       width: "100%",
+      gap: 10,
     },
-    modalButtonCancel: {
-      backgroundColor: Colors.Blanco,
-      borderColor: Colors.Negro,
+    modalBtn: {
+      flex: 1,
+      padding: 15,
+      borderRadius: 12,
+      alignItems: "center",
+    },
+    modalBtnCancel: {
+      backgroundColor: Colors.GrisClaro,
       borderWidth: 1,
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      borderRadius: 8,
-      marginRight: 10,
+      borderColor: Colors.GrisClaroPeroNoTanClaro,
     },
-    modalButtonTextCancel: {
-      color: Colors.Negro,
-      fontSize: 16,
+    modalBtnAccept: {
+      backgroundColor: Colors.Naranja,
     },
-    modalButtonAccept: {
-      backgroundColor: Colors.Negro,
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      borderRadius: 8,
-    },
-    modalButtonTextAccept: {
-      color: Colors.Blanco,
-      fontSize: 16,
+    modalBtnText: {
+      fontWeight: "bold",
+      fontSize: 15,
     },
   });
 
   return (
     <View style={styles.card}>
       <View style={styles.header}>
-        <Icon name="calendar-outline" size={30} style={styles.icon} />
+        <View style={styles.iconContainer}>
+          <FontAwesomeIcon icon={faCalendarDays} size={35} color={Colors.Naranja} />
+        </View>
         <Text style={styles.title}>Precompra</Text>
-        <Text style={styles.subtitle}>
-          Programa tus compras para este evento
-        </Text>
+        <Text style={styles.subtitle}>Retirá tu pedido el día que elijas.</Text>
       </View>
-      <View style={styles.scrollContainer}>
-        <ScrollView contentContainerStyle={styles.datesContainer}>
-          {evento.diaEventos.map((dia, index) => {
-            const fechaInicio = new Date(dia.fechaHoraInicioDiaEvento);
-            const isPast = now > new Date(dia.fechaHoraFinDiaEvento);
-            const isCurrent = now >= fechaInicio && now <= new Date(dia.fechaHoraFinDiaEvento);
 
+      <View style={styles.scrollWrapper}>
+        <ScrollView contentContainerStyle={styles.datesContainer} showsVerticalScrollIndicator={false}>
+          {evento.diaEventos.map((dia, index) => {
+            const isPast = now > new Date(dia.fechaHoraFinDiaEvento);
+            const isSelected = selectedDate === dia.fechaHoraInicioDiaEvento;
+            
             return (
               <TouchableOpacity
                 key={index}
                 style={[
-                  styles.dateButton,
-                  isPast && styles.disabledDateButton,
-                  isCurrent && styles.currentDateButton,
-                  selectedDate === dia.fechaHoraInicioDiaEvento && styles.selectedDateButton,
+                  styles.dateButton, 
+                  isSelected && styles.selectedDateButton,
+                  isPast && styles.disabledDateButton
                 ]}
-                onPress={() => {
-                  if (!isPast && !isCurrent) setSelectedDate(dia.fechaHoraInicioDiaEvento);
-                }}
+                onPress={() => !isPast && setSelectedDate(dia.fechaHoraInicioDiaEvento)}
                 disabled={isPast}
               >
-                <Text
-                  style={[
-                    styles.dateText,
-                    selectedDate === dia.fechaHoraInicioDiaEvento && styles.selectedDateText,
-                  ]}
-                >
-                  {new Date(dia.fechaHoraInicioDiaEvento).toLocaleDateString("es-ES")}
+                <Text style={[styles.dateText, isSelected && styles.selectedDateText]}>
+                  {formatDateLabel(dia.fechaHoraInicioDiaEvento)}
                 </Text>
               </TouchableOpacity>
             );
           })}
         </ScrollView>
       </View>
-      <TouchableOpacity
-        style={styles.confirmButton}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.confirmButtonText}>Confirmar</Text>
-      </TouchableOpacity>
 
-      <Modal
-        transparent={true}
-        animationType="slide"
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
+      <View style={styles.footer}>
+        <TouchableOpacity 
+          style={[styles.confirmButton, !selectedDate && styles.disabledButton]} 
+          onPress={() => setModalVisible(true)}
+          disabled={!selectedDate}
+        >
+          <FontAwesomeIcon icon={faCheckCircle} color="white" size={20} />
+          <Text style={styles.confirmText}>Confirmar día</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Modal transparent visible={modalVisible} animationType="fade">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Advertencia</Text>
+            <View style={styles.modalIcon}>
+              <FontAwesomeIcon icon={faTriangleExclamation} size={40} color={Colors.Naranja} />
+            </View>
+            <Text style={styles.modalTitle}>¿Confirmar Fecha?</Text>
             {selectedEventDay && (
               <Text style={styles.modalMessage}>
-                Está por realizar una compra programada. Asegúrese de poder
-                asistir al evento el día correspondiente. La compra programada va
-                a estar disponible desde {formatDate(selectedEventDay.fechaHoraInicioDiaEvento)} hasta {formatDate(selectedEventDay.fechaHoraFinDiaEvento)}.
+                Tu pedido estará disponible únicamente{" "}
+                <Text style={{fontWeight: 'bold'}}>
+                el {formatDateLabel(selectedEventDay.fechaHoraInicioDiaEvento)} 
+                </Text> de {new Date(selectedEventDay.fechaHoraInicioDiaEvento).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} a {new Date(selectedEventDay.fechaHoraFinDiaEvento).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} hs.
               </Text>
             )}
             <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={styles.modalButtonCancel}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={styles.modalButtonTextCancel}>Rechazar</Text>
+              <TouchableOpacity style={[styles.modalBtn, styles.modalBtnCancel]} onPress={() => setModalVisible(false)}>
+                <Text style={[styles.modalBtnText, {color: Colors.Negro}]}>Cancelar</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.modalButtonAccept}
-                onPress={handleConfirmar}
-              >
-                <Text style={styles.modalButtonTextAccept}>Aceptar</Text>
+              <TouchableOpacity style={[styles.modalBtn, styles.modalBtnAccept]} onPress={handleConfirmar}>
+                <Text style={[styles.modalBtnText, {color: 'white'}]}>Aceptar</Text>
               </TouchableOpacity>
             </View>
           </View>

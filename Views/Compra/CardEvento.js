@@ -89,18 +89,13 @@ const CardEvento = ({ item, navigation }) => {
   return (
     <TouchableOpacity
       style={{
-        backgroundColor: Colors.Blanco,
-        borderRadius: 5,
-        shadowColor: Colors.Negro,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        ...Colors.Styles.card,
         flexDirection: "column",
         height: 200,
         marginVertical: 5,
         marginHorizontal: 20,
-        borderColor: Colors?.Gris,
+        overflow: "hidden",
+        borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : Colors?.Gris,
         borderWidth: 1,
       }}
       onPress={() => seleccionarPuesto(item)}
@@ -111,8 +106,6 @@ const CardEvento = ({ item, navigation }) => {
           style={{
             width: "100%",
             height: "100%",
-            borderTopLeftRadius: 5,
-            borderTopRightRadius: 5,
           }}
           resizeMode="cover"
         />
@@ -126,7 +119,11 @@ const CardEvento = ({ item, navigation }) => {
           }}
         >
           <Image
-            source={logoevento}
+            source={
+              item?.img
+                ? { uri: item?.img }
+                : logoevento
+            }
             style={{
               width: 75,
               height: 75,
@@ -209,7 +206,7 @@ const CardEvento = ({ item, navigation }) => {
             position: "absolute",
             top: 10,
             right: 10,
-            backgroundColor: Colors.Verde,
+            backgroundColor: Colors.Info,
             borderRadius: 5,
             paddingVertical: 5,
             paddingHorizontal: 10,

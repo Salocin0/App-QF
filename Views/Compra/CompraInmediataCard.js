@@ -1,51 +1,58 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import useDynamicColors from "@/Styles/useDynamicColors";
+import { StyleSheet, Text, View } from "react-native";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faBolt } from "@fortawesome/free-solid-svg-icons";
+import useDynamicColors from "../../Styles/useDynamicColors";
 
 const CompraInmediataCard = () => {
-const Colors = useDynamicColors()
+  const Colors = useDynamicColors();
+  
   const styles = StyleSheet.create({
     card: {
       borderWidth: 1,
-      borderColor: Colors.Gris,
-      borderRadius: 8,
-      padding: 20,
+      borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : Colors.GrisClaroPeroNoTanClaro,
+      borderRadius: 20,
+      padding: 25,
       backgroundColor: Colors.Blanco,
       alignItems: "center",
       justifyContent: "center",
-      marginBottom: 20,
-      shadowColor: Colors.Negro,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 3,
-      margin: 20,
-      marginBottom: 0,
+      marginHorizontal: 15,
+      marginTop: 20,
+      ...Colors.Styles.card,
     },
-    icon: {
+    iconContainer: {
+      width: 70,
+      height: 70,
+      borderRadius: 35,
+      backgroundColor: Colors.modoOscuroActivo ? "#3a2e10" : "#fff9e6",
+      justifyContent: "center",
+      alignItems: "center",
       marginBottom: 15,
-      color: Colors.Negro,
+      borderWidth: 1,
+      borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : "transparent",
     },
     title: {
-      fontSize: 20,
+      fontSize: 22,
       fontWeight: "bold",
       color: Colors.Negro,
       marginBottom: 8,
     },
     subtitle: {
-      fontSize: 16,
-      color: Colors.Negro,
+      fontSize: 15,
+      color: Colors.Gris,
       textAlign: "center",
+      lineHeight: 20,
     },
   });
 
   return (
     <View style={styles.card}>
-      <Icon name="cart-outline" size={50} style={styles.icon} />
+      <View style={styles.iconContainer}>
+        <FontAwesomeIcon icon={faBolt} size={35} color={Colors.Naranja} />
+      </View>
       <Text style={styles.title}>Compra Inmediata</Text>
       <Text style={styles.subtitle}>
-        Haz clic para realizar una compra inmediata
+        Retirá tu pedido en el momento dentro del predio del evento.
       </Text>
     </View>
   );

@@ -52,7 +52,10 @@ const CompraStack = () => {
       <Stack.Screen
         name="TipoCompra"
         component={TipoCompra}
-        options={{ headerRight: () => <ConfigNotifiButtom /> }}
+        options={{ 
+          headerRight: () => <ConfigNotifiButtom />,
+          title: "Tipo de Compra"
+        }}
       />
       <Stack.Screen name="Config" component={Config} />
       <Stack.Screen name="Notificaciones" component={Notificaciones} />

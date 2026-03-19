@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import useDynamicColors from "../../Styles/useDynamicColors";
 import { useNavigation } from "@react-navigation/native";
+import logoevento from "./../../assets/logoevento.webp";
 
 const EventoCard = ({ evento }) => {
   const Colors = useDynamicColors();
@@ -32,17 +33,11 @@ const EventoCard = ({ evento }) => {
   
   const styles = StyleSheet.create({
     card: {
-      backgroundColor: Colors.Blanco,
-      borderRadius: 10,
-      overflow: "hidden",
-      marginBottom: 20,
-      shadowColor: Colors.Negro,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.2,
-      shadowRadius: 2,
-      elevation: 3,
+      ...Colors.Styles.card,
       flexDirection: "row",
       height: 150,
+      marginBottom: 20,
+      overflow: "hidden",
     },
     imageContainer: {
       width: 100,
@@ -51,7 +46,6 @@ const EventoCard = ({ evento }) => {
     image: {
       width: "100%",
       height: "100%",
-      resizeMode: "cover",
     },
     infoContainer: {
       padding: 10,
@@ -83,9 +77,10 @@ const EventoCard = ({ evento }) => {
             source={
               evento?.img
                 ? { uri: evento?.img }
-                : require("./../../assets/logoevento.webp")
+                : logoevento
             }
             style={styles.image}
+            resizeMode="cover"
           />
         </View>
         <View style={styles.infoContainer}>
