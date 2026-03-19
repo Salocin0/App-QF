@@ -1,25 +1,30 @@
 {
   "cli": {
-    "version": ">= 6.0.0"
+    "version": ">= 9.2.0",
+    "appVersionSource": "local"
   },
   "build": {
     "development": {
-      "developmentClient": true,
-      "distribution": "internal"
-    },
-    "preview": {
-      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://backendnode-qf.onrender.com",
+        "NODE_VERSION": "20"
+      },
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "developmentClient": true,
+        "distribution": "internal",
+        "applicationArchivePath": "android/app/build/outputs/apk/debug/app-debug.apk"
       }
     },
     "production": {
-      "distribution": "internal",
       "env": {
-        "ENVFILE": ".env.prod"
+        "EXPO_PUBLIC_API_URL": "https://backendnode-qf.onrender.com"
       },
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "developmentClient": false,
+        "distribution": "internal",
+        "applicationArchivePath": "android/app/build/outputs/apk/release/app-release.apk"
       }
     }
   },

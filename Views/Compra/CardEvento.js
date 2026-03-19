@@ -1,0 +1,227 @@
+import React, { useState, useEffect } from "react";
+import { Text, View, Image, TouchableOpacity } from "react-native";
+import * as Location from "expo-location";
+import imgevento from "./../../assets/eventoimg.jpeg";
+import logoevento from "./../../assets/logoevento.webp";
+import useDynamicColors from "../../Styles/useDynamicColors";
+import { formatDistanceToNow } from "date-fns";
+import { es } from "date-fns/locale";
+import { getDistance } from "geolib";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faCalendarAlt, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+
+const CardEvento = ({ item, navigation }) => {
+  const Colors = useDynamicColors();
+  const [location, setLocation] = useState(null);
+  const [distance, setDistance] = useState(null);
+  const [locationPermission, setLocationPermission] = useState(null);
+
+
+  useEffect(() => {
+    const getLocationPermission = async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      setLocationPermission(status === "granted");
+    };
+
+    getLocationPermission();
+  }, []);
+
+  useEffect(() => {
+    if (locationPermission) {
+      const getLocation = async () => {
+        const { coords } = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.High,
+        });
+        setLocation({ latitude: coords.latitude, longitude: coords.longitude });
+      };
+
+      getLocation();
+    }
+  }, [locationPermission]);
+
+  useEffect(() => {
+    if (location) {
+      const eventoCoords = item?.coords
+        ? { latitude: item?.coords?.latitude, longitude: item?.coords?.longitude }
+        : { latitude: -32.410563, longitude: -63.243426 }; // Default coordinates if item.coords is undefined
+      const distancia = getDistance(location, eventoCoords) / 1000;
+      setDistance(distancia.toFixed(1));
+    }
+  }, [location, item?.coords]);
+
+  const seleccionarPuesto = (evento) => {
+    if (evento.tienePreventa && evento.estado == "EnCurso") {
+      navigation.navigate("TipoCompra", { evento });
+    }
+    if (!evento.tienePreventa && evento.estado == "Confirmado") {
+      navigation.navigate("Puestos", { evento });
+    }
+    if (!evento.tienePreventa && evento.estado == "EnCurso") {
+      navigation.navigate("Puestos", { evento });
+    }
+    if (evento.tienePreventa && evento.estado == "Confirmado") {
+      navigation.navigate("TipoCompra", { evento });
+    }
+  };
+
+  const calcularHorasRestantes = (fecha) => {
+    const ahora = new Date();
+    const diferencia = fecha - ahora;
+    const horasRestantes = Math.round(diferencia / (1000 * 60 * 60));
+    return horasRestantes;
+  };
+
+  // Safeguard against undefined diaEventos
+  const fechaInicio = item?.diaEventos?.length
+    ? new Date(Math.min(...item.diaEventos.map(d => new Date(d.fechaHoraInicioDiaEvento))))
+    : null;
+  const fechaFin = item?.diaEventos?.length
+    ? new Date(Math.max(...item.diaEventos.map(d => new Date(d.fechaHoraFinDiaEvento))))
+    : null;
+
+  const tiempoHastaInicio = fechaInicio
+    ? formatDistanceToNow(fechaInicio, { addSuffix: true, locale: es })
+    : "Fecha no disponible";
+  const tiempoHastaFin = fechaFin
+    ? `Termina en ${calcularHorasRestantes(fechaFin)} horas`
+    : "Fecha no disponible";
+
+  return (
+    <TouchableOpacity
+      style={{
+        backgroundColor: Colors.Blanco,
+        borderRadius: 5,
+        shadowColor: Colors.Negro,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        flexDirection: "column",
+        height: 200,
+        marginVertical: 5,
+        marginHorizontal: 20,
+        borderColor: Colors?.Gris,
+        borderWidth: 1,
+      }}
+      onPress={() => seleccionarPuesto(item)}
+    >
+      <View style={{ flex: 2 }}>
+        <Image
+          source={imgevento}
+          style={{
+            width: "100%",
+            height: "100%",
+            borderTopLeftRadius: 5,
+            borderTopRightRadius: 5,
+          }}
+          resizeMode="cover"
+        />
+      </View>
+      <View style={{ flex: 3, flexDirection: "row" }}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Image
+            source={logoevento}
+            style={{
+              width: 75,
+              height: 75,
+              borderRadius: 5,
+              margin: 10,
+              borderWidth: 1,
+              borderColor: Colors?.Gris,
+            }}
+            resizeMode="cover"
+          />
+        </View>
+        <View
+          style={{
+            flex: 2,
+            paddingVertical: 10,
+            justifyContent: "center",
+            paddingEnd: 10,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: "bold",
+              marginBottom: 5,
+              textAlign: "center",
+              color: Colors.Negro,
+            }}
+          >
+            {item?.nombre}
+          </Text>
+          <Text
+            style={{ fontSize: 14, textAlign: "center", color: Colors.Negro }}
+          >
+            {item?.descripcion}
+          </Text>
+        </View>
+      </View>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignContent: "center",
+          paddingVertical: 5,
+          paddingHorizontal: 10,
+          borderTopWidth: 1,
+          borderColor: Colors?.GrisClaroPeroNoTanClaro,
+          backgroundColor: Colors?.Info,
+          borderBottomLeftRadius: 5,
+          borderBottomRightRadius: 5,
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <FontAwesomeIcon
+            icon={faCalendarAlt}
+            color={Colors.Blanco}
+            size={16}
+          />
+          <Text style={{ fontSize: 16, color: Colors.Blanco, marginLeft: 5 }}>
+            {fechaInicio > new Date() ? `Empieza ${tiempoHastaInicio}` : tiempoHastaFin}
+          </Text>
+        </View>
+        {locationPermission && location && distance !== null && (
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <FontAwesomeIcon
+              icon={faMapMarkerAlt}
+              color={Colors.Blanco}
+              size={16}
+            />
+            <Text style={{ fontSize: 16, color: Colors.Blanco, marginLeft: 5 }}>
+              A {distance} km
+            </Text>
+          </View>
+        )}
+      </View>
+
+      {item?.tienePreventa && (
+        <View
+          style={{
+            position: "absolute",
+            top: 10,
+            right: 10,
+            backgroundColor: Colors.Verde,
+            borderRadius: 5,
+            paddingVertical: 5,
+            paddingHorizontal: 10,
+          }}
+        >
+          <Text style={{ fontSize: 16, color: Colors.BlancoEnBlanco }}>
+            Precompra habilitada
+          </Text>
+        </View>
+      )}
+    </TouchableOpacity>
+  );
+};
+
+export default CardEvento;
