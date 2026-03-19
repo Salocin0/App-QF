@@ -19,7 +19,9 @@
   },
   "jest": {
     "preset": "jest-expo",
-    "setupFilesAfterEnv": ["./setupTests.js"]
+    "setupFilesAfterEnv": [
+      "./setupTests.js"
+    ]
   },
   "dependencies": {
     "@expo/vector-icons": "14.0.2",
@@ -30,6 +32,7 @@
     "@react-native-community/datetimepicker": "8.0.1",
     "@react-native-community/masked-view": "0.1.11",
     "@react-native-community/slider": "4.5.2",
+    "@react-native-picker/picker": "^2.11.4",
     "@react-native/metro-config": "0.74.84",
     "@react-navigation/bottom-tabs": "6.5.20",
     "@react-navigation/native": "6.1.17",
