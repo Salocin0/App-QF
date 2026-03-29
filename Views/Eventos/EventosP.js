@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, ScrollView, ActivityIndicator } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import { StyleSheet, Text, View, ScrollView, ActivityIndicator, RefreshControl } from "react-native";
 import { useSelector } from "react-redux";
 import { useGetAllEventosQuery } from "./../../components/App/Service/EventosApi";
 import EventoCard from "./eventoCard";
@@ -13,28 +13,43 @@ const EventosP = () => {
   const user = useSelector((state) => state.auth);
   const userId = user?.consumidorId;
 
-  const { data: eventosData, isLoading, isError } = useGetAllEventosQuery(userId);
+  const { data: eventosData, isLoading, isError, refetch } = useGetAllEventosQuery(userId);
   const [eventos, setEventos] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    if (eventosData) {
+    if (eventosData && Array.isArray(eventosData)) {
       setEventos(eventosData);
     }
   }, [eventosData]);
+
+  const onRefresh = useCallback(async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refreshing, refetch]);
 
   const style = StyleSheet.create({
     container: {
       flexGrow: 1,
       padding: 20,
-      backgroundColor: Colors.GrisClaro,
+      backgroundColor: "#1a1a1a",
+      minHeight: 300,
     },
     loadingContainer: {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: Colors.GrisClaro,
+      backgroundColor: "#1a1a1a",
     },
   });
+
+  // Solo mostrar "No hay eventos" si ya terminó de cargar Y no hay eventos
+  const showNoEventos = !isLoading && eventos.length === 0;
 
   if (isLoading) {
     return (
@@ -44,7 +59,15 @@ const EventosP = () => {
     );
   }
 
-  if (isError || !eventosData) {
+  if (showNoEventos) {
+    return (
+      <View style={style.loadingContainer}>
+        <Aviso mensaje={"No hay eventos"} />
+      </View>
+    );
+  }
+
+  if (isError) {
     return (
       <View style={style.container}>
         <Aviso mensaje={"Error al cargar los eventos"}/>
@@ -53,14 +76,20 @@ const EventosP = () => {
   }
 
   return (
-    <ScrollView contentContainerStyle={style.container}>
-      {eventos.length === 0 ? (
-        <Aviso mensaje={"No hay eventos"} />
-      ) : (
-        eventos.map((evento, index) => (
-          <EventoCard key={index} evento={evento} />
-        ))
-      )}
+    <ScrollView 
+      contentContainerStyle={style.container}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={[Colors?.Naranja]}
+          tintColor={Colors?.Naranja}
+        />
+      }
+    >
+      {eventos.map((evento, index) => (
+        <EventoCard key={index} evento={evento} />
+      ))}
     </ScrollView>
   );
 };

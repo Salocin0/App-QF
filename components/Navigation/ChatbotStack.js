@@ -14,7 +14,7 @@ const ChatBotStack = () => {
     initialRouteName="ChatBot "
     screenOptions={{
       headerStyle: {
-        backgroundColor: Colors.Blanco,
+        backgroundColor: Colors.HeaderBackground,
       },
       headerTintColor: Colors.Negro,
     }}>

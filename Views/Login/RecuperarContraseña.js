@@ -1,6 +1,5 @@
-import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, TextInput } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-native";
 import React, { useState } from "react";
-import useStyles from "../../Styles/useStyles";
 import useDynamicColors from "../../Styles/useDynamicColors";
 import { useRecuperarContraseniaMutation } from "./../../components/App/Service/authApi";
 import { ToastAndroid } from "react-native";
@@ -12,6 +11,77 @@ const RecuperarContraseña = () => {
   const [email, setEmail] = useState("");
   const navigation = useNavigation();
   const [recuperarContraseña] = useRecuperarContraseniaMutation();
+
+  const localStyles = StyleSheet.create({
+    containerCard: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      paddingHorizontal: 5,
+      backgroundColor: Colors.Blanco,
+    },
+    card: {
+      width: "85%",
+      backgroundColor: Colors.Blanco,
+      padding: 15,
+      borderRadius: 10,
+      elevation: 3,
+      borderWidth: Colors.modoOscuroActivo ? 1 : 0,
+      borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : "transparent",
+    },
+    cardheader: {
+      marginBottom: 10,
+      alignSelf: "center",
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: "bold",
+      color: Colors.Negro,
+    },
+    cardBody: {
+      alignItems: "center",
+      width: "100%",
+    },
+    inputContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 8,
+    },
+    label: {
+      color: Colors.Negro,
+      fontWeight: "normal",
+      marginRight: 10,
+    },
+    inputAlternativo: {
+      width: 200,
+      paddingHorizontal: 10,
+      marginBottom: 3,
+      color: Colors.Negro,
+      backgroundColor: Colors.modoOscuroActivo ? Colors.FondoInputOscuro : Colors.FondoInputClaro,
+      borderRadius: 5,
+      borderWidth: 1,
+      borderColor: Colors.GrisClaroPeroNoTanClaro,
+    },
+    buttonsContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginTop: 10,
+    },
+    buttonForm: {
+      backgroundColor: Colors.Azul,
+      borderRadius: 5,
+      padding: 10,
+      alignSelf: "flex-end",
+      color: "white",
+    },
+    buttonEndForm: {
+      backgroundColor: Colors.Verde,
+      borderRadius: 5,
+      padding: 10,
+      alignSelf: "flex-end",
+      color: "white",
+    },
+  });
 
   const handleRecuperarContraseña = () => {
     const result = recuperarContraseña(email);
@@ -28,34 +98,32 @@ const RecuperarContraseña = () => {
   };
 
   return (
-    <ImageBackground source={require("./../../assets/QuickFoodFondo.png")} style={styles.backgroundImage}>
-      <View style={styles.containerCard}>
-        <View style={styles.card}>
-          <View style={styles.cardheader}>
-            <Text style={styles.title}>Enviar codigo al Email</Text>
-          </View>
-          <View style={styles.cardBody}>
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Email </Text>
-              <TextInput style={styles.inputAlternativo} value={email} onChangeText={setEmail} />
-            </View>
-          </View>
-          <View style={styles.buttonsContainer}>
-            <TouchableOpacity style={styles.containerCard}>
-              <Text style={styles.buttonEndForm} onPress={() => handleTengoUnCodigo()}>
-                Tengo un codigo
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.containerCard}>
-              <Text style={styles.buttonForm} onPress={() => handleRecuperarContraseña()}>
-                Enviar
-              </Text>
-            </TouchableOpacity>
+    <View style={localStyles.containerCard}>
+      <View style={localStyles.card}>
+        <View style={localStyles.cardheader}>
+          <Text style={localStyles.title}>Enviar codigo al Email</Text>
+        </View>
+        <View style={localStyles.cardBody}>
+          <View style={localStyles.inputContainer}>
+            <Text style={localStyles.label}>Email </Text>
+            <TextInput style={localStyles.inputAlternativo} value={email} onChangeText={setEmail} placeholderTextColor={Colors.Gris} />
           </View>
         </View>
+        <View style={localStyles.buttonsContainer}>
+          <TouchableOpacity>
+            <Text style={localStyles.buttonEndForm} onPress={() => handleTengoUnCodigo()}>
+              Tengo un codigo
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity>
+            <Text style={localStyles.buttonForm} onPress={() => handleRecuperarContraseña()}>
+              Enviar
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </ImageBackground>
+    </View>
   );
 };
 

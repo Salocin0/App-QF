@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
-  Modal,
 } from "react-native";
 import useDynamicColors from "../../Styles/useDynamicColors";
+import ThemedModal from "../../components/ThemedModal/ThemedModal";
 import { useCreatePedidoMutation } from "../../components/App/Service/PedidosApi";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -21,6 +21,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 const CardCarrito = ({
   puesto,
+  puestoNombre,
   productos,
   precompra,
   fecha,
@@ -34,6 +35,10 @@ const CardCarrito = ({
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [modalVisible, setModalVisible] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+  const [errorPago, setErrorPago] = useState("");
+  const [loadingPago, setLoadingPago] = useState(false);
+  const timeoutRef = useRef(null);
+  const nombrePuesto = puestoNombre || productos?.[0]?.puesto?.nombreCarro || `#${puesto}`;
 
   // Función para formatear la fecha
   const formatDate = (dateString) => {
@@ -113,12 +118,26 @@ const CardCarrito = ({
   };
 
   const mostrarSheetPago = async () => {
+    setErrorPago("");
+    setLoadingPago(true);
+    let timeoutId;
     try {
-      const { paymentIntent, ephemeralKey, customer } =
-        await fetchPaymentSheetParams();
+      // Timeout de 10s
+      const fetchPromise = fetchPaymentSheetParams();
+      const timeoutPromise = new Promise((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error("Timeout: No se pudo armar la hoja de pago en 10 segundos.")), 10000);
+      });
+      const { clientSecret, ephemeralKey, customer } = await Promise.race([fetchPromise, timeoutPromise]);
+      clearTimeout(timeoutId);
+
+      if (!clientSecret || !ephemeralKey || !customer) {
+        setErrorPago("Parámetros de pago incompletos. Intentá de nuevo.");
+        setLoadingPago(false);
+        return false;
+      }
 
       const { error } = await initPaymentSheet({
-        paymentIntentClientSecret: paymentIntent,
+        paymentIntentClientSecret: clientSecret,
         customerEphemeralKeySecret: ephemeralKey,
         customerId: customer,
         appearance: {
@@ -156,32 +175,37 @@ const CardCarrito = ({
         locale: "es",
         paymentMethodTypes: ["card", "google_pay", "paypal"],
         merchantDisplayName: "Mi Tienda",
-        currency: "ars",
+        currency: "usd",
       });
 
       if (!error) {
         const { error: paymentError } = await presentPaymentSheet();
-
+        setLoadingPago(false);
         if (paymentError) {
-          console.log("Error en el pago:", paymentError.message);
+          setErrorPago("Error en el pago: " + paymentError.message);
           return false;
         } else {
           return true;
         }
       } else {
-        console.log("Error al inicializar la hoja de pago:", error.message);
+        setErrorPago("Error al inicializar la hoja de pago: " + error.message);
+        setLoadingPago(false);
         return false;
       }
     } catch (error) {
-      console.log("Error al mostrar la hoja de pago:", error.message);
+      clearTimeout(timeoutId);
+      setErrorPago(error.message || "Error desconocido al mostrar la hoja de pago");
+      setLoadingPago(false);
       return false;
     }
   };
 
+  // ...
   const fetchPaymentSheetParams = async () => {
     try {
+      const apiBaseUrl = (process.env.EXPO_PUBLIC_API_URL || "http://backendnode-qf.onrender.com").replace(/\/$/, "");
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL || "http://backendnode-qf.onrender.com"}/payment-sheet`,
+        `${apiBaseUrl}/payment-sheet`,
         {
           method: "POST",
           headers: {
@@ -193,11 +217,27 @@ const CardCarrito = ({
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Error al obtener los parámetros de la hoja de pago");
+      // Log completo de la respuesta
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (parseError) {
+        console.log("Respuesta no es JSON válido:", text);
+        throw new Error("Respuesta del backend no es JSON válido");
       }
 
-      return await response.json();
+      if (!response.ok) {
+        console.log("Respuesta error del backend:", data);
+        throw new Error(data.error || "Error al obtener los parámetros de la hoja de pago");
+      }
+
+      console.log("Respuesta backend payment-sheet:", data);
+      return {
+        clientSecret: data.clientSecret || data.paymentIntent,
+        ephemeralKey: data.ephemeralKey,
+        customer: data.customer,
+      };
     } catch (error) {
       console.log(
         "Error al obtener los parámetros de la hoja de pago:",
@@ -214,27 +254,70 @@ const CardCarrito = ({
     );
   };
 
+  // ...
+
+  // Ejemplo de uso en el botón de pago:
+  // <TouchableOpacity onPress={mostrarSheetPago} disabled={loadingPago}>
+  //   {loadingPago ? <ActivityIndicator /> : <Text>Pagar</Text>}
+  // </TouchableOpacity>
+  // {errorPago ? <Text style={{color: 'red'}}>{errorPago}</Text> : null}
+
   const styles = StyleSheet.create({
     card: {
-      borderWidth: 1,
-      borderColor: Colors.GrisOscuro,
-      borderRadius: 10,
-      padding: 20,
+      borderWidth: 2,
+      borderColor: Colors.BordeDorado,
+      borderRadius: 14,
+      padding: 16,
       marginVertical: 10,
       marginHorizontal: 10,
-      backgroundColor: Colors.Blanco,
+      backgroundColor: "#222222",
+      shadowColor: Colors.BordeDorado,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.18,
+      shadowRadius: 6,
+      elevation: 4,
+    },
+    cardHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      borderBottomWidth: 1,
+      borderBottomColor: Colors.BordeDorado,
+      paddingBottom: 10,
+      marginBottom: 12,
     },
     titulo: {
       fontWeight: "bold",
-      fontSize: 18,
-      color: Colors.Negro,
-      marginBottom: 10,
+      fontSize: 19,
+      color: Colors.BordeDorado,
+    },
+    chipPrecompra: {
+      backgroundColor: Colors.BordeDorado,
+      borderRadius: 999,
+      paddingVertical: 5,
+      paddingHorizontal: 10,
+    },
+    chipPrecompraText: {
+      color: "#000000",
+      fontWeight: "700",
+      fontSize: 12,
+    },
+    fechaPrecompra: {
+      fontSize: 13,
+      color: "#cccccc",
+      marginBottom: 12,
+      fontWeight: "700",
     },
     itemContainer: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      marginBottom: 15,
+      marginBottom: 12,
+      backgroundColor: "#1a1a1a",
+      borderWidth: 1,
+      borderColor: Colors.BordeDorado,
+      borderRadius: 10,
+      padding: 10,
     },
     itemInfo: {
       flexDirection: "column",
@@ -243,26 +326,26 @@ const CardCarrito = ({
     nombreProducto: {
       fontSize: 16,
       fontWeight: "bold",
-      color: Colors.Negro,
+      color: "#ffffff",
     },
     precioProducto: {
       fontSize: 14,
-      color: Colors.GrisOscuro,
+      color: "#cccccc",
     },
     cantidadContainer: {
       flexDirection: "row",
       alignItems: "center",
     },
     cantidadButton: {
-      backgroundColor: Colors.GrisClaro,
-      padding: 5,
+      backgroundColor: Colors.BordeDorado,
+      padding: 6,
       borderRadius: 5,
     },
     cantidadText: {
       marginHorizontal: 10,
       fontSize: 16,
       fontWeight: "bold",
-      color: Colors.Negro,
+      color: "#ffffff",
     },
     eliminarButton: {
       backgroundColor: Colors.Rojo,
@@ -270,73 +353,62 @@ const CardCarrito = ({
       borderRadius: 5,
       marginStart: 10,
     },
+    resumenContainer: {
+      marginTop: 8,
+      backgroundColor: "#1a1a1a",
+      borderRadius: 12,
+      borderLeftWidth: 4,
+      borderLeftColor: Colors.BordeDorado,
+      padding: 14,
+    },
+    summaryRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 10,
+    },
+    summaryLabel: {
+      color: "#cccccc",
+      fontWeight: "700",
+      fontSize: 14,
+    },
+    summaryValue: {
+      color: Colors.BordeDorado,
+      fontWeight: "700",
+      fontSize: 14,
+    },
     totalContainer: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      marginTop: 10,
-      borderTopWidth: 1,
-      borderTopColor: Colors.Gris,
-      paddingTop: 10,
+      marginTop: 4,
+      borderTopWidth: 2,
+      borderTopColor: Colors.BordeDorado,
+      paddingTop: 12,
     },
     totalText: {
-      fontSize: 18,
+      fontSize: 22,
       fontWeight: "bold",
-      color: Colors.Negro,
+      color: "#ffffff",
     },
     botonFinalizar: {
-      backgroundColor: Colors.Azul,
-      padding: 15,
-      borderRadius: 5,
-      marginTop: 20,
+      backgroundColor: Colors.BordeDorado,
+      padding: 14,
+      borderRadius: 8,
+      marginTop: 14,
       alignItems: "center",
     },
     textoBoton: {
-      color: Colors.Blanco,
+      color: "#000000",
       fontWeight: "bold",
       fontSize: 16,
-    },
-    modalContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "rgba(0,0,0,0.5)",
-    },
-    modalContent: {
-      backgroundColor: Colors.Blanco,
-      padding: 20,
-      borderRadius: 10,
-      width: "80%",
-      alignItems: "center",
     },
     modalText: {
-      fontSize: 16,
-      marginBottom: 20,
+      fontSize: 15,
+      marginBottom: 24,
       textAlign: "center",
       color: Colors.Negro,
-    },
-    modalButtonContainer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      width: "100%",
-    },
-    modalButton: {
-      flex: 1,
-      padding: 10,
-      borderRadius: 5,
-      alignItems: "center",
-      marginHorizontal: 5,
-    },
-    modalButtonText: {
-      color: Colors.Blanco,
-      fontWeight: "bold",
-      fontSize: 16,
-    },
-    fechaPrecompra: {
-      fontSize: 14,
-      color: Colors.GrisOscuro,
-      marginTop: 10,
-      fontWeight: "bold",
+      lineHeight: 22,
     },
     diaEventosContainer: {
       flexDirection: "row",
@@ -367,12 +439,21 @@ const CardCarrito = ({
 
   return (
     <View style={styles.card}>
-      <Text style={styles.titulo}>Puesto: {puesto}</Text>
+      <View style={styles.cardHeader}>
+        <Text style={styles.titulo}>Puesto: {nombrePuesto}</Text>
+        {precompra && (
+          <View style={styles.chipPrecompra}>
+            <Text style={styles.chipPrecompraText}>Precompra</Text>
+          </View>
+        )}
+      </View>
+
       {precompra && (
         <Text style={styles.fechaPrecompra}>
-          Precompra para: {formatDate(fecha)}
+          Fecha: {formatDate(fecha)}
         </Text>
       )}
+
       {productos.map((producto) => (
         <View key={producto.id} style={styles.itemContainer}>
           <View style={styles.itemInfo}>
@@ -402,22 +483,33 @@ const CardCarrito = ({
                 setModalVisible(true);
               }}
             >
-              <Icon name="trash" size={16} color={Colors.Blanco} />
+              <Icon name="trash" size={16} color={Colors.Negro} />
             </TouchableOpacity>
           </View>
         </View>
       ))}
-      <View style={styles.totalContainer}>
-        <Text style={styles.totalText}>
-          Total: ${calcularTotal(productos).toFixed(2)}
-        </Text>
+
+      <View style={styles.resumenContainer}>
+        <View style={styles.summaryRow}>
+          <Text style={styles.summaryLabel}>Subtotal:</Text>
+          <Text style={styles.summaryValue}>
+            ${calcularTotal(productos).toFixed(2)}
+          </Text>
+        </View>
+
+        <View style={styles.totalContainer}>
+          <Text style={styles.totalText}>
+            Total: ${calcularTotal(productos).toFixed(2)}
+          </Text>
+        </View>
+
         <TouchableOpacity
           style={styles.botonFinalizar}
           onPress={handleComprar}
           disabled={loadingGlobal}
         >
           {loadingGlobal ? (
-            <ActivityIndicator color={Colors.Blanco} />
+            <ActivityIndicator color={Colors.Negro} />
           ) : (
             <Text style={styles.textoBoton}>
               {precompra ? "Finalizar Precompra" : "Finalizar Compra"}
@@ -427,34 +519,24 @@ const CardCarrito = ({
       </View>
 
       {/* Modal para confirmar eliminación */}
-      <Modal
+      <ThemedModal
         visible={modalVisible}
-        transparent={true}
+        onClose={() => setModalVisible(false)}
         animationType="slide"
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>
-              ¿Deseas eliminar este producto del carrito?
-            </Text>
-            <View style={styles.modalButtonContainer}>
-              <TouchableOpacity
-                style={[styles.modalButton, { backgroundColor: Colors.Gris }]}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={styles.modalButtonText}>Cancelar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalButton, { backgroundColor: Colors.Rojo }]}
-                onPress={confirmarEliminarProducto}
-              >
-                <Text style={styles.modalButtonText}>Eliminar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+        title="¿Deseas eliminar este producto del carrito?"
+        buttons={[
+          { 
+            text: "Cancelar", 
+            variant: "secondary",
+            onPress: () => setModalVisible(false),
+          },
+          { 
+            text: "Eliminar", 
+            onPress: confirmarEliminarProducto,
+            style: { backgroundColor: Colors.Rojo },
+          },
+        ]}
+      />
 
       {/* Botones de días de eventos */}
       <View style={styles.diaEventosContainer}>

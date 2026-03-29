@@ -21,25 +21,28 @@ const StatusTabs = ({ onStatusSelect }) => {
     container: {
       flexDirection: "row",
       justifyContent: "space-around",
-      backgroundColor: Colors.GrisClaro,
+      backgroundColor: "#222222",
       paddingTop: 10,
+      paddingBottom: 5,
       borderRadius: 10,
+      marginBottom: 10,
+      borderWidth: 1,
+      borderColor: Colors.BordeDorado,
     },
     tab: {
       paddingVertical: 10,
       paddingHorizontal: 20,
-      borderRadius: 5,
+      borderRadius: 8,
     },
     tabText: {
-      fontSize: 18,
-      color: Colors.GrisOscuro,
+      fontSize: 14,
+      color: "#cccccc",
     },
     selectedTab: {
-      backgroundColor: Colors.Blanco,
-      elevation: 2,
+      backgroundColor: Colors.BordeDorado,
     },
     selectedTabText: {
-      color: Colors.Negro,
+      color: "#000000",
       fontWeight: "bold",
     },
   });

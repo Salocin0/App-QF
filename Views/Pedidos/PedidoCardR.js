@@ -21,43 +21,46 @@ const PedidoCardR = ({ item, navigation }) => {
 
   const styles = StyleSheet.create({
     card: {
-      borderWidth: 1,
-      borderColor: Colors.Gris,
-      borderRadius: 8,
-      padding: 15,
-      marginVertical: 8,
-      marginHorizontal: 16,
-      backgroundColor: Colors.Blanco,
-      shadowColor: Colors.Negro,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 3,
+      borderWidth: 2,
+      borderColor: Colors.BordeDorado,
+      borderRadius: 14,
+      padding: 18,
+      marginVertical: 10,
+      marginHorizontal: 10,
+      backgroundColor: "#222222",
+      shadowColor: Colors.BordeDorado,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 8,
+      elevation: 6,
     },
     title: {
-      fontSize: 18,
+      fontSize: 20,
       fontWeight: "bold",
-      marginBottom: 8,
-      color: Colors.Negro,
+      marginBottom: 10,
+      color: "#ffffff",
+      letterSpacing: 1,
     },
     text: {
-      color: Colors.Negro,
+      color: "#cccccc",
       marginBottom: 5,
       flexDirection: "row",
       alignItems: "center",
     },
     status: {
       position: "absolute",
-      right: 15,
-      top: 15,
-      paddingVertical: 4,
-      paddingHorizontal: 8,
-      borderRadius: 15,
+      right: 18,
+      top: 18,
+      paddingVertical: 5,
+      paddingHorizontal: 12,
+      borderRadius: 20,
       fontWeight: "bold",
-      color: Colors.Blanco,
+      color: "#000000",
+      fontSize: 14,
+      overflow: "hidden",
     },
     pending: {
-      backgroundColor: Colors.NaranjaOscuro,
+      backgroundColor: Colors.Naranja,
     },
     inProgress: {
       backgroundColor: Colors.Azul,
@@ -66,36 +69,42 @@ const PedidoCardR = ({ item, navigation }) => {
       backgroundColor: Colors.Verde,
     },
     aceptado: {
-      backgroundColor: Colors.Rosa,
+      backgroundColor: Colors.Purpura,
     },
     enPreparacion: {
-      backgroundColor: Colors.Purpura,
+      backgroundColor: Colors.Rosa,
     },
     Cancelado: {
       backgroundColor: Colors.Rojo,
     },
     icon: {
-      marginRight: 8,
-      color: Colors.Negro,
+      marginRight: 10,
+      color: Colors.BordeDorado,
     },
     row: {
       flexDirection: "row",
       justifyContent: "space-between",
-      marginBottom: 8,
+      marginBottom: 10,
     },
     mapButton: {
-      backgroundColor: Colors.Azul,
-      padding: 8,
-      borderRadius: 5,
-      marginTop: 10,
+      backgroundColor: Colors.BordeDorado,
+      padding: 10,
+      borderRadius: 8,
+      marginTop: 12,
       alignItems: "center",
       justifyContent: "center",
       flexDirection: "row",
+      shadowColor: Colors.BordeDorado,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 2,
+      elevation: 2,
     },
     mapButtonText: {
-      color: Colors.Blanco,
+      color: "#000000",
       fontWeight: "bold",
-      marginLeft: 5,
+      marginLeft: 7,
+      fontSize: 16,
     },
   });
 
@@ -122,6 +131,9 @@ const PedidoCardR = ({ item, navigation }) => {
 
   const { style: statusStyle, text: statusText } = getStatusInfo();
 
+  // Para el color del icono, usamos dorado para el estado EnCamino
+  const iconColor = item.estado === "EnCamino" ? Colors.BordeDorado : Colors.BordeDorado;
+
   return (
     <View>
       <View style={styles.card}>
@@ -130,7 +142,7 @@ const PedidoCardR = ({ item, navigation }) => {
         <View style={styles.row}>
           <View style={styles.text}>
             <Icon name="storefront-outline" size={20} style={styles.icon} />
-            <Text>{item?.puesto?.nombreCarro}</Text>
+            <Text style={{ color: "#ffffff" }}>{item?.puesto?.nombreCarro}</Text>
           </View>
         </View>
         {item.estado === "EnCamino" && (
@@ -138,7 +150,7 @@ const PedidoCardR = ({ item, navigation }) => {
             style={styles.mapButton}
             onPress={() => handleIrUbicacion(item)}
           >
-            <Icon name="map-marker" size={20} color={Colors.Blanco} />
+            <Icon name="map-marker" size={20} color="#000000" />
             <Text style={styles.mapButtonText}>Ver en mapa</Text>
           </TouchableOpacity>
         )}

@@ -229,7 +229,7 @@ const Chatbot = () => {
           onChangeText={setInputText}
           onSubmitEditing={sendMessage}
           returnKeyType="send"
-          placeholderTextColor={Colors.Negro}
+          placeholderTextColor={Colors.GrisOscuro}
         />
         <TouchableOpacity onPress={sendMessage} style={styles.sendBtn}>
           <Text style={styles.sendBtnText}>Enviar</Text>

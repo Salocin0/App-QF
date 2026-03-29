@@ -15,7 +15,7 @@ const PerfilStack = () => {
     initialRouteName="Perfil"
       screenOptions={{
         headerStyle: {
-          backgroundColor: Colors.Blanco,
+          backgroundColor: Colors.HeaderBackground,
         },
         headerTintColor: Colors.Negro,
       }}

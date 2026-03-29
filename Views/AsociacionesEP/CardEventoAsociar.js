@@ -30,14 +30,20 @@ const CardEventoAsociar = ({ item, navigation, selectedPuestoId }) => {
   return (
     <TouchableOpacity
       style={{
-        ...Colors.Styles.card,
+        backgroundColor: "#222222",
+        borderRadius: 10,
+        shadowColor: Colors.BordeDorado,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 5,
         flexDirection: "column",
         height: 200,
         marginVertical: 5,
         marginHorizontal: 20,
         overflow: "hidden",
-        borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : Colors?.Gris,
-        borderWidth: 1,
+        borderColor: Colors.BordeDorado,
+        borderWidth: 2,
       }}
       onPress={() => seleccionarPuesto(item)}
     >
@@ -47,8 +53,8 @@ const CardEventoAsociar = ({ item, navigation, selectedPuestoId }) => {
           style={{
             width: "100%",
             height: "100%",
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
+            borderTopLeftRadius: 8,
+            borderTopRightRadius: 8,
           }}
           resizeMode="cover"
         />
@@ -68,8 +74,8 @@ const CardEventoAsociar = ({ item, navigation, selectedPuestoId }) => {
               height: 75,
               borderRadius: 10,
               margin: 10,
-              borderWidth: 1,
-              borderColor: Colors?.Gris,
+              borderWidth: 2,
+              borderColor: Colors.BordeDorado,
             }}
             resizeMode="cover"
           />
@@ -88,13 +94,13 @@ const CardEventoAsociar = ({ item, navigation, selectedPuestoId }) => {
               fontWeight: "bold",
               marginBottom: 5,
               textAlign: "center",
-              color: Colors.Negro,
+              color: "#ffffff",
             }}
           >
             {item.nombre}
           </Text>
           <Text
-            style={{ fontSize: 14, textAlign: "center", color: Colors.Negro }}
+            style={{ fontSize: 14, textAlign: "center", color: "#cccccc" }}
           >
             {item.descripcion}
           </Text>
@@ -108,16 +114,16 @@ const CardEventoAsociar = ({ item, navigation, selectedPuestoId }) => {
           paddingTop: 10,
           paddingHorizontal: 10,
           borderTopWidth: 1,
-          borderColor: Colors?.GrisClaroPeroNoTanClaro,
-          backgroundColor: Colors?.Info,
-          borderBottomLeftRadius: 10,
-          borderBottomRightRadius: 10,
+          borderColor: Colors.BordeDorado,
+          backgroundColor: "#1a1a1a",
+          borderBottomLeftRadius: 8,
+          borderBottomRightRadius: 8,
         }}
       >
-        <Text style={{ fontSize: 16, color: Colors.BlancoEnBlanco }}>
+        <Text style={{ fontSize: 16, color: Colors.BordeDorado }}>
           Empieza en 3 días
         </Text>
-        <Text style={{ fontSize: 16, color: Colors.BlancoEnBlanco }}>A 30 Km</Text>
+        <Text style={{ fontSize: 16, color: Colors.BordeDorado }}>A 30 Km</Text>
       </View>
     </TouchableOpacity>
   );

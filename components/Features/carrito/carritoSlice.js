@@ -1,25 +1,32 @@
 import { createSlice } from '@reduxjs/toolkit';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const initialState = [];
+const CARRITO_STORAGE_KEY = "carritoPersistido";
 
 const carritoSlice = createSlice({
   name: 'carrito',
   initialState,
   reducers: {
+    setCarrito: (state, action) => action.payload,
     agregarProducto: (state, action) => {
-      const { id, fecha, preventa, producto, puesto } = action.payload;
+      const { id, fecha, preventa, producto, puesto, puestoNombre } = action.payload;
+      const cantidadAAgregar = Number(action.payload.cantidad) > 0 ? Number(action.payload.cantidad) : 1;
       const conjunto = state.find(
         (item) => item.id === id && item.fecha === fecha && item.preventa === preventa && item.puesto === puesto
       );
 
       if (conjunto) {
+        if (!conjunto.puestoNombre && puestoNombre) {
+          conjunto.puestoNombre = puestoNombre;
+        }
         const existingProduct = conjunto.productos.find(
           (p) => p.id === producto.id
         );
         if (existingProduct) {
-          existingProduct.cantidad += 1;
+          existingProduct.cantidad += cantidadAAgregar;
         } else {
-          conjunto.productos.push({ ...producto, cantidad: 1 });
+          conjunto.productos.push({ ...producto, cantidad: cantidadAAgregar });
         }
       } else {
         state.push({
@@ -27,7 +34,8 @@ const carritoSlice = createSlice({
           fecha,
           preventa,
           puesto,
-          productos: [{ ...producto, cantidad: 1 }],
+          puestoNombre,
+          productos: [{ ...producto, cantidad: cantidadAAgregar }],
         });
       }
     },
@@ -73,7 +81,32 @@ const carritoSlice = createSlice({
   },
 });
 
+export const inicializarCarrito = () => async (dispatch) => {
+  try {
+    const carritoGuardado = await AsyncStorage.getItem(CARRITO_STORAGE_KEY);
+    if (!carritoGuardado) {
+      return;
+    }
+
+    const carrito = JSON.parse(carritoGuardado);
+    if (Array.isArray(carrito)) {
+      dispatch(setCarrito(carrito));
+    }
+  } catch (error) {
+    console.log("No se pudo cargar el carrito guardado:", error);
+  }
+};
+
+export const guardarCarritoPersistido = (carrito) => async () => {
+  try {
+    await AsyncStorage.setItem(CARRITO_STORAGE_KEY, JSON.stringify(carrito || []));
+  } catch (error) {
+    console.log("No se pudo guardar el carrito:", error);
+  }
+};
+
 export const {
+  setCarrito,
   agregarProducto,
   restarProducto,
   eliminarProducto,

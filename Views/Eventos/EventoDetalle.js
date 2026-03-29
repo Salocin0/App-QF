@@ -4,13 +4,13 @@ import {
   Text,
   View,
   Image,
-  Modal,
   Button,
   TouchableOpacity,
   ScrollView,
 } from "react-native";
 
 import useDynamicColors from "../../Styles/useDynamicColors";
+import ThemedModal from "../../components/ThemedModal/ThemedModal";
 import { useRoute } from "@react-navigation/native";
 import { useCambiarEstadoEventoMutation } from "@/components/App/Service/EventosApi";
 import {
@@ -65,7 +65,7 @@ const EventoDetalle = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: Colors.Blanco,
+      backgroundColor: "#1a1a1a",
     },
     contentContainer: {
       justifyContent: "center",
@@ -73,10 +73,10 @@ const EventoDetalle = () => {
       padding: 20,
     },
     card: {
-      backgroundColor: Colors.GrisClaro,
+      backgroundColor: "#222222",
       borderRadius: 10,
       marginBottom: 20,
-      shadowColor: Colors.Negro,
+      shadowColor: Colors.BordeDorado,
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.2,
       shadowRadius: 2,
@@ -84,14 +84,14 @@ const EventoDetalle = () => {
       width: "100%",
       alignItems: "center",
       padding: 10,
+      borderWidth: 2,
+      borderColor: Colors.BordeDorado,
     },
     image: {
       width: 150,
       height: 150,
       resizeMode: "contain",
       borderRadius: 10,
-      borderWidth: 1,
-      borderColor: Colors.Gris,
     },
     infoContainer: {
       padding: 10,
@@ -100,98 +100,83 @@ const EventoDetalle = () => {
     title: {
       fontSize: 24,
       fontWeight: "bold",
-      color: Colors.Negro,
+      color: "#ffffff",
       textAlign: "center",
     },
     description: {
       fontSize: 16,
-      color: Colors.Gris,
+      color: "#cccccc",
       marginVertical: 5,
       textAlign: "center",
     },
     detail: {
       fontSize: 14,
-      color: Colors.GrisOscuro,
+      color: Colors.BordeDorado,
       textAlign: "center",
     },
+    // Todos los botones ahora usan el mismo estilo dorado
     buttonContainer: {
       marginVertical: 10,
-      backgroundColor: Colors.Info,
-      padding: 10,
-      width: 300,
-      borderRadius: 5,
+      backgroundColor: Colors.BordeDorado,
+      padding: 14,
+      width: "90%",
+      borderRadius: 10,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
+      shadowColor: Colors.BordeDorado,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.3,
+      shadowRadius: 4,
+      elevation: 5,
     },
     buttonContainerRojo: {
       marginVertical: 10,
-      backgroundColor: Colors.Rojo,
-      padding: 10,
-      width: 300,
-      borderRadius: 5,
+      backgroundColor: Colors.BordeDorado,
+      padding: 14,
+      width: "90%",
+      borderRadius: 10,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
     },
     buttonContainerVerde: {
       marginVertical: 10,
-      backgroundColor: Colors.Verde,
-      padding: 10,
-      width: 300,
-      borderRadius: 5,
+      backgroundColor: Colors.BordeDorado,
+      padding: 14,
+      width: "90%",
+      borderRadius: 10,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
     },
     buttonContainerNaranja: {
       marginVertical: 10,
-      backgroundColor: Colors.Naranja,
-      padding: 10,
-      width: 300,
-      borderRadius: 5,
+      backgroundColor: Colors.BordeDorado,
+      padding: 14,
+      width: "90%",
+      borderRadius: 10,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
     },
     buttonText: {
-      color: Colors.Blanco,
-      marginLeft: 5,
-    },
-    modalOverlay: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
-    },
-    modalView: {
-      width: 300,
-      backgroundColor: "white",
-      borderRadius: 10,
-      padding: 20,
-      alignItems: "center",
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
-    },
-    modalText: {
-      marginBottom: 20,
-      textAlign: "center",
+      color: "#000000",
+      marginLeft: 8,
+      fontWeight: "bold",
       fontSize: 16,
     },
-    modalButtons: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      width: "100%",
+    buttonTextRojo: {
+      color: "#000000",
+      marginLeft: 8,
+      fontWeight: "bold",
+      fontSize: 16,
     },
-    buttonContainer2: {
-      flex: 1,
-      marginHorizontal: 10, // Adds spacing between buttons
+    buttonTextVerde: {
+      color: "#000000",
+      marginLeft: 8,
+      fontWeight: "bold",
+      fontSize: 16,
     },
   });
 
@@ -229,8 +214,8 @@ const EventoDetalle = () => {
           });
         }}
       >
-        <Text style={styles.buttonText}>Administrar Puntos de encuentro </Text>
-        <FontAwesomeIcon icon={faLocationDot} color={Colors.Blanco} size={16} />
+        <FontAwesomeIcon icon={faLocationDot} color="#000000" size={18} />
+        <Text style={styles.buttonText}> Puntos de Encuentro</Text>
       </TouchableOpacity>
       {evento.estado !== "EnCurso" && (
         <TouchableOpacity
@@ -241,17 +226,13 @@ const EventoDetalle = () => {
             });
           }}
         >
-          <Text style={styles.buttonText}>Administrar Asociaciones </Text>
-          <FontAwesomeIcon
-            icon={faAddressBook}
-            color={Colors.Blanco}
-            size={16}
-          />
+          <FontAwesomeIcon icon={faAddressBook} color="#000000" size={18} />
+          <Text style={styles.buttonText}> Associations</Text>
         </TouchableOpacity>
       )}
       {evento.estado === "EnCurso" && (
         <TouchableOpacity
-          style={styles.buttonContainerVerde}
+          style={styles.buttonContainer}
           onPress={() =>
             showModal(
               "¿Esta seguro que quiere finalizar el evento?",
@@ -260,12 +241,8 @@ const EventoDetalle = () => {
             )
           }
         >
-          <Text style={styles.buttonText}>Finalizar Evento </Text>
-          <FontAwesomeIcon
-            icon={faFlagCheckered}
-            color={Colors.Blanco}
-            size={16}
-          />
+          <FontAwesomeIcon icon={faFlagCheckered} color="#000000" size={18} />
+          <Text style={styles.buttonText}> Finalizar Evento</Text>
         </TouchableOpacity>
       )}
       {evento.estado === "Confirmado" && (
@@ -279,17 +256,13 @@ const EventoDetalle = () => {
             )
           }
         >
-          <Text style={styles.buttonText}>Pausar Evento </Text>
-          <FontAwesomeIcon
-            icon={faCirclePause}
-            color={Colors.Blanco}
-            size={16}
-          />
+          <FontAwesomeIcon icon={faCirclePause} color="#000000" size={18} />
+          <Text style={styles.buttonText}> Pausar Evento</Text>
         </TouchableOpacity>
       )}
       {evento.estado === "Confirmado" && (
         <TouchableOpacity
-          style={styles.buttonContainerVerde}
+          style={styles.buttonContainer}
           onPress={() =>
             showModal(
               "¿Esta seguro que quiere iniciar el evento?",
@@ -298,17 +271,13 @@ const EventoDetalle = () => {
             )
           }
         >
-          <Text style={styles.buttonText}>Iniciar Evento </Text>
-          <FontAwesomeIcon
-            icon={faCirclePlay}
-            color={Colors.Blanco}
-            size={16}
-          />
+          <FontAwesomeIcon icon={faCirclePlay} color="#000000" size={18} />
+          <Text style={styles.buttonText}> Iniciar Evento</Text>
         </TouchableOpacity>
       )}
       {evento.estado === "Confirmado" && (
         <TouchableOpacity
-          style={styles.buttonContainerRojo}
+          style={styles.buttonContainer}
           onPress={() =>
             showModal(
               "¿Esta seguro que quiere cancelar el evento?",
@@ -317,17 +286,13 @@ const EventoDetalle = () => {
             )
           }
         >
-          <Text style={styles.buttonText}>Cancelar Evento </Text>
-          <FontAwesomeIcon
-            icon={faCircleXmark}
-            color={Colors.Blanco}
-            size={16}
-          />
+          <FontAwesomeIcon icon={faCircleXmark} color="#000000" size={18} />
+          <Text style={styles.buttonText}> Cancelar Evento</Text>
         </TouchableOpacity>
       )}
       {evento.estado === "Pausado" && (
         <TouchableOpacity
-          style={styles.buttonContainerRojo}
+          style={styles.buttonContainer}
           onPress={() =>
             showModal(
               "¿Esta seguro que quiere cancelar el evento?",
@@ -336,12 +301,8 @@ const EventoDetalle = () => {
             )
           }
         >
-          <Text style={styles.buttonText}>Cancelar Evento </Text>
-          <FontAwesomeIcon
-            icon={faCircleXmark}
-            color={Colors.Blanco}
-            size={16}
-          />
+          <FontAwesomeIcon icon={faCircleXmark} color="#000000" size={18} />
+          <Text style={styles.buttonText}> Cancelar Evento</Text>
         </TouchableOpacity>
       )}
       {evento.estado === "Pausado" && (
@@ -355,17 +316,13 @@ const EventoDetalle = () => {
             )
           }
         >
-          <Text style={styles.buttonText}>Preparar Evento </Text>
-          <FontAwesomeIcon
-            icon={faPenToSquare}
-            color={Colors.Blanco}
-            size={16}
-          />
+          <FontAwesomeIcon icon={faPenToSquare} color="#000000" size={18} />
+          <Text style={styles.buttonText}> Preparar Evento</Text>
         </TouchableOpacity>
       )}
       {evento.estado === "EnPreparacion" && (
         <TouchableOpacity
-          style={styles.buttonContainerVerde}
+          style={styles.buttonContainer}
           onPress={() =>
             showModal(
               "¿Esta seguro que quiere confirmar el evento?",
@@ -374,17 +331,13 @@ const EventoDetalle = () => {
             )
           }
         >
-          <Text style={styles.buttonText}>Confirmar Evento </Text>
-          <FontAwesomeIcon
-            icon={faCircleCheck}
-            color={Colors.Blanco}
-            size={16}
-          />
+          <FontAwesomeIcon icon={faCircleCheck} color="#000000" size={18} />
+          <Text style={styles.buttonText}> Confirmar Evento</Text>
         </TouchableOpacity>
       )}
       {evento.estado === "EnPreparacion" && (
         <TouchableOpacity
-          style={styles.buttonContainerRojo}
+          style={styles.buttonContainer}
           onPress={() =>
             showModal(
               "¿Esta seguro que quiere cancelar el evento?",
@@ -393,42 +346,32 @@ const EventoDetalle = () => {
             )
           }
         >
-          <Text style={styles.buttonText}>Cancelar Evento </Text>
-          <FontAwesomeIcon
-            icon={faCircleXmark}
-            color={Colors.Blanco}
-            size={16}
-          />
+          <FontAwesomeIcon icon={faCircleXmark} color="#000000" size={18} />
+          <Text style={styles.buttonText}> Cancelar Evento</Text>
         </TouchableOpacity>
       )}
-      <Modal
-        animationType="slide"
-        transparent={true}
+      <ThemedModal
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
+        onClose={() => setModalVisible(false)}
+        animationType="slide"
+        title=""
+        buttons={[
+          { 
+            text: "No", 
+            onPress: () => setModalVisible(false),
+            style: { backgroundColor: Colors.BordeDorado },
+          },
+          { 
+            text: "Sí", 
+            onPress: () => handleChangeState(accion),
+            style: { backgroundColor: Colors.Rojo },
+          },
+        ]}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>{message}</Text>
-            <View style={styles.modalButtons}>
-              <View style={styles.buttonContainer2}>
-                <Button
-                  title="No"
-                  onPress={() => setModalVisible(false)}
-                  color={Colors.Azul}
-                />
-              </View>
-              <View style={styles.buttonContainer2}>
-                <Button
-                  title="Sí"
-                  onPress={() => handleChangeState(accion)}
-                  color={Colors.Rojo}
-                />
-              </View>
-            </View>
-          </View>
-        </View>
-      </Modal>
+        <Text style={{ textAlign: 'center', fontSize: 16, color: "#ffffff", lineHeight: 24 }}>
+          {message}
+        </Text>
+      </ThemedModal>
     </ScrollView>
   );
 };

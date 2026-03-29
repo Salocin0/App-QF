@@ -17,7 +17,7 @@ const EventosPStack = () => {
       initialRouteName="Mis Eventos"
       screenOptions={{
         headerStyle: {
-          backgroundColor: Colors.Blanco,
+          backgroundColor: Colors.HeaderBackground,
         },
         headerTintColor: Colors.Negro,
       }}

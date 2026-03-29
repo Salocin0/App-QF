@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity, Text } from 'react-native';
 import MapboxGL from '@rnmapbox/maps';
 import * as Location from 'expo-location';
@@ -18,22 +18,31 @@ const MapWithDirection = ({ meetingPoint, user2, isConsumerView }) => {
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [initialCamera, setInitialCamera] = useState(null);
   const cameraRef = useRef(null);
+  const permissionCache = useRef(null);
   const Colors = useDynamicColors();
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  useEffect(() => {
-    const getLocation = async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.error('Permission to access location was denied');
+  // Optimized location fetch with caching
+  const getLocation = useCallback(async () => {
+    // Check cache first
+    if (permissionCache.current) {
+      if (permissionCache.current !== 'granted') {
         return;
       }
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location.coords);
-    };
+    } else {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      permissionCache.current = status;
+      if (status !== 'granted') {
+        return;
+      }
+    }
+    
+    const location = await Location.getCurrentPositionAsync({});
+    setLocation(location.coords);
+  }, []);
 
-    getLocation();
-
+  // Memoized magnetometer subscription handler
+  const subscribeToMagnetometer = useCallback(() => {
     const magnetometerSubscription = Magnetometer.addListener((data) => {
       const { x, y } = data;
       if (x !== null && y !== null) {
@@ -42,10 +51,20 @@ const MapWithDirection = ({ meetingPoint, user2, isConsumerView }) => {
       }
     });
 
+    // Return cleanup function
     return () => {
       magnetometerSubscription.remove();
     };
   }, []);
+
+  useEffect(() => {
+    getLocation();
+    
+    // Use cleanup function returned from subscribeToMagnetometer
+    const cleanupMagnetometer = subscribeToMagnetometer();
+    
+    return cleanupMagnetometer;
+  }, [getLocation, subscribeToMagnetometer]);
 
   useEffect(() => {
     if (magnetometerData !== null) {
@@ -93,7 +112,7 @@ const MapWithDirection = ({ meetingPoint, user2, isConsumerView }) => {
     }
   }, [location, meetingPoint, user2]);
 
-  const handleMapLoad = () => {
+  const handleMapLoad = useCallback(() => {
     setIsMapLoaded(true);
     if (bounds) {
       setInitialCamera({
@@ -106,13 +125,13 @@ const MapWithDirection = ({ meetingPoint, user2, isConsumerView }) => {
         heading: heading,
       });
     }
-  };
+  }, [bounds, heading]);
 
-  const recenterMap = () => {
+  const recenterMap = useCallback(() => {
     if (initialCamera && cameraRef.current) {
       cameraRef.current.setCamera(initialCamera);
     }
-  };
+  }, [initialCamera]);
 
   const styles = StyleSheet.create({
     container: {
@@ -145,19 +164,28 @@ const MapWithDirection = ({ meetingPoint, user2, isConsumerView }) => {
     },
   });
 
+  // Mostrar loading mientras carga la ubicación o el mapa
   if (!location || !bounds) {
-    return <View style={styles.container} />;
+    return (
+      <View style={[styles.container, { backgroundColor: '#1a1a1a' }]}>
+        <ActivityIndicator size="large" color={Colors.BordeDorado} />
+        <Text style={{ color: '#ffffff', marginTop: 10 }}>Cargando ubicación...</Text>
+      </View>
+    );
   }
 
   return (
     <View style={styles.container}>
       {!isMapLoaded && (
-        <ActivityIndicator size="large" color={Colors.Naranja} style={styles.loadingIndicator} />
+        <ActivityIndicator size="large" color={Colors.BordeDorado} style={styles.loadingIndicator} />
       )}
       <MapboxGL.MapView
         style={styles.map}
-        styleURL={MapboxGL.StyleURL.Street}
+        styleURL={MapboxGL.StyleURL.Dark}
         onDidFinishLoadingMap={handleMapLoad}
+        zoomEnabled={true}
+        scrollEnabled={true}
+        rotateEnabled={true}
       >
         <MapboxGL.Images images={{
           markUser: require('./../../assets/markUser.png'),
@@ -230,4 +258,4 @@ const MapWithDirection = ({ meetingPoint, user2, isConsumerView }) => {
   );
 };
 
-export default MapWithDirection;
+export default React.memo(MapWithDirection);

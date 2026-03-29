@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { View, FlatList, ActivityIndicator } from "react-native";
+import { View, FlatList, ActivityIndicator, RefreshControl } from "react-native";
 import PedidoCard from "./PedidoCard";
 import Tabs from "./Tabs"; // Importa el nuevo componente Tabs
 import useDynamicColors from "../../Styles/useDynamicColors";
@@ -16,12 +16,23 @@ const Pedido = ({ navigation }) => {
   const { data, error, isLoading, refetch } = useGetPedidosQuery(user.consumidorId);
 
   const [selectedTab, setSelectedTab] = useState(["Todos"]); // Inicializamos con array
+  const [refreshing, setRefreshing] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       refetch();
     }, [refetch])
   );
+
+  const onRefresh = useCallback(async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch, refreshing]);
 
   const handleTabSelect = (tabFilters) => {
     setSelectedTab(tabFilters);
@@ -52,6 +63,14 @@ const Pedido = ({ navigation }) => {
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.flatListContainer}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[Colors?.Naranja]}
+              tintColor={Colors?.Naranja}
+            />
+          }
         />
       ) : (
         <Aviso mensaje="No hay pedidos disponibles" />

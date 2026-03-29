@@ -24,7 +24,7 @@ const CompraInmediataCard = () => {
       width: 70,
       height: 70,
       borderRadius: 35,
-      backgroundColor: Colors.modoOscuroActivo ? "#3a2e10" : "#fff9e6",
+      backgroundColor: Colors.modoOscuroActivo ? Colors.FondoCardOscuro : Colors.FondoCardClaro,
       justifyContent: "center",
       alignItems: "center",
       marginBottom: 15,

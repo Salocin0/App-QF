@@ -6,9 +6,9 @@ import {
   TextInput,
   TouchableOpacity,
   Switch,
-  Modal,
 } from "react-native";
 import useDynamicColors from "../Styles/useDynamicColors";
+import ThemedModal from "../components/ThemedModal/ThemedModal";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
   faArrowDownWideShort,
@@ -138,26 +138,6 @@ const BuscadorEventos = ({ onUpdate }) => {
       color: Colors?.Negro,
       fontWeight: "500",
     },
-    modalContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.7)",
-    },
-    modalContent: {
-      backgroundColor: Colors.Blanco,
-      padding: 25,
-      borderRadius: 20,
-      width: "85%",
-      ...Colors.Styles.card,
-    },
-    modalTitle: {
-      fontSize: 20,
-      fontWeight: "bold",
-      color: Colors.Negro,
-      marginBottom: 20,
-      textAlign: "center",
-    },
     optionItem: {
       flexDirection: "row",
       alignItems: "center",
@@ -170,38 +150,12 @@ const BuscadorEventos = ({ onUpdate }) => {
     },
     optionItemSelected: {
       borderColor: Colors.Naranja,
-      backgroundColor: Colors.modoOscuroActivo ? "#3a2e10" : "#fff9e6",
+      backgroundColor: Colors.modoOscuroActivo ? Colors.FondoCardOscuro : Colors.FondoCardClaro,
     },
     optionText: {
       color: Colors.Negro,
       fontSize: 16,
       flex: 1,
-    },
-    actionButtons: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      marginTop: 20,
-      width: "100%",
-      gap: 10,
-    },
-    cancelButton: {
-      padding: 12,
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: Colors.Rojo,
-      flex: 1,
-      alignItems: "center",
-    },
-    applyButton: {
-      padding: 12,
-      borderRadius: 10,
-      backgroundColor: Colors.Verde,
-      flex: 1,
-      alignItems: "center",
-    },
-    buttonActionText: {
-      fontWeight: "bold",
-      fontSize: 16,
     },
     filterItemContainer: {
       flexDirection: 'row',
@@ -247,92 +201,78 @@ const BuscadorEventos = ({ onUpdate }) => {
       </View>
 
       {/* Modal de Ordenar */}
-      <Modal visible={showOrderModal} transparent animationType="fade">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Ordenar por</Text>
-            
-            <TouchableOpacity 
-              style={[styles.optionItem, tempCategoria === "porDistancia" && styles.optionItemSelected]} 
-              onPress={() => handleSelectCategoria("porDistancia")}
-            >
-              <Text style={styles.optionText}>Distancia</Text>
-              {tempCategoria === "porDistancia" && <FontAwesomeIcon icon={faPlus} color={Colors.Naranja} size={14} />}
-            </TouchableOpacity>
+      <ThemedModal
+        visible={showOrderModal}
+        title="Ordenar por"
+        onClose={handleCloseOrderModal}
+        buttons={[
+          { text: "Cancelar", variant: "secondary", onPress: handleCloseOrderModal },
+          { text: "Aceptar", onPress: handleApplyOrder },
+        ]}
+      >
+        <TouchableOpacity 
+          style={[styles.optionItem, tempCategoria === "porDistancia" && styles.optionItemSelected]} 
+          onPress={() => handleSelectCategoria("porDistancia")}
+        >
+          <Text style={styles.optionText}>Distancia</Text>
+          {tempCategoria === "porDistancia" && <FontAwesomeIcon icon={faPlus} color={Colors.Naranja} size={14} />}
+        </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={[styles.optionItem, tempCategoria === "porFecha" && styles.optionItemSelected]} 
-              onPress={() => handleSelectCategoria("porFecha")}
-            >
-              <Text style={styles.optionText}>Fecha</Text>
-              {tempCategoria === "porFecha" && <FontAwesomeIcon icon={faPlus} color={Colors.Naranja} size={14} />}
-            </TouchableOpacity>
-
-            <View style={styles.actionButtons}>
-              <TouchableOpacity style={styles.cancelButton} onPress={handleCloseOrderModal}>
-                <Text style={[styles.buttonActionText, { color: Colors.Rojo }]}>Cancelar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.applyButton} onPress={handleApplyOrder}>
-                <Text style={[styles.buttonActionText, { color: "white" }]}>Aceptar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+        <TouchableOpacity 
+          style={[styles.optionItem, tempCategoria === "porFecha" && styles.optionItemSelected]} 
+          onPress={() => handleSelectCategoria("porFecha")}
+        >
+          <Text style={styles.optionText}>Fecha</Text>
+          {tempCategoria === "porFecha" && <FontAwesomeIcon icon={faPlus} color={Colors.Naranja} size={14} />}
+        </TouchableOpacity>
+      </ThemedModal>
 
       {/* Modal de Filtrar */}
-      <Modal visible={showFilterModal} transparent animationType="fade">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Filtrar eventos</Text>
-            
-            <View style={styles.filterItemContainer}>
-              <Text style={styles.filterText}>Iniciados</Text>
-              <Switch
-                value={tempFilters.iniciados}
-                onValueChange={() => handleToggleFilter("iniciados")}
-                trackColor={{ false: Colors.Gris, true: Colors.Verde }}
-              />
-            </View>
-
-            <View style={styles.filterItemContainer}>
-              <Text style={styles.filterText}>Próximos</Text>
-              <Switch
-                value={tempFilters.proximos}
-                onValueChange={() => handleToggleFilter("proximos")}
-                trackColor={{ false: Colors.Gris, true: Colors.Verde }}
-              />
-            </View>
-
-            <View style={styles.filterItemContainer}>
-              <Text style={styles.filterText}>Con Preventa</Text>
-              <Switch
-                value={tempFilters.conPreventa}
-                onValueChange={() => handleToggleFilter("conPreventa")}
-                trackColor={{ false: Colors.Gris, true: Colors.Verde }}
-              />
-            </View>
-
-            <View style={styles.filterItemContainer}>
-              <Text style={styles.filterText}>Sin Preventa</Text>
-              <Switch
-                value={tempFilters.sinPreventa}
-                onValueChange={() => handleToggleFilter("sinPreventa")}
-                trackColor={{ false: Colors.Gris, true: Colors.Verde }}
-              />
-            </View>
-
-            <View style={styles.actionButtons}>
-              <TouchableOpacity style={styles.cancelButton} onPress={handleCloseFilterModal}>
-                <Text style={[styles.buttonActionText, { color: Colors.Rojo }]}>Cancelar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.applyButton} onPress={handleApplyFilters}>
-                <Text style={[styles.buttonActionText, { color: "white" }]}>Aceptar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+      <ThemedModal
+        visible={showFilterModal}
+        title="Filtrar eventos"
+        onClose={handleCloseFilterModal}
+        buttons={[
+          { text: "Cancelar", variant: "secondary", onPress: handleCloseFilterModal },
+          { text: "Aceptar", onPress: handleApplyFilters },
+        ]}
+      >
+        <View style={styles.filterItemContainer}>
+          <Text style={styles.filterText}>Iniciados</Text>
+          <Switch
+            value={tempFilters.iniciados}
+            onValueChange={() => handleToggleFilter("iniciados")}
+            trackColor={{ false: Colors.Gris, true: Colors.Verde }}
+          />
         </View>
-      </Modal>
+
+        <View style={styles.filterItemContainer}>
+          <Text style={styles.filterText}>Próximos</Text>
+          <Switch
+            value={tempFilters.proximos}
+            onValueChange={() => handleToggleFilter("proximos")}
+            trackColor={{ false: Colors.Gris, true: Colors.Verde }}
+          />
+        </View>
+
+        <View style={styles.filterItemContainer}>
+          <Text style={styles.filterText}>Con Preventa</Text>
+          <Switch
+            value={tempFilters.conPreventa}
+            onValueChange={() => handleToggleFilter("conPreventa")}
+            trackColor={{ false: Colors.Gris, true: Colors.Verde }}
+          />
+        </View>
+
+        <View style={styles.filterItemContainer}>
+          <Text style={styles.filterText}>Sin Preventa</Text>
+          <Switch
+            value={tempFilters.sinPreventa}
+            onValueChange={() => handleToggleFilter("sinPreventa")}
+            trackColor={{ false: Colors.Gris, true: Colors.Verde }}
+          />
+        </View>
+      </ThemedModal>
     </View>
   );
 };

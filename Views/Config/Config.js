@@ -1,8 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  activarModoOscuro,
-  desactivarModoOscuro,
+  cambiarModoOscuro,
 } from "./../../components/Features/modoOscuro/modoOscuroSlice";
 import { Switch, Text, View } from "react-native";
 import useDynamicColors from "../../Styles/useDynamicColors";
@@ -15,11 +14,7 @@ const Config = () => {
   const dispatch = useDispatch();
 
   const handleCambiarModoOscuro = () => {
-    if (modoOscuroActivo) {
-      dispatch(desactivarModoOscuro());
-    } else {
-      dispatch(activarModoOscuro());
-    }
+    dispatch(cambiarModoOscuro());
   };
 
   return (

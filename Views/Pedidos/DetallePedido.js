@@ -4,11 +4,12 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Modal,
   TextInput,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome"; // Asegúrate de haber instalado react-native-vector-icons
 import useDynamicColors from "../../Styles/useDynamicColors";
+import ThemedModal from "../../components/ThemedModal/ThemedModal";
 import StarsBar from "./StarsBar";
 import { useGetProductosQuery } from "./../../components/App/Service/ProductosApi";
 import { useCreateValoracionMutation } from "./../../components/App/Service/ValoracionApi";
@@ -19,17 +20,31 @@ const DetallePedido = ({ route }) => {
   const Colors = useDynamicColors();
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
+  // Extraer pedido primero para poder usarlo en los hooks
+  const pedido = route?.params?.pedido;
+  // Convertir a boolean explícitamente
+  const isViewRepartidor = route?.params?.isViewRepartidor === true || route?.params?.isViewRepartidor === "true";
   const { data, isLoading, error } = useGetProductosQuery(pedido?.puestoId);
   const [CreateValoracionMutation] = useCreateValoracionMutation();
   const [ratingRepartidor, setRatingRepartidor] = useState(0);
   const [ratingPuesto, setRatingPuesto] = useState(0);
   const [opinion, setOpinion] = useState("");
-  const [pedido, setPedidoLocal] = useState(route.params.pedido);
+  const [pedidoLocal, setPedidoLocal] = useState(pedido);
   const [cambiarEstadoPedido] = useCambiarEstadoPedidoMutation();
   const [modalVisible2, setModalVisible2] = useState(false);
 
+  // Usar pedidoLocal para mostrar, con fallback a pedido
+  const currentPedido = pedidoLocal || pedido;
+
+  // Sincronizar pedidoLocal cuando pedido cambia
+  useEffect(() => {
+    if (pedido && !pedidoLocal) {
+      setPedidoLocal(pedido);
+    }
+  }, [pedido, pedidoLocal]);
+
   const VerUbicacionPedido = () => {
-    navigation.navigate("Ubicacion Pedido", {pedido});
+    navigation.navigate("Ubicacion Pedido", { pedido: pedidoLocal || pedido });
   };
 
   useEffect(() => {}, [pedido]);
@@ -87,19 +102,21 @@ const DetallePedido = ({ route }) => {
       flex: 1,
       justifyContent: "center",
       padding: 20,
-      backgroundColor: Colors.GrisClaro,
+      backgroundColor: "#1a1a1a",
     },
     card: {
-      backgroundColor: Colors.Blanco, // Dark card background
+      backgroundColor: "#222222",
       borderRadius: 10,
       padding: 20,
       elevation: 3,
+      borderWidth: 2,
+      borderColor: Colors.BordeDorado,
     },
     title: {
       fontSize: 22,
       fontWeight: "bold",
       marginBottom: 15,
-      color: Colors.Negro, // Light text
+      color: "#ffffff",
       textAlign: "center",
     },
     section: {
@@ -110,32 +127,41 @@ const DetallePedido = ({ route }) => {
     label: {
       fontSize: 16,
       fontWeight: "bold",
-      color: Colors.GrisOscuro, // Grayish label color
+      color: Colors.BordeDorado,
     },
     value: {
       fontSize: 16,
-      color: Colors.Negro, // Lighter text color
+      color: "#ffffff",
     },
     link: {
-      color: Colors.Negro,
+      color: Colors.BordeDorado,
       fontWeight: "bold",
     },
     status: {
-      color: Colors.Negro,
+      color: "#ffffff",
       fontWeight: "bold",
+      backgroundColor: Colors.BordeDorado,
+      paddingHorizontal: 8,
+      paddingVertical: 2,
+      borderRadius: 8,
+      overflow: "hidden",
     },
     productRow: {
       flexDirection: "row",
       justifyContent: "space-between",
       marginBottom: 5,
+      borderBottomWidth: 1,
+      borderBottomColor: "#333333",
+      paddingBottom: 5,
     },
     productText: {
       fontSize: 16,
-      color: Colors.Negro,
+      color: "#cccccc",
+      flex: 1,
     },
     productPrice: {
       fontSize: 16,
-      color: Colors.Negro,
+      color: Colors.BordeDorado,
       fontWeight: "bold",
     },
     totalContainer: {
@@ -145,15 +171,18 @@ const DetallePedido = ({ route }) => {
       marginVertical: 15,
       padding: 10,
       borderRadius: 8,
+      borderWidth: 2,
+      borderColor: Colors.BordeDorado,
+      backgroundColor: "#1a1a1a",
     },
     totalLabel: {
       fontSize: 18,
-      color: Colors.Negro,
+      color: "#ffffff",
       fontWeight: "bold",
     },
     totalValue: {
       fontSize: 18,
-      color: Colors.Negro,
+      color: Colors.BordeDorado,
       fontWeight: "bold",
     },
     buttonGroup: {
@@ -168,100 +197,95 @@ const DetallePedido = ({ route }) => {
       padding: 10,
       borderRadius: 8,
       margin: 5,
+      borderWidth: 1,
+      borderColor: Colors.BordeDorado,
     },
     rateButton: {
-      backgroundColor: Colors.Verde, // Green color
+      backgroundColor: Colors.BordeDorado,
     },
     cancelButton: {
-      backgroundColor: Colors.Rojo, // Red color
+      backgroundColor: "transparent",
+      borderWidth: 2,
+      borderColor: Colors.Rojo,
     },
     locationButton: {
-      backgroundColor: Colors.Azul, // Blue color
+      backgroundColor: "transparent",
+      borderWidth: 2,
+      borderColor: Colors.Azul,
     },
     buttonText: {
       fontSize: 16,
       fontWeight: "bold",
-      color: Colors.Blanco,
+      color: "#000000",
       marginLeft: 5,
     },
-    modalView: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.5)", // Dark transparent background
-    },
-    modalContent: {
-      backgroundColor: Colors.Blanco, // Modal card background
-      borderRadius: 10,
-      padding: 20,
-      width: "90%",
-      alignItems: "center",
-      elevation: 5,
-    },
-    modalTitle: {
-      fontSize: 20,
+    buttonTextSecondary: {
+      fontSize: 16,
       fontWeight: "bold",
-      marginBottom: 15,
-      color: Colors.Negro,
-      textAlign: "center",
+      color: Colors.Rojo,
+      marginLeft: 5,
     },
+    buttonTextBlue: {
+      fontSize: 16,
+      fontWeight: "bold",
+      color: Colors.Azul,
+      marginLeft: 5,
+    },
+    // TextInput for valoration
     textInput: {
-      borderColor: Colors.Gris,
-      backgroundColor: Colors.GrisClaro,
-      color: Colors.Negro,
+      borderColor: Colors.BordeDorado,
+      backgroundColor: "#1a1a1a",
+      color: "#ffffff",
       borderWidth: 1,
-      borderRadius: 5,
-      padding: 10,
+      borderRadius: 10,
+      padding: 12,
       width: "100%",
       height: 100,
-      marginBottom: 15,
+      marginBottom: 16,
+      fontSize: 15,
     },
     buttonContainer: {
       flexDirection: "row",
       justifyContent: "space-between",
       width: "100%",
+      gap: 12,
     },
     submitButton: {
-      backgroundColor: Colors.Verde,
+      backgroundColor: Colors.BordeDorado,
       flex: 1,
-      marginRight: 5,
+      padding: 14,
+      borderRadius: 10,
+      alignItems: "center",
     },
     closeButton: {
-      backgroundColor: Colors.Rojo,
+      backgroundColor: "transparent",
+      borderWidth: 2,
+      borderColor: Colors.Rojo,
       flex: 1,
-      marginLeft: 5,
+      padding: 14,
+      borderRadius: 10,
+      alignItems: "center",
     },
     confirmButton: {
       backgroundColor: Colors.Rojo,
       marginRight: 10,
+      padding: 14,
+      borderRadius: 10,
     },
     goBackButton: {
-      backgroundColor: Colors.Info,
-    },
-    buttonText: {
-      color: Colors.Blanco,
-      marginLeft: 5,
-    },
-    modalContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    modalContent: {
-      backgroundColor: Colors.Blanco,
-      padding: 20,
+      backgroundColor: Colors.BordeDorado,
+      padding: 14,
       borderRadius: 10,
-      alignItems: 'center',
-      width: 300,
     },
-    modalText: {
-      fontSize: 18,
-      marginBottom: 20,
+    textWhite: {
+      fontWeight: "bold",
+      fontSize: 15,
+      color: "#000000",
     },
-    buttonContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
+    textWhiteSecondary: {
+      fontWeight: "bold",
+      fontSize: 15,
+      color: "#ffffff",
     },
   });
 
@@ -275,7 +299,9 @@ const DetallePedido = ({ route }) => {
         </View>
         <View style={styles.section}>
           <Text style={styles.label}>Repartidor:</Text>
-          <Text style={styles.value}>{pedido?.repartidorId}</Text>
+          <Text style={styles.value}>
+            {pedido?.repartidore?.consumidore?.nombre} {pedido?.repartidore?.consumidore?.apellido}
+          </Text>
         </View>
         <View style={styles.section}>
           <Text style={styles.label}>Puesto:</Text>
@@ -306,12 +332,12 @@ const DetallePedido = ({ route }) => {
         </View>
 
         <View style={styles.buttonGroup}>
-          {pedido?.estado === "Entregado" && (
+          {pedido?.estado === "Entregado" && !isViewRepartidor && (
             <TouchableOpacity
               style={[styles.button, styles.rateButton]}
               onPress={() => setModalVisible(true)}
             >
-              <Icon name="star" size={20} color={Colors.Blanco} />
+              <Icon name="star" size={20} color="#000000" />
               <Text style={styles.buttonText}>Valorar Pedido</Text>
             </TouchableOpacity>
           )}
@@ -320,8 +346,8 @@ const DetallePedido = ({ route }) => {
               style={[styles.button, styles.cancelButton]}
               onPress={() => setModalVisible2(true)}
             >
-              <Icon name="times-circle" size={20} color={Colors.Blanco} />
-              <Text style={styles.buttonText}>Cancelar Pedido</Text>
+              <Icon name="times-circle" size={20} color={Colors.Rojo} />
+              <Text style={styles.buttonTextSecondary}>Cancelar Pedido</Text>
             </TouchableOpacity>
           )}
           {pedido?.estado === "EnCamino" && (
@@ -329,8 +355,8 @@ const DetallePedido = ({ route }) => {
               style={[styles.button, styles.locationButton]}
               onPress={VerUbicacionPedido}
             >
-              <Icon name="map-marker" size={20} color={Colors.Blanco} />
-              <Text style={styles.buttonText}>Ver Ubicación de Entrega</Text>
+              <Icon name="map-marker" size={20} color={Colors.Azul} />
+              <Text style={styles.buttonTextBlue}>Ver Ubicación</Text>
             </TouchableOpacity>
           )}
           {(pedido?.estado === "Precomprado") && (
@@ -338,87 +364,67 @@ const DetallePedido = ({ route }) => {
               style={[styles.button, styles.rateButton]}
               onPress={{}} //falta implementar
             >
-              <Icon name="check" size={20} color={Colors.Blanco} />
+              <Icon name="check" size={20} color="#000000" />
               <Text style={styles.buttonText}>Solicitar Pedido</Text>
             </TouchableOpacity>
           )}
         </View>
       </View>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
+      <ThemedModal
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalView}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>
-              Ingrese Valoraciones para mejorar el servicio
-            </Text>
-            <StarsBar
-              pregunta="Calificación del Puesto"
-              rating={ratingPuesto}
-              onRatingChange={handleRatingPuestoChange}
-            />
-            <StarsBar
-              pregunta="Calificación del Repartidor"
-              rating={ratingRepartidor}
-              onRatingChange={handleRatingRepartidorChange}
-            />
-            <TextInput
-              style={styles.textInput}
-              placeholder="Escribe una opinión opcional..."
-              value={opinion}
-              onChangeText={(text) => setOpinion(text)}
-              multiline
-            />
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={[styles.button, styles.submitButton]}
-                onPress={handleSubmitValoracion}
-              >
-                <Icon name="paper-plane" size={20} color="#ffffff" />
-                <Text style={styles.buttonText}>Enviar Valoración</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.button, styles.closeButton]}
-                onPress={() => setModalVisible(false)}
-              >
-                <Icon name="close" size={20} color="#ffffff" />
-                <Text style={styles.buttonText}>Cerrar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-      <Modal
+        onClose={() => setModalVisible(false)}
         animationType="slide"
-        transparent={true}
-        visible={modalVisible2}
-        onRequestClose={() => setModalVisible2(false)}
+        title="Ingrese Valoraciones para mejorar el servicio"
+        buttons={[
+          { 
+            text: "Cerrar", 
+            variant: "secondary",
+            onPress: () => setModalVisible(false),
+          },
+          { 
+            text: "Enviar", 
+            onPress: handleSubmitValoracion,
+          },
+        ]}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>¿Estás seguro que quieres cancelar el pedido?</Text>
-            <View style={styles.buttonContainer}>
-              
-              <TouchableOpacity
-                style={[styles.button, styles.goBackButton]}
-                onPress={() => setModalVisible2(false)}
-              >
-                <Text style={styles.buttonText}>Volver</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.button, styles.confirmButton]}
-                onPress={handleCancelOrder}
-              >
-                <Text style={styles.buttonText}>Cancelar Pedido</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+        <StarsBar
+          pregunta="Calificación del Puesto"
+          rating={ratingPuesto}
+          onRatingChange={handleRatingPuestoChange}
+        />
+        <StarsBar
+          pregunta="Calificación del Repartidor"
+          rating={ratingRepartidor}
+          onRatingChange={handleRatingRepartidorChange}
+        />
+        <TextInput
+          style={styles.textInput}
+          placeholder="Escribe una opinión opcional..."
+          placeholderTextColor={Colors.Gris}
+          value={opinion}
+          onChangeText={(text) => setOpinion(text)}
+          multiline
+        />
+      </ThemedModal>
+
+      <ThemedModal
+        visible={modalVisible2}
+        onClose={() => setModalVisible2(false)}
+        animationType="slide"
+        title="¿Estás seguro que quieres cancelar el pedido?"
+        buttons={[
+          { 
+            text: "Volver", 
+            onPress: () => setModalVisible2(false),
+          },
+          { 
+            text: "Cancelar Pedido", 
+            onPress: handleCancelOrder,
+            style: { backgroundColor: Colors.Rojo },
+          },
+        ]}
+      />
     </View>
   );
 };

@@ -3,11 +3,11 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import useDynamicColors from "../../Styles/useDynamicColors";
 
-const PedidoCard = ({ item, navigation,isViewRepartidor }) => {
+const PedidoCard = ({ item, navigation, isViewRepartidor }) => {
   const Colors = useDynamicColors();
 
   const seleccionarPedido = (pedido) => {
-    navigation.navigate("Detalle Pedido", { pedido });
+    navigation.navigate("Detalle Pedido", { pedido, isViewRepartidor });
   };
   const handleIrUbicacion = (pedido) => {
       navigation.navigate("Ubicacion Pedido", {pedido});
@@ -24,81 +24,105 @@ const PedidoCard = ({ item, navigation,isViewRepartidor }) => {
 
   const styles = StyleSheet.create({
     card: {
-      borderWidth: 1,
-      borderColor: Colors.Gris,
-      borderRadius: 8,
-      padding: 15,
-      marginVertical: 8,
-      marginHorizontal: 16,
-      backgroundColor: Colors.Blanco,
-      shadowColor: Colors.Negro,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 3,
+      borderWidth: 2,
+      borderColor: Colors.BordeDorado,
+      borderRadius: 14,
+      padding: 18,
+      marginVertical: 10,
+      marginHorizontal: 10,
+      backgroundColor: Colors.CardBackground,
+      shadowColor: Colors.BordeDorado,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 8,
+      elevation: 6,
     },
     title: {
-      fontSize: 18,
+      fontSize: 20,
       fontWeight: "bold",
-      marginBottom: 8,
+      marginBottom: 10,
       color: Colors.Negro,
+      letterSpacing: 1,
     },
     text: {
       color: Colors.Negro,
-      marginBottom: 5,
+      marginBottom: 6,
       flexDirection: "row",
       alignItems: "center",
+      fontSize: 16,
     },
     status: {
       position: "absolute",
-      right: 15,
-      top: 15,
-      paddingVertical: 4,
-      paddingHorizontal: 8,
-      borderRadius: 15,
+      right: 18,
+      top: 18,
+      paddingVertical: 5,
+      paddingHorizontal: 12,
+      borderRadius: 20,
       fontWeight: "bold",
-      color: Colors.Blanco,
+      color: Colors.Negro,
+      backgroundColor: Colors.BordeDorado,
+      fontSize: 14,
+      borderWidth: 1,
+      borderColor: Colors.BordeDorado,
+      overflow: "hidden",
+      shadowColor: Colors.BordeDorado,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 2,
+      elevation: 2,
     },
     pending: {
-      backgroundColor: Colors.NaranjaOscuro,
+      backgroundColor: Colors.BordeDorado,
+      color: Colors.Negro,
     },
     inProgress: {
-      backgroundColor: Colors.Azul,
+      backgroundColor: Colors.Naranja,
+      color: Colors.Negro,
     },
     delivered: {
       backgroundColor: Colors.Verde,
+      color: Colors.Negro,
     },
     aceptado: {
-      backgroundColor: Colors.Rosa,
+      backgroundColor: Colors.Purpura,
+      color: Colors.Negro,
     },
     enPreparacion: {
-      backgroundColor: Colors.Purpura,
+      backgroundColor: Colors.Rosa,
+      color: Colors.Negro,
     },
     Cancelado: {
       backgroundColor: Colors.Rojo,
+      color: Colors.Negro,
     },
     icon: {
-      marginRight: 8,
-      color: Colors.Negro,
+      marginRight: 10,
+      color: Colors.BordeDorado,
     },
     row: {
       flexDirection: "row",
       justifyContent: "space-between",
-      marginBottom: 8,
+      marginBottom: 10,
     },
     mapButton: {
-      backgroundColor: Colors.Azul,
-      padding: 8,
-      borderRadius: 5,
-      marginTop: 10,
+      backgroundColor: Colors.BordeDorado,
+      padding: 10,
+      borderRadius: 8,
+      marginTop: 12,
       alignItems: "center",
       justifyContent: "center",
       flexDirection: "row",
+      shadowColor: Colors.BordeDorado,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 2,
+      elevation: 2,
     },
     mapButtonText: {
-      color: Colors.Blanco,
+      color: Colors.Negro,
       fontWeight: "bold",
-      marginLeft: 5,
+      marginLeft: 7,
+      fontSize: 16,
     },
   });
 
@@ -133,37 +157,37 @@ const PedidoCard = ({ item, navigation,isViewRepartidor }) => {
         <View style={styles.row}>
           <View style={styles.text}>
             <Icon name="storefront-outline" size={20} style={styles.icon} />
-            <Text>{item?.puesto?.nombreCarro}</Text>
+            <Text style={{color: Colors.Negro}}>{item?.puesto?.nombreCarro}</Text>
           </View>
           {item?.estado === "EnCamino" ? (
             <View style={styles.text}>
               <Icon name="account-outline" size={20} style={styles.icon} />
-              <Text>{item?.repartidore?.consumidore?.nombre +", " +item?.repartidore?.consumidore?.apellido || "Alberto"}</Text>
+              <Text style={{color: Colors.Negro}}>{item?.repartidore?.consumidore?.nombre +", " +item?.repartidore?.consumidore?.apellido || "Alberto"}</Text>
             </View>
           ) : (
             <View style={styles.text}>
-              <Text></Text>
+              <Text style={{color: Colors.Negro}}></Text>
             </View>
           )}
           {item?.estado === "Entregado" && isViewRepartidor ? (
             <View style={styles.text}>
               <Icon name="account-outline" size={20} style={styles.icon} />
-              <Text>{item?.consumidore?.nombre +", " +item?.consumidore?.apellido || "Alberto"}</Text>
+              <Text style={{color: Colors.Negro}}>{item?.consumidore?.nombre +", " +item?.consumidore?.apellido || "Alberto"}</Text>
             </View>
           ) : (
             <View style={styles.text}>
-              <Text></Text>
+              <Text style={{color: Colors.Negro}}></Text>
             </View>
           )}
         </View>
         <View style={styles.row}>
           <View style={styles.text}>
             <Icon name="calendar-outline" size={20} style={styles.icon} />
-            <Text>{formatFecha(item?.fecha)}</Text>
+            <Text style={{color: Colors.Negro}}>{formatFecha(item?.fecha)}</Text>
           </View>
           <View style={styles.text}>
             <Icon name="currency-usd" size={20} style={styles.icon} />
-            <Text style={{ fontSize: 18 }}>{item?.total}</Text>
+            <Text style={{ fontSize: 18, color: Colors.Negro }}>${Number(item?.total || 0).toFixed(2)}</Text>
           </View>
         </View>
         {item.estado === "EnCamino" && (
@@ -171,7 +195,7 @@ const PedidoCard = ({ item, navigation,isViewRepartidor }) => {
             style={styles.mapButton}
             onPress={() => handleIrUbicacion(item)}
           >
-            <Icon name="map-marker" size={20} color={Colors.Blanco} />
+            <Icon name="map-marker" size={20} color={Colors.Negro} />
             <Text style={styles.mapButtonText}>Ver en mapa</Text>
           </TouchableOpacity>
         )}

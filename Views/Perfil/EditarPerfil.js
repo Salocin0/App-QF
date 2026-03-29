@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ActivityIndicator, Button, TextInput } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator, Button, TextInput, TouchableOpacity, ScrollView, Image } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useGetPerfilQuery, useUpdateConsumidorMutation, useUpdateEncargadoMutation, useUpdateProductorMutation } from "./../../components/App/Service/PerfilApi";
@@ -8,6 +8,8 @@ import useLocalidades from "./../../hooks/UseLocalidades";
 import useProvincias from "./../../hooks/UseProvincias";
 import { useNavigation } from "@react-navigation/native";
 import { ToastAndroid } from "react-native";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faPencil, faSave, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 const EditarPerfil = () => {
   const Colors = useDynamicColors();
@@ -145,57 +147,105 @@ const EditarPerfil = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      padding: 8,
+      backgroundColor: "#1a1a1a",
       paddingHorizontal: 16,
-      backgroundColor: Colors.GrisClaro,
+    },
+    logoContainer: {
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: 30,
+    },
+    logo: {
+      width: 180,
+      height: 180,
     },
     card: {
-      backgroundColor: Colors.Blanco,
-      borderRadius: 8,
+      backgroundColor: "#222222",
+      borderRadius: 10,
       padding: 16,
       marginVertical: 8,
-      shadowColor: Colors.Negro,
+      shadowColor: Colors.BordeDorado,
       shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
+      shadowOpacity: 0.2,
       shadowRadius: 8,
       elevation: 3,
+      borderWidth: 2,
+      borderColor: Colors.BordeDorado,
     },
     title: {
-      fontSize: 20,
+      fontSize: 24,
       fontWeight: "bold",
-      color: Colors.Negro,
+      color: Colors.BordeDorado,
+      textAlign: "center",
+      marginBottom: 15,
     },
     button: {
-      marginTop: 4,
+      marginTop: 20,
+      backgroundColor: Colors.BordeDorado,
+      padding: 15,
+      borderRadius: 10,
+      alignItems: "center",
+    },
+    buttonDisabled: {
+      backgroundColor: "#444444",
+      padding: 15,
+      borderRadius: 10,
+      alignItems: "center",
+      marginTop: 20,
+    },
+    buttonText: {
+      color: "#000000",
+      fontWeight: "bold",
+      fontSize: 16,
+    },
+    buttonTextDisabled: {
+      color: "#888888",
+      fontWeight: "bold",
+      fontSize: 16,
     },
     label: {
       fontSize: 14,
       fontWeight: "bold",
-      color: Colors.Negro,
+      color: Colors.BordeDorado,
+      marginBottom: 5,
     },
     input: {
-      fontSize: 14,
-      color: Colors.Negro,
+      fontSize: 16,
+      color: "#ffffff",
+      backgroundColor: "#1a1a1a",
+      borderWidth: 1,
+      borderColor: Colors.BordeDorado,
+      borderRadius: 8,
+      padding: 12,
+      marginBottom: 15,
     },
     inputSelect: {
       fontSize: 14,
-      color: Colors.Negro,
+      color: "#ffffff",
       minWidth: 100,
     },
     placeholder: {
-      color: Colors.Negro,
+      color: "#666666",
     },
     inputContainer: {
+      flexDirection: "column",
+      alignItems: "flex-start",
+      marginBottom: 5,
+    },
+    inputRow: {
       flexDirection: "row",
       alignItems: "center",
-      marginBottom: 8,
+      justifyContent: "space-between",
+    },
+    editIcon: {
+      padding: 5,
     },
   });
 
   if (isLoading && !isFormReady) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color={Colors.Naranja} />
+        <ActivityIndicator size="large" color={Colors.BordeDorado} />
       </View>
     );
   }
@@ -203,89 +253,187 @@ const EditarPerfil = () => {
   if (error) {
     return (
       <View style={styles.container}>
-        <Text style={{ color: Colors.Negro }}>Error al cargar los datos del perfil</Text>
+        <Text style={{ color: "#ffffff" }}>Error al cargar los datos del perfil</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Editar Usuario</Text>
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 50 }}>
+      <View style={styles.logoContainer}>
+        <Image 
+          source={require("./../../assets/quickfood-logo.png")} 
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
       <View style={styles.card}>
+        
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Nombre: </Text>
-          <TextInput style={styles.input} placeholder="Nombre" value={nombre} onChangeText={setNombre} />
+          <Text style={styles.label}>Nombre</Text>
+          <View style={styles.inputRow}>
+            <TextInput 
+              style={[styles.input, { flex: 1 }]} 
+              placeholder="Nombre" 
+              placeholderTextColor="#666666"
+              value={nombre} 
+              onChangeText={setNombre} 
+            />
+            <FontAwesomeIcon icon={faPencil} color={Colors.BordeDorado} size={18} style={styles.editIcon} />
+          </View>
         </View>
+        
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Apellido: </Text>
-          <TextInput style={styles.input} placeholder="Apellido" value={apellido} onChangeText={setApellido} />
+          <Text style={styles.label}>Apellido</Text>
+          <View style={styles.inputRow}>
+            <TextInput 
+              style={[styles.input, { flex: 1 }]} 
+              placeholder="Apellido" 
+              placeholderTextColor="#666666"
+              value={apellido} 
+              onChangeText={setApellido} 
+            />
+            <FontAwesomeIcon icon={faPencil} color={Colors.BordeDorado} size={18} style={styles.editIcon} />
+          </View>
         </View>
+        
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>DNI: </Text>
-          <TextInput style={styles.input} placeholder="DNI" value={dni} onChangeText={setDNI} keyboardType="numeric" />
+          <Text style={styles.label}>DNI</Text>
+          <View style={styles.inputRow}>
+            <TextInput 
+              style={[styles.input, { flex: 1 }]} 
+              placeholder="DNI" 
+              placeholderTextColor="#666666"
+              value={dni} 
+              onChangeText={setDNI} 
+              keyboardType="numeric" 
+            />
+            <FontAwesomeIcon icon={faPencil} color={Colors.BordeDorado} size={18} style={styles.editIcon} />
+          </View>
         </View>
+        
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Teléfono: </Text>
-          <TextInput style={styles.input} placeholder="Teléfono" value={telefono} onChangeText={setTelefono} keyboardType="numeric" />
+          <Text style={styles.label}>Teléfono</Text>
+          <View style={styles.inputRow}>
+            <TextInput 
+              style={[styles.input, { flex: 1 }]} 
+              placeholder="Teléfono" 
+              placeholderTextColor="#666666"
+              value={telefono} 
+              onChangeText={setTelefono} 
+              keyboardType="numeric" 
+            />
+            <FontAwesomeIcon icon={faPencil} color={Colors.BordeDorado} size={18} style={styles.editIcon} />
+          </View>
         </View>
+        
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Provincia: </Text>
-          <RNPickerSelect
-            style={{ inputAndroid: styles.inputSelect, placeholder: styles.placeholder }}
-            useNativeAndroidPickerStyle={false}
-            fixAndroidTouchableBug={true}
-            placeholder={{ label: data?.provincia, value: data?.provincia }}
-            value={provincia}
-            onValueChange={handleProvinceChange}
-            items={provincias.map((provincia) => ({
-              label: provincia.nombre,
-              value: provincia.id,
-              key: provincia.id,
-            }))}
-          />
+          <Text style={styles.label}>Provincia</Text>
+          <View style={styles.inputRow}>
+            <RNPickerSelect
+              style={{ 
+                inputIOS: { color: "#ffffff" },
+                inputAndroid: { 
+                  color: "#ffffff", 
+                  backgroundColor: "#1a1a1a", 
+                  borderWidth: 1, 
+                  borderColor: Colors.BordeDorado, 
+                  borderRadius: 8, 
+                  padding: 12, 
+                  flex: 1,
+                  height: 50,
+                }, 
+                placeholder: { color: "#666666" },
+                iconContainer: { paddingRight: 10 },
+              }}
+              useNativeAndroidPickerStyle={false}
+              fixAndroidTouchableBug={true}
+              placeholder={{ label: data?.provincia || "Seleccionar", value: data?.provincia }}
+              value={provincia}
+              onValueChange={handleProvinceChange}
+              items={provincias.map((provincia) => ({
+                label: provincia.nombre,
+                value: provincia.id,
+                key: provincia.id,
+              }))}
+              Icon={() => <FontAwesomeIcon icon={faChevronDown} color={Colors.BordeDorado} size={16} />}
+            />
+          </View>
         </View>
+        
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Localidad: </Text>
-          <RNPickerSelect
-            style={{ inputAndroid: styles.inputSelect, placeholder: styles.placeholder }}
-            useNativeAndroidPickerStyle={false}
-            fixAndroidTouchableBug={true}
-            placeholder={{ label: data?.localidad, value: data?.localidad }}
-            value={localidad}
-            onValueChange={handleLocalidadChange}
-            items={localidades.map((localidad) => ({
-              label: localidad.nombre,
-              value: localidad.id,
-              key: localidad.id,
-            }))}
-          />
+          <Text style={styles.label}>Localidad</Text>
+          <View style={styles.inputRow}>
+            <RNPickerSelect
+              style={{ 
+                inputIOS: { color: "#ffffff" },
+                inputAndroid: { 
+                  color: "#ffffff", 
+                  backgroundColor: "#1a1a1a", 
+                  borderWidth: 1, 
+                  borderColor: Colors.BordeDorado, 
+                  borderRadius: 8, 
+                  padding: 12, 
+                  flex: 1,
+                  height: 50,
+                }, 
+                placeholder: { color: "#666666" },
+                iconContainer: { paddingRight: 10 },
+              }}
+              useNativeAndroidPickerStyle={false}
+              fixAndroidTouchableBug={true}
+              placeholder={{ label: data?.localidad || "Seleccionar", value: data?.localidad }}
+              value={localidad}
+              onValueChange={handleLocalidadChange}
+              items={localidades.map((localidad) => ({
+                label: localidad.nombre,
+                value: localidad.id,
+                key: localidad.id,
+              }))}
+              Icon={() => <FontAwesomeIcon icon={faChevronDown} color={Colors.BordeDorado} size={16} />}
+            />
+          </View>
         </View>
+        
         {data?.productor && data.productor.habilitado && (
           <>
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Condición frente al IVA: </Text>
+              <Text style={styles.label}>Condición frente al IVA</Text>
               <RNPickerSelect
-                style={{ inputAndroid: styles.inputSelect, placeholder: styles.placeholder }}
+                style={{ 
+                  inputIOS: { color: "#ffffff" },
+                  inputAndroid: { 
+                    color: "#ffffff", 
+                    backgroundColor: "#1a1a1a", 
+                    borderWidth: 1, 
+                    borderColor: Colors.BordeDorado, 
+                    borderRadius: 8, 
+                    padding: 12, 
+                    height: 50,
+                  }, 
+                  placeholder: { color: "#666666" },
+                }}
                 useNativeAndroidPickerStyle={false}
                 fixAndroidTouchableBug={true}
-                placeholder={{ label: "", value: null }}
+                placeholder={{ label: "Seleccionar", value: null }}
                 value={condicionIva}
                 onValueChange={(value) => setCondicionIva(value)}
                 items={[
                   { label: "Monotributista", value: "Monotributista", key: "Monotributista" },
                   { label: "Responsable Inscripto", value: "Responsable Inscripto", key: "Responsable Inscripto" },
                 ]}
+                Icon={() => <FontAwesomeIcon icon={faChevronDown} color={Colors.BordeDorado} size={16} />}
               />
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>CUIT: </Text>
-              <TextInput style={styles.input} placeholder="CUIT" value={cuit} onChangeText={setCuit} />
+              <Text style={styles.label}>CUIT</Text>
+              <TextInput style={styles.input} placeholder="CUIT" placeholderTextColor="#666666" value={cuit} onChangeText={setCuit} />
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Razon social: </Text>
-              <TextInput style={styles.input} placeholder="Razón Social" value={razonSocial} onChangeText={setRazonSocial} />
+              <Text style={styles.label}>Razón Social</Text>
+              <TextInput style={styles.input} placeholder="Razón Social" placeholderTextColor="#666666" value={razonSocial} onChangeText={setRazonSocial} />
             </View>
           </>
         )}
@@ -293,35 +441,62 @@ const EditarPerfil = () => {
         {data?.encargado && data.encargado.habilitado && (
           <>
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Condición frente al IVA: </Text>
+              <Text style={styles.label}>Condición frente al IVA</Text>
               <RNPickerSelect
-                style={{ inputAndroid: styles.input }}
+                style={{ 
+                  inputIOS: { color: "#ffffff" },
+                  inputAndroid: { 
+                    color: "#ffffff", 
+                    backgroundColor: "#1a1a1a", 
+                    borderWidth: 1, 
+                    borderColor: Colors.BordeDorado, 
+                    borderRadius: 8, 
+                    padding: 12, 
+                    height: 50,
+                  }, 
+                  placeholder: { color: "#666666" },
+                }}
                 useNativeAndroidPickerStyle={false}
                 fixAndroidTouchableBug={true}
-                placeholder={{ label: "", value: null }}
+                placeholder={{ label: "Seleccionar", value: null }}
                 value={condicionIva}
                 onValueChange={(value) => setCondicionIva(value)}
                 items={[
                   { label: "Monotributista", value: "Monotributista", key: "Monotributista" },
                   { label: "Responsable Inscripto", value: "Responsable Inscripto", key: "Responsable Inscripto" },
                 ]}
+                Icon={() => <FontAwesomeIcon icon={faChevronDown} color={Colors.BordeDorado} size={16} />}
               />
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>CUIT: </Text>
-              <TextInput style={styles.input} placeholder="CUIT" value={cuit} onChangeText={setCuit} />
+              <Text style={styles.label}>CUIT</Text>
+              <TextInput style={styles.input} placeholder="CUIT" placeholderTextColor="#666666" value={cuit} onChangeText={setCuit} />
             </View>
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Razon social: </Text>
-              <TextInput style={styles.input} placeholder="Razón Social" value={razonSocial} onChangeText={setRazonSocial} />
+              <Text style={styles.label}>Razón Social</Text>
+              <TextInput style={styles.input} placeholder="Razón Social" placeholderTextColor="#666666" value={razonSocial} onChangeText={setRazonSocial} />
             </View>
           </>
         )}
 
-        <Button title="Guardar Cambios" style={styles.button} onPress={handleGuardarCambios} disabled={isButtonDisabled} />
+        <TouchableOpacity 
+          style={isButtonDisabled ? styles.buttonDisabled : styles.button} 
+          onPress={handleGuardarCambios} 
+          disabled={isButtonDisabled}
+        >
+          <FontAwesomeIcon 
+            icon={faSave} 
+            color={isButtonDisabled ? "#888888" : "#000000"} 
+            size={18} 
+            style={{ marginRight: 8 }}
+          />
+          <Text style={isButtonDisabled ? styles.buttonTextDisabled : styles.buttonText}>
+            Guardar Cambios
+          </Text>
+        </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

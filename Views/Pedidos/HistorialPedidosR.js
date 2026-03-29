@@ -1,5 +1,5 @@
-import { View, FlatList, ActivityIndicator, StyleSheet, Text } from "react-native";
-import React, { useCallback } from "react";
+import { View, FlatList, ActivityIndicator, StyleSheet, Text, RefreshControl } from "react-native";
+import React, { useCallback, useState } from "react";
 import useStyles from "../../Styles/useStyles";
 import useDynamicColors from "../../Styles/useDynamicColors";
 import { useGetPedidosRepartidorQuery } from "@/components/App/Service/PedidosApi";
@@ -16,11 +16,23 @@ const HistorialPedidosR = ({ navigation }) => {
     pollingInterval: 1000,
   });
 
+  const [refreshing, setRefreshing] = useState(false);
+
   useFocusEffect(
     useCallback(() => {
       refetch();
     }, [refetch])
   );
+
+  const onRefresh = useCallback(async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch, refreshing]);
 
   // Filtrar pedidos con estado "Entregado"
   const filteredData = data?.data?.filter(item => item.estado === "Entregado") || [];
@@ -55,6 +67,14 @@ const HistorialPedidosR = ({ navigation }) => {
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.flatListContainer}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[Colors?.Naranja]}
+              tintColor={Colors?.Naranja}
+            />
+          }
         />
       ) : (
         <Aviso mensaje="No hay pedidos entregados" /> // Mensaje actualizado

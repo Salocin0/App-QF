@@ -5,9 +5,9 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Modal,
 } from "react-native";
 import useDynamicColors from "../Styles/useDynamicColors";
+import ThemedModal from "../components/ThemedModal/ThemedModal";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
   faArrowDownWideShort,
@@ -105,7 +105,7 @@ const BuscadorPuestos = ({ onUpdate }) => {
     },
     buttonActive: {
       borderColor: Colors.Naranja,
-      backgroundColor: Colors.modoOscuroActivo ? "#3a2e10" : "#fff9e6",
+      backgroundColor: Colors.modoOscuroActivo ? Colors.FondoCardOscuro : Colors.FondoCardClaro,
     },
     buttonBuscar: {
       alignItems: "center",
@@ -121,26 +121,6 @@ const BuscadorPuestos = ({ onUpdate }) => {
       color: Colors?.Negro,
       fontWeight: "500",
     },
-    modalContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.7)",
-    },
-    modalContent: {
-      backgroundColor: Colors.Blanco,
-      padding: 25,
-      borderRadius: 20,
-      width: "85%",
-      ...Colors.Styles.card,
-    },
-    modalTitle: {
-      fontSize: 20,
-      fontWeight: "bold",
-      color: Colors.Negro,
-      marginBottom: 20,
-      textAlign: "center",
-    },
     optionItem: {
       flexDirection: "row",
       alignItems: "center",
@@ -153,7 +133,7 @@ const BuscadorPuestos = ({ onUpdate }) => {
     },
     optionItemSelected: {
       borderColor: Colors.Naranja,
-      backgroundColor: Colors.modoOscuroActivo ? "#3a2e10" : "#fff9e6",
+      backgroundColor: Colors.modoOscuroActivo ? Colors.FondoCardOscuro : Colors.FondoCardClaro,
     },
     optionText: {
       color: Colors.Negro,
@@ -168,32 +148,6 @@ const BuscadorPuestos = ({ onUpdate }) => {
     },
     starButton: {
       padding: 5,
-    },
-    actionButtons: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      marginTop: 20,
-      width: "100%",
-      gap: 10,
-    },
-    cancelButton: {
-      padding: 12,
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: Colors.Rojo,
-      flex: 1,
-      alignItems: "center",
-    },
-    applyButton: {
-      padding: 12,
-      borderRadius: 10,
-      backgroundColor: Colors.Verde,
-      flex: 1,
-      alignItems: "center",
-    },
-    buttonActionText: {
-      fontWeight: "bold",
-      fontSize: 16,
     },
   });
 
@@ -231,84 +185,70 @@ const BuscadorPuestos = ({ onUpdate }) => {
       </View>
 
       {/* Modal de Ordenar */}
-      <Modal visible={showOrderModal} transparent animationType="fade">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Ordenar por</Text>
-            
-            <TouchableOpacity 
-              style={[styles.optionItem, tempCategoria === "porNombre" && styles.optionItemSelected]} 
-              onPress={() => setTempCategoria("porNombre")}
-            >
-              <Text style={styles.optionText}>Nombre</Text>
-              {tempCategoria === "porNombre" && <FontAwesomeIcon icon={faCheck} color={Colors.Naranja} size={14} />}
-            </TouchableOpacity>
+      <ThemedModal
+        visible={showOrderModal}
+        title="Ordenar por"
+        onClose={() => setShowOrderModal(false)}
+        buttons={[
+          { text: "Cancelar", variant: "secondary", onPress: () => setShowOrderModal(false) },
+          { text: "Aceptar", onPress: handleApplyOrder },
+        ]}
+      >
+        <TouchableOpacity 
+          style={[styles.optionItem, tempCategoria === "porNombre" && styles.optionItemSelected]} 
+          onPress={() => setTempCategoria("porNombre")}
+        >
+          <Text style={styles.optionText}>Nombre</Text>
+          {tempCategoria === "porNombre" && <FontAwesomeIcon icon={faCheck} color={Colors.Naranja} size={14} />}
+        </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={[styles.optionItem, tempCategoria === "TiempoEntrega" && styles.optionItemSelected]} 
-              onPress={() => setTempCategoria("TiempoEntrega")}
-            >
-              <Text style={styles.optionText}>Tiempo de entrega</Text>
-              {tempCategoria === "TiempoEntrega" && <FontAwesomeIcon icon={faCheck} color={Colors.Naranja} size={14} />}
-            </TouchableOpacity>
+        <TouchableOpacity 
+          style={[styles.optionItem, tempCategoria === "TiempoEntrega" && styles.optionItemSelected]} 
+          onPress={() => setTempCategoria("TiempoEntrega")}
+        >
+          <Text style={styles.optionText}>Tiempo de entrega</Text>
+          {tempCategoria === "TiempoEntrega" && <FontAwesomeIcon icon={faCheck} color={Colors.Naranja} size={14} />}
+        </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={[styles.optionItem, tempCategoria === "Estrellas" && styles.optionItemSelected]} 
-              onPress={() => setTempCategoria("Estrellas")}
-            >
-              <Text style={styles.optionText}>Estrellas</Text>
-              {tempCategoria === "Estrellas" && <FontAwesomeIcon icon={faCheck} color={Colors.Naranja} size={14} />}
-            </TouchableOpacity>
-
-            <View style={styles.actionButtons}>
-              <TouchableOpacity style={styles.cancelButton} onPress={() => setShowOrderModal(false)}>
-                <Text style={[styles.buttonActionText, { color: Colors.Rojo }]}>Cancelar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.applyButton} onPress={handleApplyOrder}>
-                <Text style={[styles.buttonActionText, { color: "white" }]}>Aceptar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+        <TouchableOpacity 
+          style={[styles.optionItem, tempCategoria === "Estrellas" && styles.optionItemSelected]} 
+          onPress={() => setTempCategoria("Estrellas")}
+        >
+          <Text style={styles.optionText}>Estrellas</Text>
+          {tempCategoria === "Estrellas" && <FontAwesomeIcon icon={faCheck} color={Colors.Naranja} size={14} />}
+        </TouchableOpacity>
+      </ThemedModal>
 
       {/* Modal de Filtrar por Estrellas */}
-      <Modal visible={showFilterModal} transparent animationType="fade">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Filtrar por Estrellas</Text>
-            
-            <View style={styles.starsContainer}>
-              {[1, 2, 3, 4, 5].map((star) => (
-                <TouchableOpacity 
-                  key={star} 
-                  style={styles.starButton} 
-                  onPress={() => handleSelectStars(star)}
-                >
-                  <FontAwesomeIcon 
-                    icon={faStar} 
-                    color={star <= tempStars ? Colors.Naranja : Colors.GrisClaroPeroNoTanClaro} 
-                    size={32} 
-                  />
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            <Text style={{ textAlign: 'center', color: Colors.Gris, marginTop: 10 }}>
-              {tempStars > 0 ? `${tempStars} estrellas seleccionadas` : "Seleccioná la puntuación mínima"}
-            </Text>
-
-            <View style={styles.actionButtons}>
-              <TouchableOpacity style={styles.cancelButton} onPress={() => setShowFilterModal(false)}>
-                <Text style={[styles.buttonActionText, { color: Colors.Rojo }]}>Cancelar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.applyButton} onPress={handleApplyFilter}>
-                <Text style={[styles.buttonActionText, { color: "white" }]}>Aceptar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+      <ThemedModal
+        visible={showFilterModal}
+        title="Filtrar por Estrellas"
+        onClose={() => setShowFilterModal(false)}
+        buttons={[
+          { text: "Cancelar", variant: "secondary", onPress: () => setShowFilterModal(false) },
+          { text: "Aceptar", onPress: handleApplyFilter },
+        ]}
+      >
+        <View style={styles.starsContainer}>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <TouchableOpacity 
+              key={star} 
+              style={styles.starButton} 
+              onPress={() => handleSelectStars(star)}
+            >
+              <FontAwesomeIcon 
+                icon={faStar} 
+                color={star <= tempStars ? Colors.Naranja : Colors.GrisClaroPeroNoTanClaro} 
+                size={32} 
+              />
+            </TouchableOpacity>
+          ))}
         </View>
-      </Modal>
+
+        <Text style={{ textAlign: 'center', color: Colors.Gris, marginTop: 10 }}>
+          {tempStars > 0 ? `${tempStars} estrellas seleccionadas` : "Seleccioná la puntuación mínima"}
+        </Text>
+      </ThemedModal>
     </View>
   );
 };

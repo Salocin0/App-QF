@@ -6,11 +6,11 @@ import {
   TouchableOpacity,
   Dimensions,
   ScrollView,
-  Modal,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCalendarDays, faCheckCircle, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import useDynamicColors from "../../Styles/useDynamicColors";
+import ThemedModal from "../../components/ThemedModal/ThemedModal";
 
 const PrecompraCard = ({ setfecha, nextNavigate, evento }) => {
   const Colors = useDynamicColors();
@@ -76,7 +76,7 @@ const PrecompraCard = ({ setfecha, nextNavigate, evento }) => {
       width: 70,
       height: 70,
       borderRadius: 35,
-      backgroundColor: Colors.modoOscuroActivo ? "#3a2e10" : "#fff9e6",
+      backgroundColor: Colors.modoOscuroActivo ? Colors.FondoCardOscuro : Colors.FondoCardClaro,
       justifyContent: "center",
       alignItems: "center",
       marginBottom: 15,
@@ -117,7 +117,7 @@ const PrecompraCard = ({ setfecha, nextNavigate, evento }) => {
     },
     selectedDateButton: {
       borderColor: Colors.Naranja,
-      backgroundColor: Colors.modoOscuroActivo ? "#3a2e10" : "#fff9e6",
+      backgroundColor: Colors.modoOscuroActivo ? Colors.FondoCardOscuro : Colors.FondoCardClaro,
       borderWidth: 2,
     },
     disabledDateButton: {
@@ -155,61 +155,6 @@ const PrecompraCard = ({ setfecha, nextNavigate, evento }) => {
       fontSize: 16,
       fontWeight: "bold",
       marginLeft: 10,
-    },
-    // Modal Styles
-    modalContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.7)",
-    },
-    modalContent: {
-      width: "85%",
-      backgroundColor: Colors.Blanco,
-      borderRadius: 25,
-      padding: 25,
-      alignItems: "center",
-      borderWidth: 1,
-      borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : "transparent",
-    },
-    modalIcon: {
-      marginBottom: 15,
-    },
-    modalTitle: {
-      fontSize: 20,
-      fontWeight: "bold",
-      color: Colors.Negro,
-      marginBottom: 15,
-    },
-    modalMessage: {
-      fontSize: 15,
-      color: Colors.Negro,
-      textAlign: "center",
-      lineHeight: 22,
-      marginBottom: 25,
-    },
-    modalButtons: {
-      flexDirection: "row",
-      width: "100%",
-      gap: 10,
-    },
-    modalBtn: {
-      flex: 1,
-      padding: 15,
-      borderRadius: 12,
-      alignItems: "center",
-    },
-    modalBtnCancel: {
-      backgroundColor: Colors.GrisClaro,
-      borderWidth: 1,
-      borderColor: Colors.GrisClaroPeroNoTanClaro,
-    },
-    modalBtnAccept: {
-      backgroundColor: Colors.Naranja,
-    },
-    modalBtnText: {
-      fontWeight: "bold",
-      fontSize: 15,
     },
   });
 
@@ -260,32 +205,27 @@ const PrecompraCard = ({ setfecha, nextNavigate, evento }) => {
         </TouchableOpacity>
       </View>
 
-      <Modal transparent visible={modalVisible} animationType="fade">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalIcon}>
-              <FontAwesomeIcon icon={faTriangleExclamation} size={40} color={Colors.Naranja} />
-            </View>
-            <Text style={styles.modalTitle}>¿Confirmar Fecha?</Text>
-            {selectedEventDay && (
-              <Text style={styles.modalMessage}>
-                Tu pedido estará disponible únicamente{" "}
-                <Text style={{fontWeight: 'bold'}}>
-                el {formatDateLabel(selectedEventDay.fechaHoraInicioDiaEvento)} 
-                </Text> de {new Date(selectedEventDay.fechaHoraInicioDiaEvento).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} a {new Date(selectedEventDay.fechaHoraFinDiaEvento).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} hs.
-              </Text>
-            )}
-            <View style={styles.modalButtons}>
-              <TouchableOpacity style={[styles.modalBtn, styles.modalBtnCancel]} onPress={() => setModalVisible(false)}>
-                <Text style={[styles.modalBtnText, {color: Colors.Negro}]}>Cancelar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.modalBtn, styles.modalBtnAccept]} onPress={handleConfirmar}>
-                <Text style={[styles.modalBtnText, {color: 'white'}]}>Aceptar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+      <ThemedModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        title="¿Confirmar Fecha?"
+        buttons={[
+          { text: "Cancelar", variant: "secondary", onPress: () => setModalVisible(false) },
+          { text: "Aceptar", onPress: handleConfirmar },
+        ]}
+      >
+        <View style={{ alignItems: 'center', marginBottom: 15 }}>
+          <FontAwesomeIcon icon={faTriangleExclamation} size={40} color={Colors.Naranja} />
         </View>
-      </Modal>
+        {selectedEventDay && (
+          <Text style={{ fontSize: 15, color: Colors.Negro, textAlign: 'center', lineHeight: 22, marginBottom: 25 }}>
+            Tu pedido estará disponible únicamente{" "}
+            <Text style={{fontWeight: 'bold'}}>
+            el {formatDateLabel(selectedEventDay.fechaHoraInicioDiaEvento)} 
+            </Text> de {new Date(selectedEventDay.fechaHoraInicioDiaEvento).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} a {new Date(selectedEventDay.fechaHoraFinDiaEvento).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} hs.
+          </Text>
+        )}
+      </ThemedModal>
     </View>
   );
 };

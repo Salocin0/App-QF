@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import useDynamicColors from "../../Styles/useDynamicColors";
 import { useGetAsociacionesQuery } from "@/components/App/Service/AsociacionesApi";
@@ -15,12 +16,23 @@ import Aviso from "../Aviso";
 
 const AsociacionesTabs = () => {
   const [activeTab, setActiveTab] = useState("Todas");
+  const [refreshing, setRefreshing] = useState(false);
   const Colors = useDynamicColors();
   const user = useSelector((state) => state.auth);
   const userId = user?.consumidorId;
-  const { data, isLoading, error } = useGetAsociacionesQuery(userId, {
+  const { data, isLoading, error, refetch } = useGetAsociacionesQuery(userId, {
     pollingInterval: 1000, // Recargar cada 1 segundo
   });
+
+  const onRefresh = useCallback(async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refreshing, refetch]);
 
   const tabs = [
     { label: "Todas", estado: "Todos" },
@@ -42,19 +54,31 @@ const AsociacionesTabs = () => {
     },
     tabButton: {
       flex: 1,
-      paddingVertical: 10,
+      paddingVertical: 12,
       justifyContent: "center",
       alignItems: "center",
       margin: 0,
+      backgroundColor: Colors.GrisClaro,
+      borderBottomWidth: 2,
+      borderBottomColor: "transparent",
+    },
+    tabButtonActive: {
+      backgroundColor: Colors.Naranja,
+      borderBottomWidth: 3,
+      borderBottomColor: Colors.BordeDorado,
     },
     tabText: {
       fontSize: 13,
-      color: Colors.Negro,
+      color: Colors.GrisOscuro,
+    },
+    tabTextActive: {
+      color: "#ffffff",
+      fontWeight: "bold",
     },
     contentContainer: {
       flex: 1,
       padding: 10,
-      backgroundColor: Colors.GrisClaroPeroNoTanClaro,
+      backgroundColor: Colors.GrisClaro,
       borderBottomLeftRadius: 20,
       borderBottomRightRadius: 20, 
       overflow: "hidden", 
@@ -99,22 +123,14 @@ const AsociacionesTabs = () => {
             key={tab.label}
             style={[
               styles.tabButton,
-              activeTab === tab.label && {
-                backgroundColor: Colors.GrisClaroPeroNoTanClaro,
-                borderWidth: 0,
-                borderTopEndRadius: 20,
-                borderTopStartRadius: 20,
-                marginBottom: -1,
-              },
+              activeTab === tab.label && styles.tabButtonActive,
             ]}
             onPress={() => setActiveTab(tab.label)}
           >
             <Text
               style={[
                 styles.tabText,
-                activeTab === tab.label && {
-                  fontWeight: "bold",
-                },
+                activeTab === tab.label && styles.tabTextActive,
               ]}
             >
               {tab.label}
@@ -122,8 +138,18 @@ const AsociacionesTabs = () => {
           </TouchableOpacity>
         ))}
       </View>
-      <ScrollView style={styles.contentContainer}>
-        {isLoading && (
+      <ScrollView 
+        style={styles.contentContainer}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[Colors.BordeDorado]}
+            tintColor={Colors.BordeDorado}
+          />
+        }
+      >
+        {isLoading && !refreshing && (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="orange" />
           </View>

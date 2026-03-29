@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Modal, TextInput, TouchableOpacity, Alert } from "react-native";
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import useDynamicColors from "../../Styles/useDynamicColors";
+import ThemedModal from "../../components/ThemedModal/ThemedModal";
 import MapWithDirection from "./MapsEncuentro";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { useCambiarEstadoPedidoMutation } from "../../components/App/Service/PedidosApi"
@@ -41,29 +42,31 @@ const UbicacionEntregaR = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: Colors.Gris,
+      backgroundColor: "#1a1a1a",
     },
     mapContainer: {
       flex: 1,
     },
     card: {
       flex: 0,
-      backgroundColor: Colors.Blanco,
+      backgroundColor: "#222222",
       padding: 20,
-      shadowColor: Colors.Negro,
+      shadowColor: Colors.BordeDorado,
       shadowOpacity: 0.1,
       shadowRadius: 10,
       elevation: 5,
+      borderTopWidth: 2,
+      borderTopColor: Colors.BordeDorado,
     },
     title: {
       fontSize: 16,
-      color: Colors.Gris,
+      color: "#cccccc",
       alignSelf: "center"
     },
     code: {
       fontSize: 24,
       fontWeight: 'bold',
-      color: Colors.Negro,
+      color: Colors.BordeDorado,
       marginVertical: 10,
       alignSelf: "center"
     },
@@ -74,66 +77,39 @@ const UbicacionEntregaR = () => {
     },
     info: {
       fontSize: 16,
-      color: Colors.Gris,
+      color: "#cccccc",
       marginLeft: 10,
     },
     label: {
       fontWeight: 'bold',
-      color: Colors.Negro,
+      color: Colors.BordeDorado,
     },
     buttonContainer: {
       alignItems: 'center',
       marginTop: 20,
     },
     button: {
-      backgroundColor: Colors.Negro,
-      paddingVertical: 10,
+      backgroundColor: Colors.BordeDorado,
+      paddingVertical: 12,
       paddingHorizontal: 20,
-      borderRadius: 5,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: Colors.BordeDorado,
     },
     buttonText: {
-      color: Colors.Blanco,
+      color: "#000000",
       fontSize: 16,
       fontWeight: 'bold',
-    },
-    modalContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    modalContent: {
-      backgroundColor: Colors.Blanco,
-      padding: 20,
-      borderRadius: 10,
-      width: '80%',
     },
     input: {
-      borderWidth: 1,
-      borderColor: Colors.Gris,
-      borderRadius: 5,
-      padding: 10,
+      borderWidth: 2,
+      borderColor: Colors.BordeDorado,
+      borderRadius: 10,
+      padding: 15,
       fontSize: 16,
       marginBottom: 20,
-    },
-    modalButtonContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    modalButton: {
-      backgroundColor: Colors.Negro,
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      borderRadius: 5,
-      marginHorizontal: 5,
-    },
-    modalButtonText: {
-      color: Colors.Blanco,
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    modalButtonDisabled: {
-      backgroundColor: Colors.Gris,
+      color: "#ffffff",
+      backgroundColor: "#1a1a1a",
     },
   });
 
@@ -148,22 +124,22 @@ const UbicacionEntregaR = () => {
       </View>
       <View style={styles.card}>
         <View style={styles.infoContainer}>
-          <Icon name="cube-outline" size={20} color={Colors.Negro} />
+          <Icon name="cube-outline" size={20} color={Colors.BordeDorado} />
           <Text style={styles.info}><Text style={styles.label}>Nro pedido:</Text> #{pedido.id}</Text>
         </View>
         
         <View style={styles.infoContainer}>
-          <Icon name="account-outline" size={20} color={Colors.Negro} />
+          <Icon name="account-outline" size={20} color={Colors.BordeDorado} />
           <Text style={styles.info}><Text style={styles.label}>Consumidor:</Text> {pedido?.consumidore?.apellido +", "+pedido?.consumidore?.nombre}</Text>
         </View>
         
         <View style={styles.infoContainer}>
-          <Icon name="map-marker-outline" size={20} color={Colors.Negro}/>
+          <Icon name="map-marker-outline" size={20} color={Colors.BordeDorado}/>
           <Text style={styles.info}><Text style={styles.label}>Punto de encuentro:</Text> {pedido?.puntoEncuentro?.nombre}</Text>
         </View>
         
         <View style={styles.infoContainer}>
-          <Icon name="storefront-outline" size={20} color={Colors.Negro} />
+          <Icon name="storefront-outline" size={20} color={Colors.BordeDorado} />
           <Text style={styles.info}><Text style={styles.label}>Puesto:</Text> {pedido?.puesto?.nombreCarro}</Text>
         </View>
 
@@ -174,40 +150,34 @@ const UbicacionEntregaR = () => {
         </View>
       </View>
 
-      <Modal
-        transparent={true}
-        animationType="slide"
+      <ThemedModal
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
+        title="Ingrese el código de entrega"
+        onClose={() => setModalVisible(false)}
+        animationType="slide"
+        buttons={[
+          { 
+            text: "Confirmar", 
+            onPress: handleConfirm,
+            disabled: codigo.length !== 6,
+          },
+          { 
+            text: "Cerrar", 
+            variant: "secondary", 
+            onPress: () => setModalVisible(false),
+            closeOnPress: true,
+          },
+        ]}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.title}>Ingrese el código de entrega</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Ingrese el código"
-              value={codigo}
-              onChangeText={setCodigo}
-              maxLength={6}
-            />
-            <View style={styles.modalButtonContainer}>
-              <TouchableOpacity
-                style={[styles.modalButton, codigo.length !== 6 && styles.modalButtonDisabled]}
-                onPress={handleConfirm}
-                disabled={codigo.length !== 6}
-              >
-                <Text style={styles.modalButtonText}>Confirmar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={styles.modalButtonText}>Cerrar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+        <TextInput
+          style={styles.input}
+          placeholder="Ingrese el código"
+          placeholderTextColor="#666666"
+          value={codigo}
+          onChangeText={setCodigo}
+          maxLength={6}
+        />
+      </ThemedModal>
     </View>
   );
 };

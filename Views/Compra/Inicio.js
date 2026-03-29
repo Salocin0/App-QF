@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, FlatList, ActivityIndicator, StyleSheet } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import { View, FlatList, ActivityIndicator, StyleSheet, RefreshControl } from "react-native";
 import CardEvento from "./CardEvento";
 import Aviso from "../Aviso";
 import useStyles from "../../Styles/useStyles";
@@ -13,18 +13,31 @@ const Inicio = ({ navigation }) => {
 
   const [filteredData, setFilteredData] = useState([]);
   const [dataReady, setDataReady] = useState(false); 
+  const [refreshing, setRefreshing] = useState(false);
   const {
     data: dataEnCurso,
     error: errorEnCurso,
     isLoading: isLoadingEnCurso,
+    refetch: refetchEnCurso,
   } = useGetEventosQuery("EnCurso");
   const {
     data: dataConfirmado,
     error: errorConfirmado,
     isLoading: isLoadingConfirmado,
+    refetch: refetchConfirmado,
   } = useGetEventosQuery("Confirmado");
 
   const combinedData = [...(dataEnCurso || []), ...(dataConfirmado || [])];
+
+  const onRefresh = useCallback(async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    try {
+      await Promise.all([refetchEnCurso(), refetchConfirmado()]);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetchEnCurso, refetchConfirmado, refreshing]);
 
   const updateFilteredData = (order, filters, searchText) => {
     let data = [...combinedData];
@@ -105,6 +118,14 @@ const Inicio = ({ navigation }) => {
             )}
             keyExtractor={(item) => item?.id.toString()}
             contentContainerStyle={styleslocal.flatListContainer}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={[Colors?.Naranja]}
+                tintColor={Colors?.Naranja}
+              />
+            }
           />
         </>
       ) : dataReady ? (

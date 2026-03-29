@@ -7,6 +7,12 @@ import useDynamicColors from "../../Styles/useDynamicColors";
 const AsociacionCard = ({ asociacion, evento }) => {
   const Colors = useDynamicColors();
 
+  // Convierte camelCase a PascalCase (conObservacion -> Con Observacion)
+  const toPascalCase = (str) => {
+    if (!str) return "";
+    return str.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase());
+  };
+
   const getStatusStyle = () => {
     switch (asociacion.estado) {
       case "PendienteDeAceptacion":
@@ -18,7 +24,7 @@ const AsociacionCard = ({ asociacion, evento }) => {
       case "Rechazada":
         return { backgroundColor: Colors.Rojo, text: "Rechazado" };
       default:
-        return { backgroundColor: Colors.GrisOscuro, text: asociacion.estado };
+        return { backgroundColor: Colors.GrisOscuro, text: toPascalCase(asociacion.estado) };
     }
   };
 
@@ -26,19 +32,30 @@ const AsociacionCard = ({ asociacion, evento }) => {
 
   const styles = StyleSheet.create({
     card: {
-      ...Colors.Styles.card,
+      backgroundColor: "#222222",
+      borderRadius: 10,
+      marginVertical: 8,
+      padding: 15,
+      shadowColor: Colors.BordeDorado,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 2,
+      elevation: 3,
+      borderWidth: 2,
+      borderColor: Colors.BordeDorado,
       position: "relative",
+      minHeight: 120,
     },
     title: {
       fontSize: 18,
       fontWeight: "bold",
-      marginBottom: 5,
-      color: Colors.Negro,
+      marginBottom: 8,
+      color: "#ffffff",
     },
     detail: {
       fontSize: 14,
       marginBottom: 5,
-      color: Colors.GrisOscuro,
+      color: "#cccccc",
       flexDirection: "row",
       alignItems: "center",
     },
@@ -46,24 +63,24 @@ const AsociacionCard = ({ asociacion, evento }) => {
       marginRight: 5,
     },
     status: {
-      position: "absolute",
-      right: 10,
-      top: 10,
       paddingVertical: 4,
       paddingHorizontal: 8,
       borderRadius: 15,
-      color: Colors.Blanco,
+      color: "#ffffff",
       fontWeight: "bold",
+      flexShrink: 1,
     },
   });
 
   return (
     <View style={styles.card}>
-      <Text style={[styles.status, { backgroundColor }]}>{text}</Text>
-      <Text style={styles.title}>{evento?.nombre || "Sin Evento"}</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+        <Text style={[styles.title, { flex: 1, marginRight: 80 }]}>{evento?.nombre || "Sin Evento"}</Text>
+        <Text style={[styles.status, { backgroundColor }]}>{text}</Text>
+      </View>
       <View style={styles.detail}>
-      <FontAwesomeIcon icon={faStore} color={Colors.Negro} size={16} />
-        <Text> #{asociacion?.puesto?.numeroCarro} - {asociacion?.puesto?.nombreCarro}</Text>
+      <FontAwesomeIcon icon={faStore} color={Colors.BordeDorado} size={16} />
+        <Text style={{ color: "#cccccc" }}> #{asociacion?.puesto?.numeroCarro} - {asociacion?.puesto?.nombreCarro}</Text>
       </View>
       <Text style={styles.detail}>
         Fecha de Asociación: {new Date(asociacion.createdAt).toLocaleDateString()}

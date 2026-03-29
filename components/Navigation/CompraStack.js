@@ -19,7 +19,7 @@ const CompraStack = () => {
       initialRouteName="Eventos"
       screenOptions={{
         headerStyle: {
-          backgroundColor: Colors.Blanco,
+          backgroundColor: Colors.HeaderBackground,
         },
         headerTintColor: Colors.Negro,
       }}

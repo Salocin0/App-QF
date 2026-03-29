@@ -4,16 +4,17 @@ import {
   Text,
   StyleSheet,
   Button,
-  Modal,
   TextInput,
   TouchableOpacity,
   Alert,
   ActivityIndicator,
   ScrollView,
+  Modal,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import useDynamicColors from "@/Styles/useDynamicColors";
+import ThemedModal from "../../components/ThemedModal/ThemedModal";
 import {
   useGetPuntosEncuentroByEventoIdQuery,
   useDeletePuntoEncuentroByIdMutation,
@@ -158,7 +159,7 @@ const AdministrarPuntosEncuentro = ({ route }) => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: Colors.Blanco,
+      backgroundColor: "#1a1a1a",
       flexDirection: "column",
     },
     mapContainer: {
@@ -182,9 +183,14 @@ const AdministrarPuntosEncuentro = ({ route }) => {
       flexDirection: "row",
       justifyContent: "space-between",
       padding: 10,
-      backgroundColor: Colors.GrisClaro,
-      borderBottomColor: Colors.Gris,
-      borderBottomWidth: 1,
+      backgroundColor: "#222222",
+      borderBottomColor: Colors.BordeDorado,
+      borderBottomWidth: 2,
+    },
+    headerText: {
+      fontWeight: "bold",
+      fontSize: 14,
+      color: "#ffffff",
     },
     tableContent: {
       flex: 1,
@@ -198,12 +204,13 @@ const AdministrarPuntosEncuentro = ({ route }) => {
       alignItems: "center",
       padding: 10,
       borderBottomWidth: 1,
-      borderBottomColor: Colors.Gris,
+      borderBottomColor: Colors.BordeDorado,
+      backgroundColor: "#222222",
     },
     cell: {
       flex: 1,
       textAlign: "center",
-      color: Colors.Negro,
+      color: "#ffffff",
     },
     actionsCell: {
       flexDirection: "row",
@@ -218,7 +225,7 @@ const AdministrarPuntosEncuentro = ({ route }) => {
       alignItems: "center",
     },
     modifyButton: {
-      backgroundColor: Colors.Azul,
+      backgroundColor: Colors.BordeDorado,
     },
     deleteButton: {
       backgroundColor: Colors.Rojo,
@@ -236,44 +243,73 @@ const AdministrarPuntosEncuentro = ({ route }) => {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      backgroundColor: "rgba(0, 0, 0, 0.8)",
     },
     modalContent: {
-      backgroundColor: Colors.Blanco,
+      backgroundColor: "#222222",
       padding: 20,
       borderRadius: 10,
       width: "80%",
       alignItems: "center",
+      borderWidth: 2,
+      borderColor: Colors.BordeDorado,
     },
     input: {
       width: "100%",
       padding: 10,
       borderWidth: 1,
-      borderColor: Colors.Gris,
+      borderColor: Colors.BordeDorado,
       borderRadius: 5,
       marginBottom: 10,
+      color: "#ffffff",
+      backgroundColor: "#1a1a1a",
     },
     confirmModalContainer: {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      backgroundColor: "rgba(0, 0, 0, 0.8)",
     },
     confirmModalContent: {
-      backgroundColor: Colors.Blanco,
+      backgroundColor: "#222222",
       padding: 20,
       borderRadius: 10,
       width: "80%",
       alignItems: "center",
+      borderWidth: 2,
+      borderColor: Colors.BordeDorado,
     },
     confirmText: {
       marginBottom: 20,
-      color: Colors.Negro,
+      color: "#ffffff",
     },
     loadingContainer: {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
+      backgroundColor: "#1a1a1a",
+    },
+    // Estilos de botón dorado
+    botonDorado: {
+      backgroundColor: Colors.BordeDorado,
+      paddingVertical: 12,
+      paddingHorizontal: 20,
+      borderRadius: 10,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    botonTexto: {
+      color: "#000000",
+      fontWeight: "bold",
+      fontSize: 16,
+    },
+    botonRojo: {
+      backgroundColor: Colors.Rojo,
+      paddingVertical: 12,
+      paddingHorizontal: 20,
+      borderRadius: 10,
+      alignItems: "center",
+      justifyContent: "center",
     },
   });
 
@@ -296,10 +332,12 @@ const AdministrarPuntosEncuentro = ({ route }) => {
             </View>
             <View style={styles.contentContainer}>
               <View style={styles.buttonContainer}>
-                <Button
-                  title="Crear Punto de Encuentro"
+                <TouchableOpacity
+                  style={styles.botonDorado}
                   onPress={() => openModal("create")}
-                />
+                >
+                  <Text style={styles.botonTexto}>+ Crear Punto</Text>
+                </TouchableOpacity>
               </View>
               <View style={styles.tableContainer}>
                 <View style={styles.tableHeader}>
@@ -321,7 +359,7 @@ const AdministrarPuntosEncuentro = ({ route }) => {
                         >
                           <FontAwesomeIcon
                             icon={faPenToSquare}
-                            color={Colors.Blanco}
+                            color="#000000"
                           />
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -330,7 +368,7 @@ const AdministrarPuntosEncuentro = ({ route }) => {
                         >
                           <FontAwesomeIcon
                             icon={faTrashCan}
-                            color={Colors.Blanco}
+                            color="#ffffff"
                           />
                         </TouchableOpacity>
                       </View>
@@ -354,32 +392,37 @@ const AdministrarPuntosEncuentro = ({ route }) => {
             <TextInput
               style={styles.input}
               placeholder="Nombre"
+              placeholderTextColor="#666666"
               value={nombre}
               onChangeText={setNombre}
             />
             <TextInput
               style={styles.input}
               placeholder="Latitud"
+              placeholderTextColor="#666666"
               value={latitud}
               onChangeText={setLatitud}
             />
             <TextInput
               style={styles.input}
               placeholder="Longitud"
+              placeholderTextColor="#666666"
               value={longitud}
               onChangeText={setLongitud}
             />
             <View style={styles.buttonRow}>
-              <Button
-                title="Guardar"
+              <TouchableOpacity
+                style={styles.botonDorado}
                 onPress={handleSave}
-                style={styles.button}
-              />
-              <Button
-                title="Cancelar"
+              >
+                <Text style={styles.botonTexto}>Guardar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.botonRojo}
                 onPress={closeModal}
-                style={styles.button}
-              />
+              >
+                <Text style={styles.botonTexto}>Cancelar</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -392,12 +435,18 @@ const AdministrarPuntosEncuentro = ({ route }) => {
               ¿Deseas eliminar este punto de encuentro?
             </Text>
             <View style={styles.buttonRow}>
-              <Button title="Eliminar" onPress={handleDelete} />
-              <Button
-                title="Cancelar"
+              <TouchableOpacity
+                style={styles.botonRojo}
+                onPress={handleDelete}
+              >
+                <Text style={styles.botonTexto}>Eliminar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.botonDorado}
                 onPress={() => setConfirmDeleteVisible(false)}
-                color="red"
-              />
+              >
+                <Text style={styles.botonTexto}>Cancelar</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>

@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "my-app",
-    "slug": "my-app",
+    "name": "QuickFood",
+    "slug": "quickfood",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "quickfood",
     "userInterfaceStyle": "automatic",
     "updates": {
       "enabled": true,
@@ -16,7 +16,7 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#1a1a1a"
     },
     "ios": {
       "supportsTablet": true,
@@ -27,7 +27,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#1a1a1a"
       },
       "package": "com.salocin0.myapp",
       "googleServicesFile": "./google-services.json",
@@ -64,7 +64,8 @@
           "initialOrientation": "DEFAULT"
         }
       ],
-      "expo-build-properties"
+      "expo-build-properties",
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
@@ -73,10 +74,11 @@
       "router": {
         "origin": false
       },
+      "apiUrl": "http://backendnode-qf.onrender.com",
       "eas": {
-        "projectId": "4d54a9e3-cdd3-4d95-be5f-a9211181f5b3"
-      },
-      "apiUrl": "http://backendnode-qf.onrender.com"
-    }
+        "projectId": "9ded873d-fbde-4feb-9335-5b08c58d9357"
+      }
+    },
+    "owner": "salocin0"
   }
 }

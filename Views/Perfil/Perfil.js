@@ -1,11 +1,12 @@
-import { StyleSheet, Text, View, ActivityIndicator, Button, Modal, TouchableOpacity, ToastAndroid } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator, Button, TouchableOpacity, ToastAndroid } from "react-native";
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useGetPerfilQuery } from "./../../components/App/Service/PerfilApi"
 import useDynamicColors from "../../Styles/useDynamicColors";
+import ThemedModal from "../../components/ThemedModal/ThemedModal";
 import { useNavigation } from "@react-navigation/native";
 import { useDeleteUserMutation } from "./../../components/App/Service/authApi";
-import { clearUser } from "./../../components/Features/Auth/authSlice";
+import { cerrarSesionPersistida } from "./../../components/Features/Auth/authSlice";
 import Aviso from "../Aviso";
 import { useCerrarMobileMutation } from "./../../components/App/Service/authApi";
 
@@ -24,7 +25,7 @@ const Perfil = () => {
   const handleDisableUser = async () => {
     try {
       await deleteUser(userId).unwrap();
-      dispatch(clearUser());
+      dispatch(cerrarSesionPersistida());
       ToastAndroid.show("Usuario deshabilitado exitosamente", ToastAndroid.SHORT);
     } catch (err) {
       console.error("Fallo al deshabilitar el usuario", err);
@@ -35,7 +36,7 @@ const Perfil = () => {
   const handleCerrarSesion = async () => {
     try {
       const result = await cerrarMobile(userId);
-      dispatch(clearUser());
+      dispatch(cerrarSesionPersistida());
       ToastAndroid.show("Sesion Cerrada Exitosamente", ToastAndroid.SHORT);
     } catch (err) {
       ToastAndroid.show("Error al cerrar la sesion", ToastAndroid.SHORT);
@@ -84,45 +85,6 @@ const Perfil = () => {
       color: Colors.Info,
       fontWeight: "800",
       fontSize: 15,
-    },
-    modalContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
-    },
-    modalContent: {
-      width: "80%",
-      backgroundColor: Colors.Blanco,
-      borderRadius: 10,
-      padding: 20,
-      alignItems: "center",
-    },
-    modalText: {
-      marginBottom: 15,
-      textAlign: "center",
-      color: Colors.Negro,
-    },
-    buttonRow: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      marginTop: 10,
-    },
-    buttonModal: {
-      width: 100,
-      padding: 10,
-      borderRadius: 5,
-      alignItems: "center",
-    },
-    confirmButton: {
-      backgroundColor: Colors.Verde,
-      marginRight: 10,
-    },
-    closeButton: {
-      backgroundColor: Colors.Rojo,
-    },
-    buttonText: {
-      color: Colors.Negro,
     },
     loadingContainer: {
       flex: 1,
@@ -196,27 +158,22 @@ const Perfil = () => {
         <Text style={styles.buttonInfoText}>Cerrar Sesion</Text>
       </TouchableOpacity>
 
-      <Modal visible={modalVisible} animationType="fade" transparent={true}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>¿Estás seguro que deseas deshabilitar el usuario?</Text>
-            <View style={styles.buttonRow}>
-              <TouchableOpacity
-                style={[styles.buttonModal, styles.confirmButton]}
-                onPress={() => {
-                  setModalVisible(false);
-                  handleDisableUser();
-                }}
-              >
-                <Text style={styles.buttonText}>Sí</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.buttonModal, styles.closeButton]} onPress={() => setModalVisible(false)}>
-                <Text style={styles.buttonText}>No</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <ThemedModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        title="¿Estás seguro que deseas deshabilitar el usuario?"
+        buttons={[
+          { text: "No", variant: "secondary", onPress: () => setModalVisible(false) },
+          { 
+            text: "Sí", 
+            onPress: () => {
+              setModalVisible(false);
+              handleDisableUser();
+            }, 
+            style: { backgroundColor: Colors.Rojo } 
+          },
+        ]}
+      />
     </View>
   );
 };

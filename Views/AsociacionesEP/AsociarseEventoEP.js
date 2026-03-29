@@ -6,8 +6,9 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
+  RefreshControl,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import useStyles from "../../Styles/useStyles";
 import useDynamicColors from "../../Styles/useDynamicColors";
 import { useGetEventosSinAsociacionValidaPuestoQuery } from "@/components/App/Service/EventosApi";
@@ -26,11 +27,14 @@ const AsociarseEventoEP = ({ navigation }) => {
   const Colors = useDynamicColors();
   const user = useSelector((state) => state.auth);
   const [selectedPuestoId, setSelectedPuestoId] = useState(null);
+  const [refreshingPuestos, setRefreshingPuestos] = useState(false);
+  const [refreshingEventos, setRefreshingEventos] = useState(false);
 
   const {
     data: dataPuestos,
     error: errorPuestos,
     isLoading: isLoadingPuestos,
+    refetch: refetchPuestos,
   } = useGetPuestosAsociacionValidaQuery({
     estado: "EnPreparacion",
     idConsumidor: user?.consumidorId,
@@ -39,18 +43,39 @@ const AsociarseEventoEP = ({ navigation }) => {
     data: dataEventos,
     error: errorEventos,
     isLoading: isLoadingEventos,
+    refetch: refetchEventos,
   } = useGetEventosSinAsociacionValidaPuestoQuery({
     estado: "EnPreparacion",
     idConsumidor: user?.consumidorId,
     idPuesto: selectedPuestoId,
   });
 
+  const onRefreshPuestos = useCallback(async () => {
+    if (refreshingPuestos) return;
+    setRefreshingPuestos(true);
+    try {
+      await refetchPuestos();
+    } finally {
+      setRefreshingPuestos(false);
+    }
+  }, [refetchPuestos, refreshingPuestos]);
+
+  const onRefreshEventos = useCallback(async () => {
+    if (refreshingEventos) return;
+    setRefreshingEventos(true);
+    try {
+      await refetchEventos();
+    } finally {
+      setRefreshingEventos(false);
+    }
+  }, [refetchEventos, refreshingEventos]);
+
   const renderPuestoItem = ({ item }) => (
     <TouchableOpacity
       style={{
-        backgroundColor: Colors.Blanco,
+        backgroundColor: "#222222",
         borderRadius: 10,
-        shadowColor: Colors.Negro,
+        shadowColor: Colors.BordeDorado,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
@@ -59,7 +84,7 @@ const AsociarseEventoEP = ({ navigation }) => {
         height: 170,
         marginVertical: 5,
         marginHorizontal: 20,
-        borderColor: Colors?.GrisClaroPeroNoTanClaro,
+        borderColor: Colors.BordeDorado,
         borderWidth: 2,
       }}
       onPress={() => setSelectedPuestoId(item.id)}
@@ -79,8 +104,8 @@ const AsociarseEventoEP = ({ navigation }) => {
           style={{
             width: "100%",
             height: "40%",
-            borderTopLeftRadius: 5,
-            borderTopRightRadius: 5,
+            borderTopLeftRadius: 8,
+            borderTopRightRadius: 8,
           }}
           resizeMode="cover"
         />
@@ -96,6 +121,8 @@ const AsociarseEventoEP = ({ navigation }) => {
               height: 60,
               borderRadius: 30,
               marginRight: 10,
+              borderWidth: 2,
+              borderColor: Colors.BordeDorado,
             }}
             resizeMode="cover"
           />
@@ -113,14 +140,14 @@ const AsociarseEventoEP = ({ navigation }) => {
                 fontSize: 20,
                 fontWeight: "bold",
                 marginBottom: 5,
-                color: Colors.Negro,
+                color: "#ffffff",
                 textAlign: "center",
               }}
             >
               {item.nombreCarro}
             </Text>
             <Text
-              style={{ fontSize: 16, color: Colors.Negro, textAlign: "center" }}
+              style={{ fontSize: 16, color: Colors.BordeDorado, textAlign: "center" }}
             >
               {item.tipoNegocio}
             </Text>
@@ -139,27 +166,39 @@ const AsociarseEventoEP = ({ navigation }) => {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors?.GrisClaro }}>
+    <View style={{ flex: 1, backgroundColor: "#1a1a1a" }}>
       {selectedPuestoId === null ? (
         isLoadingPuestos ? (
-          <ActivityIndicator size="large" color={Colors?.Azul} />
+          <ActivityIndicator size="large" color={Colors.BordeDorado} />
         ) : errorPuestos ? (
           <Aviso mensaje={errorPuestos.message || "Error al cargar puestos"} />
         ) : dataPuestos.length > 0 ? (
           <>
             <Text
-              style={[
-                styles.title,
-                { alignSelf: "center", marginVertical: 10 },
-              ]}
+              style={{
+                fontSize: 24,
+                fontWeight: "bold",
+                color: Colors.BordeDorado,
+                alignSelf: "center",
+                marginVertical: 15,
+                textAlign: "center",
+              }}
             >
-              Puestos
+              Seleccioná un Puesto
             </Text>
             <FlatList
               data={dataPuestos}
               renderItem={renderPuestoItem}
               keyExtractor={(item) => item.id.toString()}
               contentContainerStyle={styleslocal.flatListContainer}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshingPuestos}
+                  onRefresh={onRefreshPuestos}
+                  colors={[Colors.BordeDorado]}
+                  tintColor={Colors.BordeDorado}
+                />
+              }
             />
           </>
         ) : (
@@ -168,7 +207,7 @@ const AsociarseEventoEP = ({ navigation }) => {
       ) : (
         <>
           {isLoadingEventos ? (
-            <ActivityIndicator size="large" color={Colors?.Azul} />
+            <ActivityIndicator size="large" color={Colors.BordeDorado} />
           ) : errorEventos ? (
             <Aviso
               mensaje={errorEventos.message || "Error al cargar eventos"}
@@ -181,6 +220,14 @@ const AsociarseEventoEP = ({ navigation }) => {
                 renderItem={renderEventoItem}
                 keyExtractor={(item) => item.id.toString()}
                 contentContainerStyle={styleslocal.flatListContainer}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshingEventos}
+                    onRefresh={onRefreshEventos}
+                    colors={[Colors.BordeDorado]}
+                    tintColor={Colors.BordeDorado}
+                  />
+                }
               />
             </>
           ) : (
@@ -202,7 +249,7 @@ const styleslocal = StyleSheet.create({
     marginHorizontal: 16,
     backgroundColor: "white",
     borderRadius: 8,
-    shadowColor: "#000",
+    shadowColor: "#000000",
     shadowOffset: {
       width: 0,
       height: 2,

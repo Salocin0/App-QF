@@ -12,10 +12,10 @@ const TabBarIcon = ({ title, nameIcon, focused }) => {
     text: {
       textAlign: "center",
       fontSize: 12,
-      color: Colors?.Azul,
+      color: Colors?.GrisOscuro,
     },
     textFocused: {
-      color: Colors?.GrisOscuro,
+      color: Colors?.modoOscuroActivo ? Colors?.BordeDorado : Colors?.Naranja,
     },
   };
 
@@ -24,9 +24,9 @@ const TabBarIcon = ({ title, nameIcon, focused }) => {
       <FontAwesome5
         name={nameIcon}
         size={25}
-        color={focused ? Colors?.Azul : Colors?.GrisOscuro}
+        color={focused ? (Colors?.modoOscuroActivo ? Colors?.BordeDorado : Colors?.Naranja) : Colors?.GrisOscuro}
       />
-      <Text style={[styles.text, !focused && styles.textFocused]}>{title}</Text>
+      <Text style={[styles.text, focused && styles.textFocused]}>{title}</Text>
     </View>
   );
 };

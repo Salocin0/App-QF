@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   FlatList,
   ActivityIndicator,
   Text,
   StyleSheet,
+  RefreshControl,
 } from "react-native";
 import CardPuesto from "./CardPuesto";
 import Aviso from "../Aviso";
@@ -21,8 +22,19 @@ const Puestos = ({ navigation }) => {
   const [dataReady, setDataReady] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [filters, setFilters] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const { data, error, isLoading } = useGetPuestosPorEventoQuery(evento?.id);
+  const { data, error, isLoading, refetch } = useGetPuestosPorEventoQuery(evento?.id);
+
+  const onRefresh = useCallback(async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch, refreshing]);
 
   useEffect(() => {
     if (data) {
@@ -117,6 +129,14 @@ const Puestos = ({ navigation }) => {
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
             contentContainerStyle={{ paddingBottom: 75 }}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={[Colors?.Naranja]}
+                tintColor={Colors?.Naranja}
+              />
+            }
           />
         </>
       ) : (

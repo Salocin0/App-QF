@@ -29,9 +29,9 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="myapp"/>
-        <data android:scheme="com.salocin0.myapp"/>
-        <data android:scheme="exp+my-app"/>
+        <data android:scheme="quickfood"/>
+        <data android:scheme="com.quickfood.app"/>
+        <data android:scheme="exp+quickfood"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>

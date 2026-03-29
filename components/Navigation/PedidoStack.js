@@ -17,7 +17,7 @@ const PedidoStack = () => {
     initialRouteName="Pedidos"
       screenOptions={{
         headerStyle: {
-          backgroundColor: Colors.Blanco,
+          backgroundColor: Colors.HeaderBackground,
         },
         headerTintColor: Colors.Negro,
       }}

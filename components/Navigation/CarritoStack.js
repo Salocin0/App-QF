@@ -13,14 +13,17 @@ const CarritoStack = () => {
     initialRouteName="Carrito"
     screenOptions={{
       headerStyle: {
-        backgroundColor: Colors.Blanco,
+        backgroundColor: Colors.HeaderBackground,
       },
       headerTintColor: Colors.Negro,
     }}>
       <Stack.Screen
         name="Carrito"
         component={Carrito}
-        options={{ headerRight: () => <ConfigNotifiButtom /> }}
+        options={{ 
+          title: "Mi Carrito",
+          headerRight: () => <ConfigNotifiButtom /> 
+        }}
       />
       <Stack.Screen name="Notificaciones" component={Notificaciones} />
       <Stack.Screen name="Config" component={Config} />

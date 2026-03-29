@@ -38,7 +38,7 @@ const FloatingButton = () => {
       textAlign: 'center',
       fontWeight: 'bold',
       fontSize: 24,
-      color: Colors.Blanco,
+      color: Colors.Negro,
     },
     botImage: {
       width: 60,

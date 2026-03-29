@@ -89,14 +89,20 @@ const CardEvento = ({ item, navigation }) => {
   return (
     <TouchableOpacity
       style={{
-        ...Colors.Styles.card,
+        backgroundColor: "#222222",
         flexDirection: "column",
         height: 200,
         marginVertical: 5,
         marginHorizontal: 20,
+        borderRadius: 10,
         overflow: "hidden",
-        borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : Colors?.Gris,
-        borderWidth: 1,
+        borderWidth: 2,
+        borderColor: Colors.BordeDorado,
+        shadowColor: Colors.BordeDorado,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 5,
       }}
       onPress={() => seleccionarPuesto(item)}
     >
@@ -129,8 +135,8 @@ const CardEvento = ({ item, navigation }) => {
               height: 75,
               borderRadius: 5,
               margin: 10,
-              borderWidth: 1,
-              borderColor: Colors?.Gris,
+              borderWidth: 2,
+              borderColor: Colors.BordeDorado,
             }}
             resizeMode="cover"
           />
@@ -149,13 +155,13 @@ const CardEvento = ({ item, navigation }) => {
               fontWeight: "bold",
               marginBottom: 5,
               textAlign: "center",
-              color: Colors.Negro,
+              color: "#ffffff",
             }}
           >
             {item?.nombre}
           </Text>
           <Text
-            style={{ fontSize: 14, textAlign: "center", color: Colors.Negro }}
+            style={{ fontSize: 14, textAlign: "center", color: "#cccccc" }}
           >
             {item?.descripcion}
           </Text>
@@ -170,19 +176,19 @@ const CardEvento = ({ item, navigation }) => {
           paddingVertical: 5,
           paddingHorizontal: 10,
           borderTopWidth: 1,
-          borderColor: Colors?.GrisClaroPeroNoTanClaro,
-          backgroundColor: Colors?.Info,
-          borderBottomLeftRadius: 5,
-          borderBottomRightRadius: 5,
+          borderColor: Colors.BordeDorado,
+          backgroundColor: "#1a1a1a",
+          borderBottomLeftRadius: 8,
+          borderBottomRightRadius: 8,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <FontAwesomeIcon
             icon={faCalendarAlt}
-            color={Colors.Blanco}
+            color={Colors.BordeDorado}
             size={16}
           />
-          <Text style={{ fontSize: 16, color: Colors.Blanco, marginLeft: 5 }}>
+          <Text style={{ fontSize: 16, color: "#cccccc", marginLeft: 5 }}>
             {fechaInicio > new Date() ? `Empieza ${tiempoHastaInicio}` : tiempoHastaFin}
           </Text>
         </View>
@@ -190,10 +196,10 @@ const CardEvento = ({ item, navigation }) => {
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <FontAwesomeIcon
               icon={faMapMarkerAlt}
-              color={Colors.Blanco}
+              color={Colors.BordeDorado}
               size={16}
             />
-            <Text style={{ fontSize: 16, color: Colors.Blanco, marginLeft: 5 }}>
+            <Text style={{ fontSize: 16, color: "#cccccc", marginLeft: 5 }}>
               A {distance} km
             </Text>
           </View>
@@ -206,14 +212,14 @@ const CardEvento = ({ item, navigation }) => {
             position: "absolute",
             top: 10,
             right: 10,
-            backgroundColor: Colors.Info,
+            backgroundColor: Colors.BordeDorado,
             borderRadius: 5,
             paddingVertical: 5,
             paddingHorizontal: 10,
           }}
         >
-          <Text style={{ fontSize: 16, color: Colors.BlancoEnBlanco }}>
-            Precompra habilitada
+          <Text style={{ fontSize: 16, color: "#000000", fontWeight: "bold" }}>
+            Precompra
           </Text>
         </View>
       )}

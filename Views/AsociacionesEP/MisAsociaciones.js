@@ -13,7 +13,7 @@ const MisAsociacionesEP = () => {
       justifyContent: "center",
       alignItems: "center",
       paddingHorizontal: 8,
-      backgroundColor: Colors?.GrisClaro,
+      backgroundColor: "#1a1a1a",
     },
   };
 

@@ -27,7 +27,7 @@ const MainNavigator = () => {
 
   const styles = {
     tabBar: {
-      backgroundColor: Colors?.Blanco,
+      backgroundColor: Colors?.HeaderBackground,
       height: 60,
       paddingTop: 15,
     },

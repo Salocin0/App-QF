@@ -20,7 +20,7 @@ const AuthStack = () => {
       initialRouteName="Login"
       screenOptions={{
         headerStyle: {
-          backgroundColor: Colors.Blanco,
+          backgroundColor: Colors.HeaderBackground,
         },
         headerTintColor: Colors.Negro,
       }}

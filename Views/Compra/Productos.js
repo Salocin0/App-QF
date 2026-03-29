@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, FlatList, ActivityIndicator, StyleSheet } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, FlatList, ActivityIndicator, StyleSheet, RefreshControl } from "react-native";
 import Aviso from "../Aviso";
 import useDynamicColors from "../../Styles/useDynamicColors";
 import CardProducto from "./CardProducto";
@@ -11,8 +11,9 @@ const Productos = ({ navigation }) => {
   const Colors = useDynamicColors();
   const route = useRoute();
   const { evento, precompra, fecha, puesto } = route.params;
-  const { data, isLoading, error } = useGetProductosQuery(puesto.id);
+  const { data, isLoading, error, refetch } = useGetProductosQuery(puesto.id);
   const [filteredData, setFilteredData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   // Actualiza filteredData cuando data esté disponible
   useEffect(() => {
@@ -20,6 +21,16 @@ const Productos = ({ navigation }) => {
       setFilteredData(data);
     }
   }, [data]);
+
+  const onRefresh = useCallback(async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch, refreshing]);
 
   const handleSearch = (searchText) => {
     const filtered = data?.filter((item) =>
@@ -61,7 +72,14 @@ const Productos = ({ navigation }) => {
   });
 
   const renderItem = ({ item }) => (
-    <CardProducto item={item} navigation={navigation} precompra={precompra} fecha={fecha} evento={evento} />
+    <CardProducto
+      item={item}
+      navigation={navigation}
+      precompra={precompra}
+      fecha={fecha}
+      evento={evento}
+      puesto={puesto}
+    />
   );
 
   // Renderizado basado en el estado de carga, error, y datos
@@ -83,6 +101,14 @@ const Productos = ({ navigation }) => {
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
             contentContainerStyle={{ paddingBottom: 75 }}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={[Colors?.Naranja]}
+                tintColor={Colors?.Naranja}
+              />
+            }
           />
         </>
       )}

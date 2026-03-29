@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View,ActivityIndicator,FlatList } from "react-native";
-import React from "react";
+import { StyleSheet, Text, View,ActivityIndicator,FlatList, RefreshControl } from "react-native";
+import React, { useState, useCallback } from "react";
 import useStyles from "../../Styles/useStyles";
 import useDynamicColors from "../../Styles/useDynamicColors";
 import { useGetEventosSinAsociacionValidaQuery } from "@/components/App/Service/EventosApi";
@@ -12,7 +12,19 @@ const AsociarseEvento = ({ navigation }) => {
   const styles = useStyles();
   const Colors = useDynamicColors();
   const user = useSelector((state) => state.auth);
-  const { data, error, isLoading } = useGetEventosSinAsociacionValidaQuery({estado:"EnPreparacion",idConsumidor:user?.consumidorId});
+  const { data, error, isLoading, refetch } = useGetEventosSinAsociacionValidaQuery({estado:"EnPreparacion",idConsumidor:user?.consumidorId});
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch, refreshing]);
+
   const renderItem = ({ item }) => (
     <CardEventoAsociar item={item} navigation={navigation} />
   );
@@ -31,6 +43,14 @@ const AsociarseEvento = ({ navigation }) => {
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
             contentContainerStyle={styleslocal.flatListContainer}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={[Colors?.Naranja]}
+                tintColor={Colors?.Naranja}
+              />
+            }
           />
         </>
       ) : (

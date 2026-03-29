@@ -6,7 +6,6 @@ import {
   Image,
   StyleSheet,
   ToastAndroid,
-  Modal,
   ScrollView,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
@@ -14,13 +13,14 @@ import { Counter } from "./../../components/Features/counter/Counter";
 import { useSelector, useDispatch } from "react-redux";
 import logoevento from "./../../assets/logoevento.webp";
 import useDynamicColors from "../../Styles/useDynamicColors";
+import ThemedModal from "../../components/ThemedModal/ThemedModal";
 import { agregarProducto } from "./../../components/Features/carrito/carritoSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faArrowLeft, faCartPlus } from "@fortawesome/free-solid-svg-icons";
 
 const Detalle = ({ navigation }) => {
   const route = useRoute();
-  const { producto, precompra, fecha, evento } = route.params;
+  const { producto, precompra, fecha, evento, puesto } = route.params;
   const Colors = useDynamicColors();
   const dispatch = useDispatch();
   const count = useSelector((state) => state.counter.value);
@@ -42,7 +42,8 @@ const Detalle = ({ navigation }) => {
     dispatch(
       agregarProducto({
         producto,
-        puesto: producto.puestoId,
+        puesto: puesto?.id ?? producto.puestoId,
+        puestoNombre: puesto?.nombreCarro,
         cantidad: count,
         preventa: precompra,
         fecha,
@@ -143,49 +144,6 @@ const Detalle = ({ navigation }) => {
       fontWeight: "bold",
       marginLeft: 10,
     },
-    modalOverlay: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.7)",
-    },
-    modalContent: {
-      width: "85%",
-      padding: 25,
-      backgroundColor: Colors.Blanco,
-      borderRadius: 20,
-      alignItems: "center",
-      ...Colors.Styles.card,
-    },
-    modalTitle: {
-      fontSize: 22,
-      fontWeight: "bold",
-      color: Colors.Negro,
-      marginBottom: 15,
-    },
-    modalText: {
-      fontSize: 16,
-      color: Colors.Gris,
-      marginBottom: 25,
-      textAlign: "center",
-    },
-    modalButtons: {
-      flexDirection: "row",
-      gap: 12,
-    },
-    modalButton: {
-      flex: 1,
-      padding: 15,
-      borderRadius: 12,
-      alignItems: "center",
-    },
-    modalButtonCancel: {
-      borderWidth: 1,
-      borderColor: Colors.Rojo,
-    },
-    modalButtonConfirm: {
-      backgroundColor: Colors.Verde,
-    },
   });
 
   return (
@@ -223,30 +181,19 @@ const Detalle = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <Modal transparent visible={modalVisible} animationType="fade">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Confirmar</Text>
-            <Text style={styles.modalText}>
-              ¿Deseas agregar {count} {producto.nombre} al carrito?
-            </Text>
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={[styles.modalButton, styles.modalButtonCancel]}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={{ color: Colors.Rojo, fontWeight: "bold" }}>Cancelar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalButton, styles.modalButtonConfirm]}
-                onPress={handleAgregar}
-              >
-                <Text style={{ color: "white", fontWeight: "bold" }}>Confirmar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <ThemedModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        title="Confirmar"
+        buttons={[
+          { text: "Cancelar", variant: "secondary", onPress: () => setModalVisible(false) },
+          { text: "Confirmar", onPress: handleAgregar },
+        ]}
+      >
+        <Text style={{ fontSize: 16, color: Colors.Gris, marginBottom: 25, textAlign: 'center' }}>
+          ¿Deseas agregar {count} {producto.nombre} al carrito?
+        </Text>
+      </ThemedModal>
     </View>
   );
 };

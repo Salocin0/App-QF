@@ -1,5 +1,5 @@
-import React, { useCallback } from "react";
-import { View, FlatList, ActivityIndicator, StyleSheet } from "react-native";
+import React, { useCallback, useState } from "react";
+import { View, FlatList, ActivityIndicator, StyleSheet, RefreshControl } from "react-native";
 import PedidoCardR from "./PedidoCardR"; // Asegúrate de tener este componente
 import useDynamicColors from "../../Styles/useDynamicColors";
 import { useGetPedidosRepartidorQuery } from "@/components/App/Service/PedidosApi";
@@ -16,16 +16,28 @@ const PedidosR = ({ navigation }) => {
     pollingInterval: 1000,
   });
 
+  const [refreshing, setRefreshing] = useState(false);
+
   useFocusEffect(
     useCallback(() => {
       refetch();
     }, [refetch])
   );
 
+  const onRefresh = useCallback(async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch, refreshing]);
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: Colors.GrisClaro,
+      backgroundColor: "#1a1a1a",
     },
     flatListContainer: {
       flexGrow: 1,
@@ -54,6 +66,14 @@ const PedidosR = ({ navigation }) => {
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.flatListContainer}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[Colors?.Naranja]}
+              tintColor={Colors?.Naranja}
+            />
+          }
         />
       ) : (
         <Aviso mensaje="No hay pedidos en camino" /> // Mensaje actualizado

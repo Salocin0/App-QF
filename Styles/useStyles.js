@@ -9,7 +9,7 @@ const useStyles = () => {
       justifyContent: "center",
       alignItems: "center",
       paddingHorizontal: 20,
-      backgroundColor: Colors?.GrisClaro,
+      backgroundColor: Colors?.Blanco,
     },
     containerCard: {
       flex: 1,

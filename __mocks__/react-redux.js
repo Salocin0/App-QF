@@ -1,5 +1,5 @@
 const mockState = {
-  modoOscuro: { modoOscuroActivo: false },
+  modoOscuro: { modoOscuroActivo: true },
   auth: { consumidorId: 1, id: 1, tipoUsuario: 'consumidor' },
   carrito: {},
   // Agregar otros estados si es necesario

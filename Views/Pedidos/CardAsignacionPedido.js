@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import useDynamicColors from "@/Styles/useDynamicColors";
+import ThemedModal from "../../components/ThemedModal/ThemedModal";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCube, faUserGroup, faStore } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -22,7 +23,7 @@ import logo from "../../assets/favicon.png";
 
 const CardAsignacionPedido = () => {
   const dispatch = useDispatch();
-  const [progress] = useState(new Animated.Value(100));
+  const progress = useRef(new Animated.Value(100)).current;
   const [visible, setVisible] = useState(true);
   const [hiddenAssignments, setHiddenAssignments] = useState([]);
   const Colors = useDynamicColors();
@@ -52,6 +53,9 @@ const CardAsignacionPedido = () => {
         setVisible(false);
         return;
       }
+  
+      // Reset progress to 100 when assignment changes
+      progress.setValue(100);
   
       const updateProgress = () => {
         const elapsedTime =
@@ -84,7 +88,7 @@ const CardAsignacionPedido = () => {
       // Cleanup interval on component unmount or when assignment changes
       return () => clearInterval(timer);
     }
-  }, [assignment, hiddenAssignments]);
+  }, [assignment, hiddenAssignments, progress]);
   
   const handleAccept = async () => {
     try {
@@ -108,16 +112,18 @@ const CardAsignacionPedido = () => {
 
   const styles = StyleSheet.create({
     card: {
-      backgroundColor: Colors.Blanco,
+      backgroundColor: "#1a1a1a",
       width: "90%",
       borderRadius: 8,
       padding: 16,
       margin: 8,
-      shadowColor: Colors.Negro,
+      shadowColor: Colors.BordeDorado,
       shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
+      shadowOpacity: 0.15,
       shadowRadius: 8,
       elevation: 5,
+      borderWidth: 2,
+      borderColor: Colors.BordeDorado,
     },
     header: {
       flexDirection: "row",
@@ -127,8 +133,10 @@ const CardAsignacionPedido = () => {
       width: 110,
       height: 110,
       borderRadius: 8,
-      backgroundColor: Colors.GrisClaroPeroNoTanClaro,
-      resizeMode: "contain", // To ensure the image fits within the bounds
+      backgroundColor: "#333333",
+      resizeMode: "contain",
+      borderWidth: 1,
+      borderColor: Colors.BordeDorado,
     },
     info: {
       marginLeft: 10,
@@ -137,26 +145,26 @@ const CardAsignacionPedido = () => {
       fontSize: 16,
       fontWeight: "bold",
       marginEnd: 8,
-      color: Colors.Negro,
+      color: "#ffffff",
     },
     label: {
-      backgroundColor: Colors.GrisClaroPeroNoTanClaro,
+      backgroundColor: Colors.BordeDorado,
       borderRadius: 8,
       paddingHorizontal: 6,
       paddingVertical: 2,
       fontSize: 12,
       marginTop: 4,
-      color: Colors.Negro,
+      color: "#000000",
     },
     title: {
       fontSize: 16,
       fontWeight: "bold",
       marginTop: 10,
-      color: Colors.Negro,
+      color: "#ffffff",
     },
     subTitle: {
       fontSize: 14,
-      color: Colors.Negro,
+      color: "#cccccc",
       marginTop: 4,
     },
     buttons: {
@@ -166,35 +174,42 @@ const CardAsignacionPedido = () => {
     },
     button: {
       flex: 1,
-      backgroundColor: Colors.Azul,
+      backgroundColor: Colors.BordeDorado,
       padding: 10,
       borderRadius: 8,
       marginHorizontal: 5,
       alignItems: "center",
+      borderWidth: 1,
+      borderColor: Colors.BordeDorado,
     },
     buttonRechazar: {
       flex: 1,
-      backgroundColor: Colors.Blanco,
-      borderColor: Colors.Negro,
-      borderWidth: 1,
+      backgroundColor: "transparent",
+      borderColor: Colors.BordeDorado,
+      borderWidth: 2,
       padding: 10,
       borderRadius: 8,
       marginHorizontal: 5,
       alignItems: "center",
     },
     buttonText: {
-      color: Colors.Blanco,
+      color: "#000000",
       fontWeight: "bold",
     },
     buttonText2: {
-      color: Colors.Negro,
+      color: Colors.BordeDorado,
       fontWeight: "bold",
     },
     progressBar: {
       height: 10,
-      backgroundColor: Colors.Negro,
+      backgroundColor: "#333333",
       borderRadius: 10,
       marginTop: 15,
+    },
+    progressFill: {
+      backgroundColor: Colors.BordeDorado,
+      borderRadius: 10,
+      height: 10,
     },
     idContainer: {
       flexDirection: "row",
@@ -204,7 +219,7 @@ const CardAsignacionPedido = () => {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: "rgba(0,0,0,0.5)",
+      backgroundColor: "rgba(0,0,0,0.8)",
     },
   });
 
@@ -229,34 +244,36 @@ const CardAsignacionPedido = () => {
             <View style={styles.info}>
               <View style={styles.idContainer}>
                 <Text style={styles.id}>
-                  <FontAwesomeIcon icon={faCube} color={Colors.Negro} /> #
+                  <FontAwesomeIcon icon={faCube} color={Colors.BordeDorado} /> #
                   {assignment?.PedidoId ?? "1234"}
                 </Text>
                 <Text style={styles.label}>Nuevo Pedido</Text>
               </View>
               <Text style={styles.title}>
-                <FontAwesomeIcon icon={faStore} color={Colors.Negro} />{" "}
+                <FontAwesomeIcon icon={faStore} color={Colors.BordeDorado} />{" "}
                 {assignment?.Pedido?.puesto?.nombreCarro ?? "Puesto 1"}
               </Text>
               <Text style={styles.subTitle}>
-                <FontAwesomeIcon icon={faUserGroup} color={Colors.Negro} />{" "}
+                <FontAwesomeIcon icon={faUserGroup} color={Colors.BordeDorado} />{" "}
                 {assignment?.Pedido?.consumidore?.nombre +
                   ", " +
                   assignment?.Pedido?.consumidore?.apellido ?? "Consumidor 1"}
               </Text>
             </View>
           </View>
-          <Animated.View
-            style={[
-              styles.progressBar,
-              {
-                width: progress.interpolate({
-                  inputRange: [0, 100],
-                  outputRange: ["0%", "100%"],
-                }),
-              },
-            ]}
-          />
+          <View style={styles.progressBar}>
+            <Animated.View
+              style={[
+                styles.progressFill,
+                {
+                  width: progress.interpolate({
+                    inputRange: [0, 100],
+                    outputRange: ["0%", "100%"],
+                  }),
+                },
+              ]}
+            />
+          </View>
           <View style={styles.buttons}>
             <TouchableOpacity
               style={styles.buttonRechazar}

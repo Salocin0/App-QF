@@ -20,15 +20,21 @@ const CardPuesto = ({ item, navigation, precompra, fecha, evento }) => {
   return (
     <TouchableOpacity
       style={{
-        ...Colors.Styles.card,
+        backgroundColor: "#222222",
         flexDirection: "row",
         alignItems: "center",
         padding: 15,
-        height: 140, // Altura más compacta como en la web
+        height: 140,
         marginVertical: 8,
         marginHorizontal: 20,
-        borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : Colors?.GrisClaroPeroNoTanClaro,
-        borderWidth: 1,
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: Colors.BordeDorado,
+        shadowColor: Colors.BordeDorado,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 5,
       }}
       onPress={() => seleccionarPuesto(item)}
     >
@@ -39,6 +45,8 @@ const CardPuesto = ({ item, navigation, precompra, fecha, evento }) => {
           borderRadius: 10,
           overflow: "hidden",
           marginRight: 15,
+          borderWidth: 1,
+          borderColor: Colors.BordeDorado,
         }}
       >
         <Image
@@ -60,7 +68,7 @@ const CardPuesto = ({ item, navigation, precompra, fecha, evento }) => {
           style={{
             fontSize: 20,
             fontWeight: "bold",
-            color: Colors.Naranja, // Título naranja como en la web
+            color: Colors.BordeDorado,
             marginBottom: 4,
           }}
         >
@@ -69,7 +77,7 @@ const CardPuesto = ({ item, navigation, precompra, fecha, evento }) => {
         <Text
           style={{
             fontSize: 16,
-            color: Colors.Negro,
+            color: "#cccccc",
             marginBottom: 8,
           }}
         >
@@ -78,15 +86,15 @@ const CardPuesto = ({ item, navigation, precompra, fecha, evento }) => {
 
         <View style={{ flexDirection: "row", gap: 15 }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <FontAwesomeIcon icon={faClock} color={Colors.Negro} size={14} />
-            <Text style={{ fontSize: 14, color: Colors.Negro, marginLeft: 5 }}>
+            <FontAwesomeIcon icon={faClock} color="#cccccc" size={14} />
+            <Text style={{ fontSize: 14, color: "#cccccc", marginLeft: 5 }}>
               {item.time || "30"} Min
             </Text>
           </View>
 
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <FontAwesomeIcon icon={faStar} color={Colors.NaranjaDetalle} size={14} />
-            <Text style={{ fontSize: 14, color: Colors.Negro, marginLeft: 5 }}>
+            <FontAwesomeIcon icon={faStar} color={Colors.BordeDorado} size={14} />
+            <Text style={{ fontSize: 14, color: "#cccccc", marginLeft: 5 }}>
               {item.estrellas || "4.5"}
             </Text>
           </View>

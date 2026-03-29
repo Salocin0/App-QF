@@ -33,11 +33,19 @@ const EventoCard = ({ evento }) => {
   
   const styles = StyleSheet.create({
     card: {
-      ...Colors.Styles.card,
+      backgroundColor: "#222222",
       flexDirection: "row",
       height: 150,
       marginBottom: 20,
+      borderRadius: 10,
       overflow: "hidden",
+      borderWidth: 2,
+      borderColor: Colors.BordeDorado,
+      shadowColor: Colors.BordeDorado,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
+      elevation: 5,
     },
     imageContainer: {
       width: 100,
@@ -54,16 +62,16 @@ const EventoCard = ({ evento }) => {
     title: {
       fontSize: 18,
       fontWeight: "bold",
-      color: Colors.Negro,
+      color: "#ffffff",
     },
     description: {
       fontSize: 14,
-      color: Colors.Gris,
+      color: "#cccccc",
       marginVertical: 5,
     },
     detail: {
       fontSize: 12,
-      color: Colors.GrisOscuro,
+      color: Colors.BordeDorado,
     },
   });
 

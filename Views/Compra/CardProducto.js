@@ -5,13 +5,13 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import logoevento from "./../../assets/logoevento.webp";
 import useDynamicColors from "../../Styles/useDynamicColors";
 
-const CardProducto = ({ item, navigation, precompra, fecha, evento }) => {
+const CardProducto = ({ item, navigation, precompra, fecha, evento, puesto }) => {
   const Colors = useDynamicColors();
 
   const seleccionarPuesto = (producto) => {
     navigation.navigate("Detalle", {
       producto,
-      puesto: item,
+      puesto,
       precompra,
       fecha,
       evento,
@@ -21,16 +21,21 @@ const CardProducto = ({ item, navigation, precompra, fecha, evento }) => {
   return (
     <TouchableOpacity
       style={{
-        ...Colors.Styles.card,
+        backgroundColor: "#222222",
         flexDirection: "row",
         alignItems: "center",
         padding: 12,
         marginVertical: 8,
         marginHorizontal: 20,
-        height: 130, // Más compacto como en la web
-        borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : Colors.GrisClaroPeroNoTanClaro,
-        borderWidth: 1,
-        backgroundColor: Colors.Blanco,
+        height: 130,
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: Colors.BordeDorado,
+        shadowColor: Colors.BordeDorado,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 5,
       }}
       onPress={() => seleccionarPuesto(item)}
     >
@@ -41,8 +46,10 @@ const CardProducto = ({ item, navigation, precompra, fecha, evento }) => {
           height: 90,
           borderRadius: 8,
           overflow: "hidden",
-          backgroundColor: Colors.GrisClaro,
+          backgroundColor: "#333333",
           marginRight: 15,
+          borderWidth: 1,
+          borderColor: Colors.BordeDorado,
         }}
       >
         <Image
@@ -66,7 +73,7 @@ const CardProducto = ({ item, navigation, precompra, fecha, evento }) => {
             style={{
               fontSize: 18,
               fontWeight: "bold",
-              color: Colors.Negro,
+              color: "#ffffff",
               marginBottom: 2,
             }}
             numberOfLines={1}
@@ -76,7 +83,7 @@ const CardProducto = ({ item, navigation, precompra, fecha, evento }) => {
           <Text
             style={{
               fontSize: 13,
-              color: Colors.Gris,
+              color: "#cccccc",
               lineHeight: 16,
             }}
             numberOfLines={2}
@@ -97,7 +104,7 @@ const CardProducto = ({ item, navigation, precompra, fecha, evento }) => {
               style={{
                 fontSize: 18,
                 fontWeight: "bold",
-                color: Colors.Naranja,
+                color: Colors.BordeDorado,
                 marginRight: 2,
               }}
             >
@@ -107,7 +114,7 @@ const CardProducto = ({ item, navigation, precompra, fecha, evento }) => {
               style={{
                 fontSize: 24,
                 fontWeight: "bold",
-                color: Colors.Negro,
+                color: Colors.BordeDorado,
               }}
             >
               {item.precio}

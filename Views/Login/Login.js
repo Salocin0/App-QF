@@ -4,7 +4,7 @@ import { ToastAndroid } from "react-native";
 import useStyles from "../../Styles/useStyles";
 import { useLoginUserMutation } from "./../../components/App/Service/authApi";
 import { useDispatch } from "react-redux";
-import { setUser } from "../../components/Features/Auth/authSlice";
+import { guardarSesionUsuario } from "../../components/Features/Auth/authSlice";
 import { usePushNotifications } from "./../../hooks/usePushNotifications";
 import useDynamicColors from "@/Styles/useDynamicColors";
 import FloatingButton from "../Chatbot/FloatingButton";
@@ -45,21 +45,21 @@ export default Login = ({ navigation }) => {
 
     if (Number(responseData?.data?.code) === 200) {
       console.log("data", responseData.data);
-      dispatch(
-        setUser({
-          email: email,
-          idToken: responseData.data.data.sessionId,
-          tipoUsuario: responseData.data.data.tipoUsuario,
-          usuario: responseData.data.data.usuario,
-          consumidorId: responseData.data.data.consumidorId,
-          id: responseData.data.data.id,
-          sessionId: responseData.data.data.sessionId,
-          tokenWeb: null,
-          tokenMobile: expoPushToken?.data,
-          nombre: responseData.data.data.nombre,
-          apellido: responseData.data.data.apellido,
-        })
-      );
+      const usuarioLogueado = {
+        email: email,
+        idToken: responseData.data.data.sessionId,
+        tipoUsuario: responseData.data.data.tipoUsuario,
+        usuario: responseData.data.data.usuario,
+        consumidorId: responseData.data.data.consumidorId,
+        id: responseData.data.data.id,
+        sessionId: responseData.data.data.sessionId,
+        tokenWeb: null,
+        tokenMobile: expoPushToken?.data,
+        nombre: responseData.data.data.nombre,
+        apellido: responseData.data.data.apellido,
+      };
+
+      dispatch(guardarSesionUsuario(usuarioLogueado));
       ToastAndroid.show("Login correcto", ToastAndroid.SHORT);
       return { success: true, data: responseData.data };
     } else if (Number(responseData?.data?.code) === 300) {
@@ -93,9 +93,15 @@ export default Login = ({ navigation }) => {
       <TextInput
         style={[
           styles.input,
-          { color: Colors.Negro, fontSize: 13, width: "100%", height: 40 },
+          { 
+            color: Colors.Negro, 
+            fontSize: 13, 
+            width: "100%", 
+            height: 40,
+            backgroundColor: Colors.Blanco,
+          },
         ]}
-        placeholderTextColor={Colors.Negro}
+        placeholderTextColor={Colors.Gris}
         value={email}
         onChangeText={handleEmailChange}
       />
@@ -105,9 +111,15 @@ export default Login = ({ navigation }) => {
       <TextInput
         style={[
           styles.input,
-          { color: Colors.Negro, fontSize: 13, width: "100%", height: 40 },
+          { 
+            color: Colors.Negro, 
+            fontSize: 13, 
+            width: "100%", 
+            height: 40,
+            backgroundColor: Colors.Blanco,
+          },
         ]}
-        placeholderTextColor={Colors.Negro}
+        placeholderTextColor={Colors.Gris}
         secureTextEntry={true}
         value={password}
         onChangeText={handlePasswordChange}
@@ -123,17 +135,17 @@ export default Login = ({ navigation }) => {
       <View style={styles.footer}>
         <Text
           testID="recuperarContraseña"
-          style={styles.link}
+          style={[styles.link, { color: Colors.Azul }]}
           onPress={() => navigation.navigate("Recuperar Contraseña")}
         >
           Recuperar Contraseña
         </Text>
       </View>
       <View style={styles.footer}>
-        <Text style={styles.text}>¿No tienes cuenta? </Text>
+        <Text style={[styles.text, { color: Colors.Negro }]}>¿No tienes cuenta? </Text>
         <Text
           testID="registrarse"
-          style={styles.link}
+          style={[styles.link, { color: Colors.Azul }]}
           onPress={() => navigation.navigate("Seleccion Perfil")}
         >
           Registrarse

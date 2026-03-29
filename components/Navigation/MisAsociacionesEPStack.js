@@ -15,7 +15,7 @@ const MisAsociacionesEPStack = () => {
       initialRouteName="Mis Asociaciones"
       screenOptions={{
         headerStyle: {
-          backgroundColor: Colors.Blanco,
+          backgroundColor: Colors.HeaderBackground,
         },
         headerTintColor: Colors.Negro,
       }}
