@@ -1,4 +1,4 @@
-package com.quickfood.app
+package com.salocin0.myapp
 
 import android.os.Build
 import android.os.Bundle

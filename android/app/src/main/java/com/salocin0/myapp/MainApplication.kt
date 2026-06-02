@@ -1,4 +1,4 @@
-package com.quickfood.app
+package com.salocin0.myapp
 
 import android.app.Application
 import android.content.res.Configuration

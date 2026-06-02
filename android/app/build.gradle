@@ -117,9 +117,9 @@ packagingOptions {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.quickfood.app'
+    namespace 'com.salocin0.myapp'
     defaultConfig {
-        applicationId 'com.quickfood.app'
+        applicationId 'com.salocin0.myapp'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

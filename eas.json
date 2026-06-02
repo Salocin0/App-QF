@@ -7,7 +7,8 @@
     "preview": {
       "env": {
         "EXPO_PUBLIC_API_URL": "https://backendnode-qf-production.up.railway.app/",
-        "EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN": "pk.eyJ1Ijoic2Fsb2NpbjAiLCJhIjoiY2x5MzM3cTNjMDRjZTJpb2V6YjIwang2aiJ9.EwY5bcY30BY-DTIeYJzAPg"
+        "EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN": "pk.eyJ1Ijoic2Fsb2NpbjAiLCJhIjoiY2x5MzM3cTNjMDRjZTJpb2V6YjIwang2aiJ9.EwY5bcY30BY-DTIeYJzAPg",
+        "NODE_VERSION": "20"
       },
       "android": {
         "buildType": "apk",
@@ -30,7 +31,8 @@
     "production": {
       "env": {
         "EXPO_PUBLIC_API_URL": "https://backendnode-qf-production.up.railway.app/",
-        "EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN": "pk.eyJ1Ijoic2Fsb2NpbjAiLCJhIjoiY2x5MzM3cTNjMDRjZTJpb2V6YjIwang2aiJ9.EwY5bcY30BY-DTIeYJzAPg"
+        "EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN": "pk.eyJ1Ijoic2Fsb2NpbjAiLCJhIjoiY2x5MzM3cTNjMDRjZTJpb2V6YjIwang2aiJ9.EwY5bcY30BY-DTIeYJzAPg",
+        "NODE_VERSION": "20"
       },
       "android": {
         "buildType": "apk",
