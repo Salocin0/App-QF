@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -27,9 +27,13 @@ const BuscadorPuestos = ({ onUpdate }) => {
   const [selectedStars, setSelectedStars] = useState(0);
   const [tempStars, setTempStars] = useState(0);
 
-  const handleSearch = () => {
-    onUpdate(selectedCategoria, searchText, selectedStars);
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onUpdate(selectedCategoria, searchText, selectedStars);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchText]);
 
   const handleOpenOrderModal = () => {
     setTempCategoria(selectedCategoria);
@@ -162,7 +166,7 @@ const BuscadorPuestos = ({ onUpdate }) => {
           value={searchText}
           onChangeText={setSearchText}
         />
-        <TouchableOpacity style={styles.buttonBuscar} onPress={handleSearch}>
+        <TouchableOpacity style={styles.buttonBuscar}>
           <FontAwesomeIcon icon={faMagnifyingGlass} color="white" size={18} />
         </TouchableOpacity>
       </View>

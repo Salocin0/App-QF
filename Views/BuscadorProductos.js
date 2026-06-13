@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -26,9 +26,13 @@ const BuscadorProductos = ({ onSearch, onSort }) => {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
 
-  const handleSearch = () => {
-    onSearch(searchText);
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onSearch(searchText);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchText]);
 
   const handleOpenOrderModal = () => {
     setTempCategoria(selectedCategoria);
@@ -56,7 +60,7 @@ const BuscadorProductos = ({ onSearch, onSort }) => {
   const handleApplyFilters = () => {
     // Aquí podrías agregar la lógica de filtrado por precio si el padre lo soporta
     setShowFilterModal(false);
-    handleSearch();
+    onSearch(searchText);
   };
 
   const handleSelectCategoria = (categoria) => {
@@ -176,7 +180,7 @@ const BuscadorProductos = ({ onSearch, onSort }) => {
           value={searchText}
           onChangeText={setSearchText}
         />
-        <TouchableOpacity style={styles.buttonBuscar} onPress={handleSearch}>
+        <TouchableOpacity style={styles.buttonBuscar}>
           <FontAwesomeIcon icon={faMagnifyingGlass} color="white" size={18} />
         </TouchableOpacity>
       </View>
