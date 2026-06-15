@@ -160,72 +160,84 @@ const PrecompraCard = ({ setfecha, nextNavigate, evento }) => {
 
   return (
     <View style={styles.card}>
-      <View style={styles.header}>
-        <View style={styles.iconContainer}>
-          <FontAwesomeIcon icon={faCalendarDays} size={35} color={Colors.Naranja} />
+      {evento.tienePreventa ? (
+        <>
+          <View style={styles.header}>
+            <View style={styles.iconContainer}>
+              <FontAwesomeIcon icon={faCalendarDays} size={35} color={Colors.Naranja} />
+            </View>
+            <Text style={styles.title}>Precompra</Text>
+            <Text style={styles.subtitle}>Retirá tu pedido el día que elijas.</Text>
+          </View>
+
+          <View style={styles.scrollWrapper}>
+            <ScrollView contentContainerStyle={styles.datesContainer} showsVerticalScrollIndicator={false}>
+              {evento.diaEventos.map((dia, index) => {
+                const isPast = now > new Date(dia.fechaHoraFinDiaEvento);
+                const isSelected = selectedDate === dia.fechaHoraInicioDiaEvento;
+                
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    style={[
+                      styles.dateButton, 
+                      isSelected && styles.selectedDateButton,
+                      isPast && styles.disabledDateButton
+                    ]}
+                    onPress={() => !isPast && setSelectedDate(dia.fechaHoraInicioDiaEvento)}
+                    disabled={isPast}
+                  >
+                    <Text style={[styles.dateText, isSelected && styles.selectedDateText]}>
+                      {formatDateLabel(dia.fechaHoraInicioDiaEvento)}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          </View>
+
+          <View style={styles.footer}>
+            <TouchableOpacity 
+              style={[styles.confirmButton, !selectedDate && styles.disabledButton]} 
+              onPress={() => setModalVisible(true)}
+              disabled={!selectedDate}
+            >
+              <FontAwesomeIcon icon={faCheckCircle} color="white" size={20} />
+              <Text style={styles.confirmText}>Confirmar día</Text>
+            </TouchableOpacity>
+          </View>
+
+          <ThemedModal
+            visible={modalVisible}
+            onClose={() => setModalVisible(false)}
+            title="¿Confirmar Fecha?"
+            buttons={[
+              { text: "Cancelar", variant: "secondary", onPress: () => setModalVisible(false) },
+              { text: "Aceptar", onPress: handleConfirmar },
+            ]}
+          >
+            <View style={{ alignItems: 'center', marginBottom: 15 }}>
+              <FontAwesomeIcon icon={faTriangleExclamation} size={40} color={Colors.Naranja} />
+            </View>
+            {selectedEventDay && (
+              <Text style={{ fontSize: 15, color: Colors.Negro, textAlign: 'center', lineHeight: 22, marginBottom: 25 }}>
+                Tu pedido estará disponible únicamente{" "}
+                <Text style={{fontWeight: 'bold'}}>
+                el {formatDateLabel(selectedEventDay.fechaHoraInicioDiaEvento)} 
+                </Text> de {new Date(selectedEventDay.fechaHoraInicioDiaEvento).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} a {new Date(selectedEventDay.fechaHoraFinDiaEvento).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} hs.
+              </Text>
+            )}
+          </ThemedModal>
+        </>
+      ) : (
+        <View style={styles.header}>
+          <View style={styles.iconContainer}>
+            <FontAwesomeIcon icon={faCalendarDays} size={35} color={Colors.Naranja} />
+          </View>
+          <Text style={styles.title}>Precompra no disponible</Text>
+          <Text style={styles.subtitle}>Este evento no ofrece preventa.</Text>
         </View>
-        <Text style={styles.title}>Precompra</Text>
-        <Text style={styles.subtitle}>Retirá tu pedido el día que elijas.</Text>
-      </View>
-
-      <View style={styles.scrollWrapper}>
-        <ScrollView contentContainerStyle={styles.datesContainer} showsVerticalScrollIndicator={false}>
-          {evento.diaEventos.map((dia, index) => {
-            const isPast = now > new Date(dia.fechaHoraFinDiaEvento);
-            const isSelected = selectedDate === dia.fechaHoraInicioDiaEvento;
-            
-            return (
-              <TouchableOpacity
-                key={index}
-                style={[
-                  styles.dateButton, 
-                  isSelected && styles.selectedDateButton,
-                  isPast && styles.disabledDateButton
-                ]}
-                onPress={() => !isPast && setSelectedDate(dia.fechaHoraInicioDiaEvento)}
-                disabled={isPast}
-              >
-                <Text style={[styles.dateText, isSelected && styles.selectedDateText]}>
-                  {formatDateLabel(dia.fechaHoraInicioDiaEvento)}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      </View>
-
-      <View style={styles.footer}>
-        <TouchableOpacity 
-          style={[styles.confirmButton, !selectedDate && styles.disabledButton]} 
-          onPress={() => setModalVisible(true)}
-          disabled={!selectedDate}
-        >
-          <FontAwesomeIcon icon={faCheckCircle} color="white" size={20} />
-          <Text style={styles.confirmText}>Confirmar día</Text>
-        </TouchableOpacity>
-      </View>
-
-      <ThemedModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        title="¿Confirmar Fecha?"
-        buttons={[
-          { text: "Cancelar", variant: "secondary", onPress: () => setModalVisible(false) },
-          { text: "Aceptar", onPress: handleConfirmar },
-        ]}
-      >
-        <View style={{ alignItems: 'center', marginBottom: 15 }}>
-          <FontAwesomeIcon icon={faTriangleExclamation} size={40} color={Colors.Naranja} />
-        </View>
-        {selectedEventDay && (
-          <Text style={{ fontSize: 15, color: Colors.Negro, textAlign: 'center', lineHeight: 22, marginBottom: 25 }}>
-            Tu pedido estará disponible únicamente{" "}
-            <Text style={{fontWeight: 'bold'}}>
-            el {formatDateLabel(selectedEventDay.fechaHoraInicioDiaEvento)} 
-            </Text> de {new Date(selectedEventDay.fechaHoraInicioDiaEvento).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} a {new Date(selectedEventDay.fechaHoraFinDiaEvento).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} hs.
-          </Text>
-        )}
-      </ThemedModal>
+      )}
     </View>
   );
 };

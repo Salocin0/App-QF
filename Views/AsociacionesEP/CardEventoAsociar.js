@@ -49,7 +49,7 @@ const CardEventoAsociar = ({ item, navigation, selectedPuestoId }) => {
     >
       <View style={{ flex: 2 }}>
         <Image
-          source={imgevento}
+          source={item?.img ? { uri: item.img } : imgevento}
           style={{
             width: "100%",
             height: "100%",
@@ -68,7 +68,7 @@ const CardEventoAsociar = ({ item, navigation, selectedPuestoId }) => {
           }}
         >
           <Image
-            source={logoevento}
+            source={item?.img ? { uri: item.img } : logoevento}
             style={{
               width: 75,
               height: 75,

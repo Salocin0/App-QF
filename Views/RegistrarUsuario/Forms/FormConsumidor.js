@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   ImageBackground,
+  Platform,
 } from "react-native";
 import { ToastAndroid } from "react-native";
 import useLocalidades from "../../../hooks/UseLocalidades";
@@ -13,6 +14,7 @@ import useProvincias from "../../../hooks/UseProvincias";
 import RNPickerSelect from "react-native-picker-select";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import useStyles from "../../../Styles/useStyles";
+import useDynamicColors from "../../../Styles/useDynamicColors";
 
 const FormConsumidor = ({
   nextStep,
@@ -24,6 +26,7 @@ const FormConsumidor = ({
   setTipoUsuario,
 }) => {
   const { provincias } = useProvincias();
+  const Colors = useDynamicColors();
   const styles = useStyles()
   const { localidades, fetchLocalidades } = useLocalidades();
   const [selectedProvince, setSelectedProvince] = useState("");
@@ -33,7 +36,7 @@ const FormConsumidor = ({
     nombre: "",
     apellido: "",
     dni: "",
-    fechaNacimiento: new Date().setFullYear(new Date().getFullYear() - 18),
+    fechaNacimiento: new Date(new Date().setFullYear(new Date().getFullYear() - 18)),
     provincia: "",
     localidad: "",
     telefono: "",
@@ -51,9 +54,23 @@ const FormConsumidor = ({
   };
 
   const handleDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || consumidorData.fechaNacimiento;
-    setShowDatePicker(false);
-    handleChange("fechaNacimiento", currentDate);
+    if (Platform.OS === 'android') {
+      // Android: el picker es un diálogo nativo. onChange se dispara
+      // cuando el usuario confirma ('set') o cancela ('dismissed').
+      if (event?.type === 'dismissed') {
+        setShowDatePicker(false);
+        return;
+      }
+      if (event?.type === 'set' && selectedDate) {
+        setShowDatePicker(false);
+        handleChange("fechaNacimiento", selectedDate);
+      }
+    } else {
+      // iOS: el picker es inline, actualizamos al hacer scroll
+      const currentDate = selectedDate || consumidorData.fechaNacimiento;
+      setShowDatePicker(false);
+      handleChange("fechaNacimiento", currentDate);
+    }
   };
 
   const tieneNumeros = (cadena) => {
@@ -154,13 +171,13 @@ const FormConsumidor = ({
 
   const handleLocalidadChange = (value) => {
     setSelectedLocalidad(value);
-    consumidorData.localidad = value;
+    handleChange("localidad", value);
   };
 
   const handleProvinceChange = (value) => {
     setSelectedProvince(value);
     fetchLocalidades(value);
-    consumidorData.provincia = value;
+    handleChange("provincia", value);
   };
 
   const formatDate = (date) => {
@@ -249,6 +266,11 @@ const FormConsumidor = ({
                     key: prov.id,
                     inputLabel: prov.nombre,
                   }))}
+                  style={{
+                    inputAndroid: { color: Colors.Negro },
+                    inputIOS: { color: Colors.Negro },
+                    placeholder: { color: Colors.Gris },
+                  }}
                 />
               </View>
             </View>
@@ -270,6 +292,11 @@ const FormConsumidor = ({
                     key: loc.id,
                     inputLabel: loc.nombre,
                   }))}
+                  style={{
+                    inputAndroid: { color: Colors.Negro },
+                    inputIOS: { color: Colors.Negro },
+                    placeholder: { color: Colors.Gris },
+                  }}
                 />
               </View>
             </View>

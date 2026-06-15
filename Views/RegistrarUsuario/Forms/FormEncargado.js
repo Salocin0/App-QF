@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import useStyles from "../../../Styles/useStyles";
+import useDynamicColors from "../../../Styles/useDynamicColors";
 
 const FormEncargado = ({
   nextStep,
@@ -16,6 +17,7 @@ const FormEncargado = ({
   handleRegistro,
   activarRegistro,
 }) => {
+  const Colors = useDynamicColors();
   const styles = useStyles()
   const [encargadoData, setEncargadoData] = useState({
     cuit: "",
@@ -99,6 +101,11 @@ const FormEncargado = ({
                       value: "responsable_inscripto",
                     },
                   ]}
+                  style={{
+                    inputAndroid: { color: Colors.Negro },
+                    inputIOS: { color: Colors.Negro },
+                    placeholder: { color: Colors.Gris },
+                  }}
                 />
               </View>
             </View>

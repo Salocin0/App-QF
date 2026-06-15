@@ -3,8 +3,6 @@ import { Text, TouchableOpacity, View, Image } from "react-native";
 import imgevento from "./../../assets/eventoimg.jpeg";
 import logoevento from "./../../assets/logoevento.webp";
 import useDynamicColors from "../../Styles/useDynamicColors";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faStar, faClock } from "@fortawesome/free-solid-svg-icons";
 
 const CardPuesto = ({ item, navigation, precompra, fecha, evento }) => {
   const Colors = useDynamicColors();
@@ -83,22 +81,6 @@ const CardPuesto = ({ item, navigation, precompra, fecha, evento }) => {
         >
           {item.tipoNegocio}
         </Text>
-
-        <View style={{ flexDirection: "row", gap: 15 }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <FontAwesomeIcon icon={faClock} color="#cccccc" size={14} />
-            <Text style={{ fontSize: 14, color: "#cccccc", marginLeft: 5 }}>
-              {item.time || "30"} Min
-            </Text>
-          </View>
-
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <FontAwesomeIcon icon={faStar} color={Colors.BordeDorado} size={14} />
-            <Text style={{ fontSize: 14, color: "#cccccc", marginLeft: 5 }}>
-              {item.estrellas || "4.5"}
-            </Text>
-          </View>
-        </View>
       </View>
     </TouchableOpacity>
   );

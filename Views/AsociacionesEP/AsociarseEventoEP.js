@@ -100,7 +100,7 @@ const AsociarseEventoEP = ({ navigation }) => {
         }}
       >
         <Image
-          source={imgevento}
+          source={item?.img ? { uri: item.img } : imgevento}
           style={{
             width: "100%",
             height: "40%",
@@ -115,7 +115,7 @@ const AsociarseEventoEP = ({ navigation }) => {
           style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}
         >
           <Image
-            source={logoevento}
+            source={item?.img ? { uri: item.img } : logoevento}
             style={{
               width: 60,
               height: 60,

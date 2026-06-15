@@ -9,6 +9,7 @@ import {
 import { ToastAndroid } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import useStyles from "../../../Styles/useStyles";
+import useDynamicColors from "../../../Styles/useDynamicColors";
 
 const FormProductor = ({
   nextStep,
@@ -16,6 +17,7 @@ const FormProductor = ({
   handleRegistro,
   activarRegistro,
 }) => {
+  const Colors = useDynamicColors();
   const styles = useStyles()
   const [productorData, setProductorData] = useState({
     cuit: "",
@@ -117,6 +119,11 @@ const FormProductor = ({
                       value: "responsable_inscripto",
                     }
                   ]}
+                  style={{
+                    inputAndroid: { color: Colors.Negro },
+                    inputIOS: { color: Colors.Negro },
+                    placeholder: { color: Colors.Gris },
+                  }}
                 />
               </View>
             </View>

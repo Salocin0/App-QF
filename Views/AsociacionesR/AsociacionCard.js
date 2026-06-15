@@ -1,9 +1,32 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, Alert, StyleSheet } from "react-native";
 import useDynamicColors from "../../Styles/useDynamicColors";
+import { useCambiarEstadoAsociacionMutation } from "@/components/App/Service/AsociacionesApi";
 
 const AsociacionCard = ({ asociacion, evento }) => {
   const Colors = useDynamicColors();
+  const [cambiarEstado] = useCambiarEstadoAsociacionMutation();
+
+  const handleCancel = () => {
+    Alert.alert(
+      "Cancelar Asociación",
+      "¿Estás seguro de que deseas cancelar esta asociación?",
+      [
+        { text: "No", style: "cancel" },
+        {
+          text: "Sí, cancelar",
+          style: "destructive",
+          onPress: () => {
+            cambiarEstado({ asociacionId: asociacion.id, accion: "cancelar" });
+          },
+        },
+      ]
+    );
+  };
+
+  const puedeCancelar =
+    asociacion.estado === "PendienteDeAceptacion" ||
+    asociacion.estado === "Aceptada";
 
   // Convierte camelCase a PascalCase (conObservacion -> ConObservacion)
   const toPascalCase = (str) => {
@@ -74,6 +97,23 @@ const AsociacionCard = ({ asociacion, evento }) => {
       <Text style={styles.detail}>
         Fecha de Asociacion: {new Date(asociacion.createdAt).toLocaleDateString()}
       </Text>
+      {puedeCancelar && (
+        <TouchableOpacity
+          onPress={handleCancel}
+          style={{
+            backgroundColor: Colors.Rojo,
+            paddingVertical: 8,
+            paddingHorizontal: 16,
+            borderRadius: 8,
+            alignSelf: "center",
+            marginTop: 10,
+          }}
+        >
+          <Text style={{ color: "#ffffff", fontWeight: "bold", fontSize: 14 }}>
+            Cancelar Asociación
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

@@ -22,6 +22,7 @@ const Puestos = ({ navigation }) => {
   const [dataReady, setDataReady] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [filters, setFilters] = useState(null);
+  const [selectedStars, setSelectedStars] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
 
   const { data, error, isLoading, refetch } = useGetPuestosPorEventoQuery(evento?.id);
@@ -38,12 +39,12 @@ const Puestos = ({ navigation }) => {
 
   useEffect(() => {
     if (data) {
-      updateFilteredData(searchText, filters); // Actualiza los datos filtrados
-      setDataReady(true); // Marca los datos como listos solo después de filtrarlos
+      updateFilteredData(searchText, filters, selectedStars);
+      setDataReady(true);
     }
-  }, [data, searchText, filters]);
+  }, [data, searchText, filters, selectedStars]);
 
-  const updateFilteredData = (searchText, filters) => {
+  const updateFilteredData = (searchText, filters, minStars) => {
     let updatedData = [...(data || [])];
     
     // Aplicar búsqueda
@@ -53,7 +54,12 @@ const Puestos = ({ navigation }) => {
       );
     }
 
-    // Aplicar filtros
+    // Aplicar filtro de estrellas mínimas
+    if (minStars > 0) {
+      updatedData = updatedData.filter((item) => (item.estrellas || 0) >= minStars);
+    }
+
+    // Aplicar orden
     if (filters) {
       if (filters === "porNombre") {
         updatedData = updatedData.sort((a, b) => a.nombreCarro.localeCompare(b.nombreCarro));
@@ -67,9 +73,10 @@ const Puestos = ({ navigation }) => {
     setFilteredData(updatedData);
   };
 
-  const handleUpdate = (newCategoria, newSearchText) => {
+  const handleUpdate = (newCategoria, newSearchText, newStars) => {
     setSearchText(newSearchText);
     setFilters(newCategoria);
+    setSelectedStars(newStars !== undefined ? newStars : 0);
   };
 
   const renderItem = ({ item }) => (

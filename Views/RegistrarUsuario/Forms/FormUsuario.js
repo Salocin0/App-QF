@@ -59,6 +59,12 @@ const FormUsuario = ({
       return;
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(userData.email)) {
+      ToastAndroid.show("El formato del email no es válido.", ToastAndroid.SHORT);
+      return;
+    }
+
     if (userData.password !== userData.confirmPassword) {
       ToastAndroid.show("Las contraseñas no coinciden.", ToastAndroid.SHORT);
       return;

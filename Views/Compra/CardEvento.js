@@ -50,18 +50,8 @@ const CardEvento = ({ item, navigation }) => {
   }, [location, item?.coords]);
 
   const seleccionarPuesto = (evento) => {
-    if (evento.tienePreventa && evento.estado == "EnCurso") {
-      navigation.navigate("TipoCompra", { evento });
-    }
-    if (!evento.tienePreventa && evento.estado == "Confirmado") {
-      navigation.navigate("Puestos", { evento });
-    }
-    if (!evento.tienePreventa && evento.estado == "EnCurso") {
-      navigation.navigate("Puestos", { evento });
-    }
-    if (evento.tienePreventa && evento.estado == "Confirmado") {
-      navigation.navigate("TipoCompra", { evento });
-    }
+    // Siempre mostrar la ventana intermedia para elegir el tipo de compra
+    navigation.navigate("TipoCompra", { evento });
   };
 
   const calcularHorasRestantes = (fecha) => {
