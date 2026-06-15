@@ -89,7 +89,7 @@ const Notificaciones = () => {
       ]}
     >
       <View style={styles.cardContent}>
-        {item.estado === "pendiente" && <View style={styles.puntoNoLeido} />>}
+        {item.estado === "pendiente" && <View style={styles.puntoNoLeido} />}
         <View style={styles.textContainer}>
           <Text style={styles.titulo}>{item.titulo}</Text>
           <Text style={styles.descripcion}>{item.descripcion}</Text>
