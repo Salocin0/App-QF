@@ -7,6 +7,20 @@ import useDynamicColors from "../../Styles/useDynamicColors";
 import BuscadorEventos from "../BuscadorEventos";
 import { useGetEventosQuery } from "./../../components/App/Service/EventosApi";
 
+// Filtra eventos cuya fecha del último día ya pasó
+const filtrarFinalizados = (eventosList) => {
+  const ahora = new Date();
+  return eventosList.filter((evento) => {
+    if (evento.diaEventos?.length) {
+      const fechaFin = new Date(
+        Math.max(...evento.diaEventos.map((d) => new Date(d.fechaHoraFinDiaEvento)))
+      );
+      return fechaFin > ahora;
+    }
+    return true;
+  });
+};
+
 const Inicio = ({ navigation }) => {
   const styles = useStyles();
   const Colors = useDynamicColors();
@@ -40,8 +54,7 @@ const Inicio = ({ navigation }) => {
   }, [refetchEnCurso, refetchConfirmado, refreshing]);
 
   const updateFilteredData = (order, filters, searchText) => {
-    let data = [...combinedData];
-
+    let data = filtrarFinalizados([...combinedData]);
 
     if (searchText) {
       data = data.filter((item) =>
@@ -62,7 +75,7 @@ const Inicio = ({ navigation }) => {
 
       if (filters?.conPreventa !== undefined) {
         if (!filters?.conPreventa) {
-          if (item?.conPreventa) includeItem = false;
+          if (item?.tienePreventa) includeItem = false;
         }
       }
 
@@ -79,7 +92,7 @@ const Inicio = ({ navigation }) => {
       }
       if (filters?.sinPreventa !== undefined) {
         if (!filters?.sinPreventa) {
-          if (!item?.conPreventa) includeItem = false;
+          if (!item?.tienePreventa) includeItem = false;
         }
       }
 
@@ -94,7 +107,7 @@ const Inicio = ({ navigation }) => {
     if (!(isLoadingEnCurso || isLoadingConfirmado) && !dataReady) {
       updateFilteredData();
     }
-  }, [combinedData]);
+  }, [isLoadingEnCurso, isLoadingConfirmado]);
 
   const handleUpdate = (newOrder, newFilters, newSearchText) => {
     updateFilteredData(newOrder, newFilters, newSearchText);

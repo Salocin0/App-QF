@@ -22,7 +22,6 @@ const Puestos = ({ navigation }) => {
   const [dataReady, setDataReady] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [filters, setFilters] = useState(null);
-  const [selectedStars, setSelectedStars] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
 
   const { data, error, isLoading, refetch } = useGetPuestosPorEventoQuery(evento?.id);
@@ -39,12 +38,12 @@ const Puestos = ({ navigation }) => {
 
   useEffect(() => {
     if (data) {
-      updateFilteredData(searchText, filters, selectedStars);
+      updateFilteredData(searchText, filters);
       setDataReady(true);
     }
-  }, [data, searchText, filters, selectedStars]);
+  }, [data, searchText, filters]);
 
-  const updateFilteredData = (searchText, filters, minStars) => {
+  const updateFilteredData = (searchText, filters) => {
     let updatedData = [...(data || [])];
     
     // Aplicar búsqueda
@@ -54,29 +53,21 @@ const Puestos = ({ navigation }) => {
       );
     }
 
-    // Aplicar filtro de estrellas mínimas
-    if (minStars > 0) {
-      updatedData = updatedData.filter((item) => (item.estrellas || 0) >= minStars);
-    }
-
     // Aplicar orden
     if (filters) {
       if (filters === "porNombre") {
         updatedData = updatedData.sort((a, b) => a.nombreCarro.localeCompare(b.nombreCarro));
       } else if (filters === "TiempoEntrega") {
         updatedData = updatedData.sort((a, b) => a.tiempoEntrega - b.tiempoEntrega);
-      } else if (filters === "Estrellas") {
-        updatedData = updatedData.sort((a, b) => b.estrellas - a.estrellas);
       }
     }
 
     setFilteredData(updatedData);
   };
 
-  const handleUpdate = (newCategoria, newSearchText, newStars) => {
+  const handleUpdate = (newCategoria, newSearchText) => {
     setSearchText(newSearchText);
     setFilters(newCategoria);
-    setSelectedStars(newStars !== undefined ? newStars : 0);
   };
 
   const renderItem = ({ item }) => (
@@ -101,6 +92,9 @@ const Puestos = ({ navigation }) => {
       justifyContent: "center",
       alignItems: "center",
     },
+    listContainer: {
+      paddingBottom: 75,
+    },
   });
 
   return (
@@ -111,7 +105,7 @@ const Puestos = ({ navigation }) => {
         </View>
       ) : error ? (
         <Aviso mensaje={error.message || "Error al cargar puestos"} />
-      ) : dataReady && filteredData.length > 0 ? (
+      ) : dataReady ? (
         <>
           <BuscadorPuestos onUpdate={handleUpdate} />
           {(evento.estado === "Confirmado" && evento.tienePreventa) && (
@@ -131,24 +125,26 @@ const Puestos = ({ navigation }) => {
               </Text>
             </View>
           )}
-          <FlatList
-            data={filteredData}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={{ paddingBottom: 75 }}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={[Colors?.Naranja]}
-                tintColor={Colors?.Naranja}
-              />
-            }
-          />
+          {filteredData.length > 0 ? (
+            <FlatList
+              data={filteredData}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id.toString()}
+              contentContainerStyle={styles.listContainer}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  colors={[Colors?.Naranja]}
+                  tintColor={Colors?.Naranja}
+                />
+              }
+            />
+          ) : (
+            <Aviso mensaje="No hay puestos disponibles" />
+          )}
         </>
-      ) : (
-        <Aviso mensaje="No hay puestos disponibles" />
-      )}
+      ) : null}
     </View>
   );
 };

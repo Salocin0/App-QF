@@ -11,7 +11,6 @@ import ThemedModal from "../components/ThemedModal/ThemedModal";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
   faArrowDownWideShort,
-  faMagnifyingGlass,
   faFilter,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
@@ -113,15 +112,6 @@ const BuscadorProductos = ({ onSearch, onSort }) => {
       marginHorizontal: 0,
       height: 45,
     },
-    buttonBuscar: {
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: Colors?.Naranja,
-      borderRadius: 10,
-      width: 45,
-      height: 45,
-      elevation: 2,
-    },
     buttonText: {
       marginLeft: 8,
       color: Colors?.Negro,
@@ -180,9 +170,6 @@ const BuscadorProductos = ({ onSearch, onSort }) => {
           value={searchText}
           onChangeText={setSearchText}
         />
-        <TouchableOpacity style={styles.buttonBuscar}>
-          <FontAwesomeIcon icon={faMagnifyingGlass} color="white" size={18} />
-        </TouchableOpacity>
       </View>
 
       {/* Botones de Ordenar y Filtrar */}

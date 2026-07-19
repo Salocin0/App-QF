@@ -172,7 +172,7 @@ const AsociarseEventoEP = ({ navigation }) => {
           <ActivityIndicator size="large" color={Colors.BordeDorado} />
         ) : errorPuestos ? (
           <Aviso mensaje={errorPuestos.message || "Error al cargar puestos"} />
-        ) : dataPuestos.length > 0 ? (
+        ) : dataPuestos?.length > 0 ? (
           <>
             <Text
               style={{
@@ -212,7 +212,7 @@ const AsociarseEventoEP = ({ navigation }) => {
             <Aviso
               mensaje={errorEventos.message || "Error al cargar eventos"}
             />
-          ) : dataEventos.length > 0 ? (
+          ) : dataEventos?.length > 0 ? (
             <>
               <BuscadorEventos />
               <FlatList

@@ -14,11 +14,13 @@ const Productos = ({ navigation }) => {
   const { data, isLoading, error, refetch } = useGetProductosQuery(puesto.id);
   const [filteredData, setFilteredData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [dataReady, setDataReady] = useState(false);
 
   // Actualiza filteredData cuando data esté disponible
   useEffect(() => {
     if (data) {
       setFilteredData(data);
+      setDataReady(true);
     }
   }, [data]);
 
@@ -52,22 +54,13 @@ const Productos = ({ navigation }) => {
   };
 
   const styles = StyleSheet.create({
-    avisoContainer: {
-      padding: 10,
-      marginHorizontal: 16,
-      marginBottom: 10,
-      borderWidth: 2,
-      borderRadius: 8,
-    },
-    avisoText: {
-      fontSize: 16,
-      fontWeight: "bold",
-      textAlign: "center",
-    },
     loadingContainer: {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
+    },
+    listContainer: {
+      paddingBottom: 75,
     },
   });
 
@@ -91,27 +84,29 @@ const Productos = ({ navigation }) => {
         </View>
       ) : error ? (
         <Aviso mensaje={error.message || "Error al cargar productos"} />
-      ) : !data || filteredData.length === 0 ? (
-        <Aviso mensaje="No hay productos disponibles" />
-      ) : (
+      ) : dataReady ? (
         <>
           <BuscadorProductos onSearch={handleSearch} onSort={handleSort} />
-          <FlatList
-            data={filteredData}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={{ paddingBottom: 75 }}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={[Colors?.Naranja]}
-                tintColor={Colors?.Naranja}
-              />
-            }
-          />
+          {filteredData?.length > 0 ? (
+            <FlatList
+              data={filteredData}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id.toString()}
+              contentContainerStyle={styles.listContainer}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  colors={[Colors?.Naranja]}
+                  tintColor={Colors?.Naranja}
+                />
+              }
+            />
+          ) : (
+            <Aviso mensaje="No hay productos disponibles" />
+          )}
         </>
-      )}
+      ) : null}
     </View>
   );
 };
