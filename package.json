@@ -18,7 +18,7 @@
     "build:apk:all": "npx expo export --platform android && cd android && ./gradlew assembleRelease -PpackageAssets=true -PbundleInDebug=true",
     "prebuild:prod": "npx expo prebuild --platform android --clean",
     "build:apk:prod": "npm run prebuild:prod && cd android && ./gradlew assembleRelease",
-    "build:apk:prod:win": "npx expo prebuild --platform android && node -e \"require('fs').writeFileSync('android/local.properties', 'sdk.dir=C:\\\\Users\\\\nicol\\\\AppData\\\\Local\\\\Android\\\\Sdk')\" && cd android && cmd /c \"set ANDROID_HOME=C:\\Users\\nicol\\AppData\\Local\\Android\\Sdk&& gradlew.bat assembleRelease\"",
+    "build:apk:prod:win": "npx expo prebuild --platform android && node -e \"require('fs').writeFileSync('android/local.properties', 'sdk.dir=C:/Users/nicol/AppData/Local/Android/Sdk')\" && cd android && cmd /c \"set ANDROID_HOME=C:\\Users\\nicol\\AppData\\Local\\Android\\Sdk&& gradlew.bat assembleRelease\"",
     "test": "jest ",
     "lint": "expo lint"
   },
