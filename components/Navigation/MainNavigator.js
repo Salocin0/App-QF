@@ -118,52 +118,6 @@ const MainNavigator = () => {
           </Tab.Navigator>
         ) : userType === "repartidor" ? (
           <Tab.Navigator screenOptions={{ tabBarStyle: styles.tabBar }}>
-            {/* Tabs de consumidor para todos los usuarios */}
-            <Tab.Screen
-              name="CompraStack"
-              component={CompraStack}
-              options={{
-                tabBarLabel: "",
-                headerShown: false,
-                tabBarIcon: ({ focused }) => (
-                  <TabBarIcon
-                    title="Eventos"
-                    nameIcon="home"
-                    focused={focused}
-                  />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="CarritoStack"
-              component={CarritoStack}
-              options={{
-                tabBarLabel: "",
-                headerShown: false,
-                tabBarIcon: ({ focused }) => (
-                  <TabBarIcon
-                    title="Carrito"
-                    nameIcon="shopping-cart"
-                    focused={focused}
-                  />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="PedidoStack"
-              component={PedidoStack}
-              options={{
-                tabBarLabel: "",
-                headerShown: false,
-                tabBarIcon: ({ focused }) => (
-                  <TabBarIcon
-                    title="Pedidos"
-                    nameIcon="list"
-                    focused={focused}
-                  />
-                ),
-              }}
-            />
             {/* Tabs específicos de repartidor */}
             <Tab.Screen
               name="RepartoStack"
