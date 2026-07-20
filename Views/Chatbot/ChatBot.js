@@ -7,6 +7,7 @@ import {
   ScrollView,
   Image,
   StyleSheet,
+  Linking,
 } from "react-native";
 import logoImage from "./../../assets/quickfood-logo.png";
 import botImage from "./../../assets/bot-img.png";
@@ -81,6 +82,55 @@ const Chatbot = () => {
         })
         .catch((error) => console.error("Error:", error));
     }
+  };
+
+  // Parsea texto con links Markdown [texto](url) y los renderiza como texto presionable
+  const renderMarkdownText = (text, textStyle) => {
+    if (typeof text !== "string") return <Text style={textStyle}>{text}</Text>;
+
+    const pattern = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+    const nodes = [];
+    let lastIndex = 0;
+    let match;
+    let key = 0;
+
+    while ((match = pattern.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        nodes.push(
+          <Text key={key++} style={textStyle}>
+            {text.slice(lastIndex, match.index)}
+          </Text>
+        );
+      }
+      const linkLabel = match[1];
+      const href = match[2];
+      nodes.push(
+        <Text
+          key={key++}
+          style={[textStyle, styles.linkText]}
+          onPress={() => Linking.openURL(href)}
+        >
+          {linkLabel}
+        </Text>
+      );
+      lastIndex = match.index + match[0].length;
+    }
+
+    if (lastIndex < text.length) {
+      nodes.push(
+        <Text key={key++} style={textStyle}>
+          {text.slice(lastIndex)}
+        </Text>
+      );
+    }
+
+    // Si no hubo matches, devolver el texto limpio (quitando markdown residual como [texto](/ruta))
+    if (nodes.length === 0) {
+      const cleanText = text.replace(/\[([^\]]+)\]\([^\)]+\)/g, "$1");
+      return <Text style={textStyle}>{cleanText}</Text>;
+    }
+
+    return <Text>{nodes}</Text>;
   };
 
   const addMessageToChat = (message, sender) => {
@@ -215,7 +265,10 @@ const Chatbot = () => {
               }}
               disabled={msg.message != MenssageLogin && msg.message != MenssageRegister} // Desactiva el botón si no es clickeable
             >
-              <Text style={styles.messageText}>{msg.message}</Text>
+              {msg.sender === "bot"
+                ? renderMarkdownText(msg.message, styles.messageText)
+                : <Text style={styles.messageText}>{msg.message}</Text>
+              }
             </TouchableOpacity>
           </View>
         ))}
