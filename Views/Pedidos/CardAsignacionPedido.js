@@ -21,6 +21,13 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import logo from "../../assets/favicon.png";
 
+// Cuánto tiempo se muestra la propuesta de asignación antes de ocultarse sola
+// (independiente de que el backend la siga considerando "Pendiente"). Antes
+// era 45s fijo, calcado del ASIGNACION_WINDOW_SECONDS del backend — muy
+// ajustado para pruebas manuales, ya que casi siempre pasan más de 45s entre
+// que el pedido pasa a En Camino y alguien llega a mirar el celular.
+const ASIGNACION_WINDOW_SECONDS = 300;
+
 const CardAsignacionPedido = () => {
   const dispatch = useDispatch();
   const progress = useRef(new Animated.Value(100)).current;
@@ -60,8 +67,8 @@ const CardAsignacionPedido = () => {
       const updateProgress = () => {
         const elapsedTime =
           (Date.now() - new Date(assignment.createdAt).getTime()) / 1000;
-        const remainingTime = 45 - elapsedTime;
-        const newProgress = Math.max((remainingTime / 45) * 100, 0);
+        const remainingTime = ASIGNACION_WINDOW_SECONDS - elapsedTime;
+        const newProgress = Math.max((remainingTime / ASIGNACION_WINDOW_SECONDS) * 100, 0);
   
         // Ensure the progress is between 0 and 100
         const clampedProgress = Math.min(newProgress, 100);
