@@ -51,6 +51,17 @@ export const authApi = createApi({
         return response.status === "success";
       },
     }),
+    actualizarTokenMobile: builder.mutation({
+      query: ({ id, tokenMobile }) => ({
+        url: `/user/token`,
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, tokenMobile }),
+      }),
+      transformResponse: (response) => {
+        return response.status === "success";
+      },
+    }),
   }),
 });
 
@@ -60,4 +71,5 @@ export const {
   useRecuperarContraseniaMutation,
   useNuevaContraseñaMutation,
   useCerrarMobileMutation,
+  useActualizarTokenMobileMutation,
 } = authApi;

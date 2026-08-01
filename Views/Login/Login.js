@@ -35,7 +35,7 @@ export default Login = ({ navigation }) => {
     const userData = {
       correoElectronico: email,
       contraseña: password,
-      tokenMobile: expoPushToken?.data,
+      tokenMobile: expoPushToken,
     };
     const responseData = await loginUserMutation(userData);
 
@@ -54,7 +54,7 @@ export default Login = ({ navigation }) => {
         id: responseData.data.data.id,
         sessionId: responseData.data.data.sessionId,
         tokenWeb: null,
-        tokenMobile: expoPushToken?.data,
+        tokenMobile: expoPushToken,
         nombre: responseData.data.data.nombre,
         apellido: responseData.data.data.apellido,
       };
