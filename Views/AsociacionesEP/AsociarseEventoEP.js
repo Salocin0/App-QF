@@ -39,16 +39,24 @@ const AsociarseEventoEP = ({ navigation }) => {
     estado: "EnPreparacion",
     idConsumidor: user?.consumidorId,
   });
-  const {
-    data: dataEventos,
-    error: errorEventos,
-    isLoading: isLoadingEventos,
-    refetch: refetchEventos,
-  } = useGetEventosSinAsociacionValidaPuestoQuery({
-    estado: "EnPreparacion",
-    idConsumidor: user?.consumidorId,
-    idPuesto: selectedPuestoId,
+  // Un evento acepta asociar puestos mientras está "en preparación"
+  // (incluye las variantes legacy del wizard) o ya "Confirmado".
+  // Ver el mismo criterio en AsociarPuestoAEvento.js (web).
+  const eq0 = useGetEventosSinAsociacionValidaPuestoQuery({ estado: "EnPreparacion", idConsumidor: user?.consumidorId, idPuesto: selectedPuestoId });
+  const eq1 = useGetEventosSinAsociacionValidaPuestoQuery({ estado: "EnPreparacion1", idConsumidor: user?.consumidorId, idPuesto: selectedPuestoId });
+  const eq2 = useGetEventosSinAsociacionValidaPuestoQuery({ estado: "EnPreparacion2", idConsumidor: user?.consumidorId, idPuesto: selectedPuestoId });
+  const eq3 = useGetEventosSinAsociacionValidaPuestoQuery({ estado: "EnPreparacion3", idConsumidor: user?.consumidorId, idPuesto: selectedPuestoId });
+  const eq4 = useGetEventosSinAsociacionValidaPuestoQuery({ estado: "Confirmado", idConsumidor: user?.consumidorId, idPuesto: selectedPuestoId });
+  const eventoQueries = [eq0, eq1, eq2, eq3, eq4];
+
+  const isLoadingEventos = eventoQueries.some((q) => q.isLoading);
+  const errorEventos = eventoQueries.every((q) => q.error) ? eventoQueries[0].error : null;
+  const dataEventosById = new Map();
+  eventoQueries.forEach((q) => {
+    (q.data || []).forEach((evento) => dataEventosById.set(evento.id, evento));
   });
+  const dataEventos = Array.from(dataEventosById.values());
+  const refetchEventos = () => Promise.all(eventoQueries.map((q) => q.refetch()));
 
   const onRefreshPuestos = useCallback(async () => {
     if (refreshingPuestos) return;

@@ -37,6 +37,19 @@ const EventoDetalle = () => {
   const [estado, setEstado] = useState(null);
   const [evento, setEventoLocal] = useState(route.params.evento);
 
+  // El backend modela la creación de un evento como un wizard de 3 sub-pasos
+  // (EnPreparacion1 -> EnPreparacion2 -> EnPreparacion). Un evento que quedó
+  // a mitad del wizard se ve y se comporta igual que "EnPreparacion".
+  const estaEnPreparacion = evento.estado?.startsWith("EnPreparacion");
+  const puedeAsociar = estaEnPreparacion || evento.estado === "Confirmado";
+
+  const formatEstado = (estado) => {
+    if (!estado) return estado;
+    if (estado.startsWith("EnPreparacion")) return "En Preparación";
+    if (estado === "EnCurso") return "En Curso";
+    return estado;
+  };
+
   const handleChangeState = async (accion) => {
     try {
       const result = await cambiarEstadoEvento({ id: evento.id, accion });
@@ -198,7 +211,7 @@ const EventoDetalle = () => {
           <Text style={styles.title}>{evento.nombre}</Text>
           <Text style={styles.description}>{evento.descripcion}</Text>
           <Text style={styles.detail}>Tipo: {evento.tipoEvento}</Text>
-          <Text style={styles.detail}>Estado: {evento.estado}</Text>
+          <Text style={styles.detail}>Estado: {formatEstado(evento.estado)}</Text>
           {fechaInicioMasReciente && (
             <Text style={styles.detail}>
               Fecha de inicio: {fechaInicioMasReciente.toLocaleDateString()}
@@ -217,7 +230,7 @@ const EventoDetalle = () => {
         <FontAwesomeIcon icon={faLocationDot} color="#000000" size={18} />
         <Text style={styles.buttonText}> Puntos de Encuentro</Text>
       </TouchableOpacity>
-      {evento.estado !== "EnCurso" && (
+      {puedeAsociar && (
         <TouchableOpacity
           style={styles.buttonContainer}
           onPress={() => {
@@ -320,7 +333,7 @@ const EventoDetalle = () => {
           <Text style={styles.buttonText}> Preparar Evento</Text>
         </TouchableOpacity>
       )}
-      {evento.estado === "EnPreparacion" && (
+      {estaEnPreparacion && (
         <TouchableOpacity
           style={styles.buttonContainer}
           onPress={() =>
@@ -335,7 +348,7 @@ const EventoDetalle = () => {
           <Text style={styles.buttonText}> Confirmar Evento</Text>
         </TouchableOpacity>
       )}
-      {evento.estado === "EnPreparacion" && (
+      {estaEnPreparacion && (
         <TouchableOpacity
           style={styles.buttonContainer}
           onPress={() =>

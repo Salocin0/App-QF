@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { View, FlatList, ActivityIndicator, StyleSheet, RefreshControl } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import CardEvento from "./CardEvento";
 import Aviso from "../Aviso";
 import useStyles from "../../Styles/useStyles";
@@ -26,8 +27,9 @@ const Inicio = ({ navigation }) => {
   const Colors = useDynamicColors();
 
   const [filteredData, setFilteredData] = useState([]);
-  const [dataReady, setDataReady] = useState(false); 
+  const [dataReady, setDataReady] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const lastFilterArgs = useRef({ order: undefined, filters: undefined, searchText: undefined });
   const {
     data: dataEnCurso,
     error: errorEnCurso,
@@ -53,7 +55,17 @@ const Inicio = ({ navigation }) => {
     }
   }, [refetchEnCurso, refetchConfirmado, refreshing]);
 
+  // Recarga silenciosa al volver a esta pantalla: refetch en background,
+  // sin tocar `refreshing` (eso es solo para el pull-to-refresh manual).
+  useFocusEffect(
+    useCallback(() => {
+      refetchEnCurso();
+      refetchConfirmado();
+    }, [refetchEnCurso, refetchConfirmado])
+  );
+
   const updateFilteredData = (order, filters, searchText) => {
+    lastFilterArgs.current = { order, filters, searchText };
     let data = filtrarFinalizados([...combinedData]);
 
     if (searchText) {
@@ -108,6 +120,15 @@ const Inicio = ({ navigation }) => {
       updateFilteredData();
     }
   }, [isLoadingEnCurso, isLoadingConfirmado]);
+
+  // RTK Query mantiene la misma referencia si el refetch trajo la misma data
+  // (structural sharing), así que este efecto solo recalcula cuando algo cambió.
+  useEffect(() => {
+    if (dataReady) {
+      const { order, filters, searchText } = lastFilterArgs.current;
+      updateFilteredData(order, filters, searchText);
+    }
+  }, [dataEnCurso, dataConfirmado]);
 
   const handleUpdate = (newOrder, newFilters, newSearchText) => {
     updateFilteredData(newOrder, newFilters, newSearchText);
