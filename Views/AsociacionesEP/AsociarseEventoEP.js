@@ -53,7 +53,7 @@ const AsociarseEventoEP = ({ navigation }) => {
   const errorEventos = eventoQueries.every((q) => q.error) ? eventoQueries[0].error : null;
   const dataEventosById = new Map();
   eventoQueries.forEach((q) => {
-    (q.data || []).forEach((evento) => dataEventosById.set(evento.id, evento));
+    (Array.isArray(q.data) ? q.data : []).forEach((evento) => dataEventosById.set(evento.id, evento));
   });
   const dataEventos = Array.from(dataEventosById.values());
   const refetchEventos = () => Promise.all(eventoQueries.map((q) => q.refetch()));

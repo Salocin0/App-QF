@@ -29,7 +29,7 @@ const AsociarseEvento = ({ navigation }) => {
   const error = queries.every((q) => q.error) ? queries[0].error : null;
   const dataById = new Map();
   queries.forEach((q) => {
-    (q.data || []).forEach((evento) => dataById.set(evento.id, evento));
+    (Array.isArray(q.data) ? q.data : []).forEach((evento) => dataById.set(evento.id, evento));
   });
   const data = Array.from(dataById.values());
 
