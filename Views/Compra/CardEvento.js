@@ -144,14 +144,14 @@ const CardEvento = ({ item, navigation }) => {
               fontSize: 18,
               fontWeight: "bold",
               marginBottom: 5,
-              textAlign: "center",
+              textAlign: "left",
               color: "#ffffff",
             }}
           >
             {item?.nombre}
           </Text>
           <Text
-            style={{ fontSize: 14, textAlign: "center", color: "#cccccc" }}
+            style={{ fontSize: 14, textAlign: "left", color: "#cccccc" }}
           >
             {item?.descripcion}
           </Text>

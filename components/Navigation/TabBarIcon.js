@@ -8,10 +8,14 @@ const TabBarIcon = ({ title, nameIcon, focused }) => {
   const styles = {
     container: {
       alignItems: "center",
+      justifyContent: "flex-start",
+      width: 64,
     },
     text: {
       textAlign: "center",
       fontSize: 12,
+      lineHeight: 14,
+      width: "100%",
       color: Colors?.GrisOscuro,
     },
     textFocused: {
@@ -26,7 +30,13 @@ const TabBarIcon = ({ title, nameIcon, focused }) => {
         size={25}
         color={focused ? (Colors?.modoOscuroActivo ? Colors?.BordeDorado : Colors?.Naranja) : Colors?.GrisOscuro}
       />
-      <Text style={[styles.text, focused && styles.textFocused]}>{title}</Text>
+      <Text
+        style={[styles.text, focused && styles.textFocused]}
+        numberOfLines={1}
+        adjustsFontSizeToFit
+      >
+        {title}
+      </Text>
     </View>
   );
 };

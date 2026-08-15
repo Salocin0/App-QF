@@ -25,6 +25,7 @@ const CardEventoAsociar = ({ item, navigation }) => {
         height: 200,
         marginVertical: 5,
         marginHorizontal: 20,
+        padding: 0,
         overflow: "hidden",
         borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : Colors?.Gris,
         borderWidth: 1,

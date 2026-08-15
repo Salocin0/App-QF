@@ -95,7 +95,7 @@ const AsociacionCard = ({ asociacion, evento }) => {
         <Text style={[styles.status, { backgroundColor }]}>{text}</Text>
       </View>
       <Text style={styles.detail}>
-        Fecha de Asociacion: {new Date(asociacion.createdAt).toLocaleDateString()}
+        Fecha de Asociación: {new Date(asociacion.createdAt).toLocaleDateString()}
       </Text>
       {puedeCancelar && (
         <TouchableOpacity

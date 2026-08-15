@@ -48,6 +48,8 @@ const AsociacionesTabs = () => {
       paddingVertical: 12,
       justifyContent: 'center',
       alignItems: 'center',
+      marginHorizontal: 4,
+      borderRadius: 8,
       backgroundColor: Colors.GrisClaro,
       borderBottomWidth: 2,
       borderBottomColor: "transparent",
