@@ -61,13 +61,9 @@ const AsociacionesTabs = () => {
       marginHorizontal: 4,
       borderRadius: 8,
       backgroundColor: Colors.GrisClaro,
-      borderBottomWidth: 2,
-      borderBottomColor: "transparent",
     },
     tabButtonActive: {
       backgroundColor: Colors.Naranja,
-      borderBottomWidth: 3,
-      borderBottomColor: Colors.BordeDorado,
     },
     tabText: {
       fontSize: 13,

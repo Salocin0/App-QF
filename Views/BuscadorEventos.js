@@ -109,7 +109,6 @@ const BuscadorEventos = ({ onUpdate }) => {
       paddingHorizontal: 15,
       backgroundColor: Colors?.Blanco,
       borderRadius: 10,
-      marginRight: 10,
       borderWidth: 1,
       borderColor: Colors.modoOscuroActivo ? Colors.BordeDorado : Colors.GrisClaroPeroNoTanClaro,
       color: Colors.Negro,
