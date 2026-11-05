@@ -28,8 +28,12 @@ const MainNavigator = () => {
   const styles = {
     tabBar: {
       backgroundColor: Colors?.HeaderBackground,
-      height: 60,
-      paddingTop: 15,
+      height: 70,
+      paddingTop: 8,
+      paddingBottom: 8,
+    },
+    tabBarItem: {
+      paddingVertical: 0,
     },
   };
 
@@ -38,7 +42,11 @@ const MainNavigator = () => {
       {userType === "repartidor" && <CardAsignacionPedido />}
       {isAuthenticated ? (
         userType === "consumidor" ? (
-          <Tab.Navigator screenOptions={{ tabBarStyle: styles.tabBar }}>
+          <Tab.Navigator screenOptions={{
+              tabBarStyle: styles.tabBar,
+              tabBarItemStyle: styles.tabBarItem,
+              tabBarSafeAreaInset: { bottom: "never" },
+            }}>
             <Tab.Screen
               name="CompraStack"
               component={CompraStack}
@@ -117,7 +125,11 @@ const MainNavigator = () => {
             />
           </Tab.Navigator>
         ) : userType === "repartidor" ? (
-          <Tab.Navigator screenOptions={{ tabBarStyle: styles.tabBar }}>
+          <Tab.Navigator screenOptions={{
+              tabBarStyle: styles.tabBar,
+              tabBarItemStyle: styles.tabBarItem,
+              tabBarSafeAreaInset: { bottom: "never" },
+            }}>
             {/* Tabs específicos de repartidor */}
             <Tab.Screen
               name="RepartoStack"
@@ -157,7 +169,7 @@ const MainNavigator = () => {
                 headerShown: false,
                 tabBarIcon: ({ focused }) => (
                   <TabBarIcon
-                    title="Mis Asociaciones"
+                    title="Asociaciones"
                     nameIcon="address-book"
                     focused={focused}
                   />
@@ -197,7 +209,11 @@ const MainNavigator = () => {
             />
           </Tab.Navigator>
         ) : userType === "encargado" ? (
-          <Tab.Navigator screenOptions={{ tabBarStyle: styles.tabBar }}>
+          <Tab.Navigator screenOptions={{
+              tabBarStyle: styles.tabBar,
+              tabBarItemStyle: styles.tabBarItem,
+              tabBarSafeAreaInset: { bottom: "never" },
+            }}>
             {/* Tabs de consumidor para todos los usuarios */}
             <Tab.Screen
               name="CompraStack"
@@ -253,7 +269,7 @@ const MainNavigator = () => {
                 headerShown: false,
                 tabBarIcon: ({ focused }) => (
                   <TabBarIcon
-                    title="Mis Asociaciones"
+                    title="Asociaciones"
                     nameIcon="address-book"
                     focused={focused}
                   />
@@ -293,7 +309,11 @@ const MainNavigator = () => {
             />
           </Tab.Navigator>
         ) : userType === "productor" ? (
-          <Tab.Navigator screenOptions={{ tabBarStyle: styles.tabBar }}>
+          <Tab.Navigator screenOptions={{
+              tabBarStyle: styles.tabBar,
+              tabBarItemStyle: styles.tabBarItem,
+              tabBarSafeAreaInset: { bottom: "never" },
+            }}>
             {/* Tabs de consumidor para todos los usuarios */}
             <Tab.Screen
               name="CompraStack"

@@ -5,7 +5,7 @@
   "node": "18.20.4",
   "scripts": {
     "start": "cross-env NODE_ENV=development npx expo start -c",
-    "start-prod": "cross-env NODE_ENV=production npx expo start --dev-client -c",
+    "start-prod": "cross-env NODE_ENV=development npx expo start --dev-client -c",
     "start2": "npx expo start -c",
     "start:devclient": "cross-env NODE_ENV=development npx expo start --dev-client -c",
     "reset-project": "node ./scripts/reset-project.js",
