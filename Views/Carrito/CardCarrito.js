@@ -5,10 +5,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
-  Alert,
 } from "react-native";
 import useDynamicColors from "../../Styles/useDynamicColors";
 import ThemedModal from "../../components/ThemedModal/ThemedModal";
+import ThemedAlert from "../../components/ThemedAlert/ThemedAlert";
 import { useCreatePedidoMutation } from "../../components/App/Service/PedidosApi";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -55,7 +55,6 @@ const CardCarrito = ({
 
   const avisarError = (mensaje) => {
     setErrorPago(mensaje);
-    Alert.alert("No se pudo completar la compra", mensaje);
   };
 
   // El backend exige la fecha de precompra en formato ISO.
@@ -569,6 +568,14 @@ const CardCarrito = ({
             style: { backgroundColor: Colors.Rojo },
           },
         ]}
+      />
+
+      <ThemedAlert
+        visible={Boolean(errorPago)}
+        tipo="error"
+        titulo="No se pudo completar la compra"
+        mensaje={errorPago}
+        onClose={() => setErrorPago("")}
       />
 
       {/* Botones de días de eventos */}

@@ -50,6 +50,12 @@ const ThemedModal = ({
       justifyContent: 'center',
       alignItems: 'center',
     },
+    // Sin ancho propio, el 85% del contenido se calcula sobre el texto y el modal queda angosto
+    // (se cortan botones y mensajes con fuentes grandes).
+    contentWrapper: {
+      width: '100%',
+      alignItems: 'center',
+    },
     modalContent: {
       backgroundColor: Colors?.Blanco,
       borderRadius: 15,
@@ -113,7 +119,7 @@ const ThemedModal = ({
     >
       <TouchableWithoutFeedback onPress={handleBackdropPress}>
         <View style={styles.backdrop}>
-          <Pressable onPress={(e) => e.stopPropagation()}>
+          <Pressable style={styles.contentWrapper} onPress={(e) => e.stopPropagation()}>
             <View style={styles.modalContent}>
               {title && (
                 <Text style={styles.modalTitle}>{title}</Text>

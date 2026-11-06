@@ -1,14 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import useDynamicColors from "../../Styles/useDynamicColors";
 import MapWithDirection from "./MapsEncuentro";
-import { useRoute } from "@react-navigation/native";
+import ThemedAlert from "../../components/ThemedAlert/ThemedAlert";
+import usePedidoEnVivo from "../../hooks/usePedidoEnVivo";
+import { useRoute, useNavigation, useIsFocused } from "@react-navigation/native";
 
 const UbicacionEntrega = () => {
   const Colors = useDynamicColors();
   const route = useRoute();
-  const { pedido } = route.params;
+  const navigation = useNavigation();
+  const isFocused = useIsFocused();
+  const [alerta, setAlerta] = useState(null);
+
+  const { pedido } = usePedidoEnVivo(route.params?.pedido, {
+    onCambioEstado: (_anterior, estadoNuevo) => {
+      if (!isFocused) return;
+      if (estadoNuevo === "Entregado") {
+        setAlerta({
+          tipo: "exito",
+          titulo: "¡Tu pedido fue entregado!",
+          mensaje: `El repartidor confirmó la entrega del pedido #${route.params?.pedido?.id}. ¡Que lo disfrutes!`,
+          botones: [{ text: "Ver pedido", onPress: () => navigation.goBack() }],
+        });
+      } else if (estadoNuevo === "Cancelado") {
+        setAlerta({
+          tipo: "info",
+          titulo: "Pedido cancelado",
+          mensaje: "Este pedido fue cancelado.",
+          botones: [{ text: "Volver", onPress: () => navigation.goBack() }],
+        });
+      }
+    },
+  });
   const defaultMeetingPoint = { lat: pedido?.puntoEncuentro?.latitud || -32.63, lng: pedido?.puntoEncuentro?.longitud || -62.69 };
   const defaultUser2 = { lat: pedido?.repartidore?.consumidore?.usuario?.latitud || -32.4261, lng: pedido?.repartidore?.consumidore?.usuario?.longitud || -63.2905 };
   const styles = StyleSheet.create({
@@ -89,6 +114,15 @@ const UbicacionEntrega = () => {
           <Text style={styles.info}><Text style={styles.label}>Puesto:</Text> {pedido?.puesto?.nombreCarro}</Text>
         </View>
       </View>
+
+      <ThemedAlert
+        visible={Boolean(alerta)}
+        tipo={alerta?.tipo}
+        titulo={alerta?.titulo}
+        mensaje={alerta?.mensaje}
+        botones={alerta?.botones}
+        onClose={() => setAlerta(null)}
+      />
     </View>
   );
 };

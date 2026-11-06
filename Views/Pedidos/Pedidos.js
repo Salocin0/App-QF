@@ -8,12 +8,15 @@ import Aviso from "../Aviso";
 import { useGetPedidosQuery } from "./../../components/App/Service/PedidosApi";
 import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
+import { POLLING_PEDIDO_MS } from "../../components/Features/pedidos/estadosPedido";
 
 const Pedido = ({ navigation }) => {
   const Colors = useDynamicColors();
   const styles = useStyles();
   const user = useSelector((state) => state.auth);
-  const { data, error, isLoading, refetch } = useGetPedidosQuery(user.consumidorId);
+  const { data, error, isLoading, refetch } = useGetPedidosQuery(user.consumidorId, {
+    pollingInterval: POLLING_PEDIDO_MS,
+  });
 
   const [selectedTab, setSelectedTab] = useState(["Todos"]); // Inicializamos con array
   const [refreshing, setRefreshing] = useState(false);

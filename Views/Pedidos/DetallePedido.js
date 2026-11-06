@@ -1,53 +1,85 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
   TextInput,
-  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome"; // Asegúrate de haber instalado react-native-vector-icons
 import useDynamicColors from "../../Styles/useDynamicColors";
 import ThemedModal from "../../components/ThemedModal/ThemedModal";
+import ThemedAlert from "../../components/ThemedAlert/ThemedAlert";
 import StarsBar from "./StarsBar";
+import BannerEstadoPedido from "./BannerEstadoPedido";
 import { useGetProductosQuery } from "./../../components/App/Service/ProductosApi";
 import { useCreateValoracionMutation } from "./../../components/App/Service/ValoracionApi";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { useCambiarEstadoPedidoMutation } from "../../components/App/Service/PedidosApi"
+import usePedidoEnVivo from "../../hooks/usePedidoEnVivo";
+import {
+  buscarPedido,
+  etiquetaEstado,
+  mensajeNoSePudoCancelar,
+  puedeCancelarse,
+} from "../../components/Features/pedidos/estadosPedido";
+
+// Los modales de React Native no se pueden abrir mientras otro se está cerrando.
+const ESPERA_ENTRE_MODALES_MS = 350;
 
 const DetallePedido = ({ route }) => {
   const Colors = useDynamicColors();
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
   const [modalVisible, setModalVisible] = useState(false);
-  // Extraer pedido primero para poder usarlo en los hooks
-  const pedido = route?.params?.pedido;
+  const pedidoNavegacion = route?.params?.pedido;
   // Convertir a boolean explícitamente
   const isViewRepartidor = route?.params?.isViewRepartidor === true || route?.params?.isViewRepartidor === "true";
-  const { data, isLoading, error } = useGetProductosQuery(pedido?.puestoId);
+  const { data, isLoading, error } = useGetProductosQuery(pedidoNavegacion?.puestoId);
   const [CreateValoracionMutation] = useCreateValoracionMutation();
   const [ratingRepartidor, setRatingRepartidor] = useState(0);
   const [ratingPuesto, setRatingPuesto] = useState(0);
   const [opinion, setOpinion] = useState("");
-  const [pedidoLocal, setPedidoLocal] = useState(pedido);
+  const [valoradoLocal, setValoradoLocal] = useState(false);
   const [cambiarEstadoPedido] = useCambiarEstadoPedidoMutation();
   const [modalVisible2, setModalVisible2] = useState(false);
+  const [alerta, setAlerta] = useState(null);
+  const [banner, setBanner] = useState(null);
+  // Cambios de estado provocados por este usuario: ya se informan con su propio aviso.
+  const cambioPropio = useRef(null);
 
-  // Usar pedidoLocal para mostrar, con fallback a pedido
-  const currentPedido = pedidoLocal || pedido;
-
-  // Sincronizar pedidoLocal cuando pedido cambia
-  useEffect(() => {
-    if (pedido && !pedidoLocal) {
-      setPedidoLocal(pedido);
+  const handleCambioEstado = (_anterior, estadoNuevo) => {
+    if (cambioPropio.current === estadoNuevo) {
+      cambioPropio.current = null;
+      return;
     }
-  }, [pedido, pedidoLocal]);
-
-  const VerUbicacionPedido = () => {
-    navigation.navigate("Ubicacion Pedido", { pedido: pedidoLocal || pedido });
+    // Solo avisa la pantalla visible, para no apilar avisos de pantallas que quedaron atrás.
+    if (!isFocused) return;
+    if (estadoNuevo === "Entregado" && !isViewRepartidor) {
+      setAlerta({
+        tipo: "exito",
+        titulo: "¡Tu pedido fue entregado!",
+        mensaje: "Gracias por usar QuickFood. ¿Querés valorar el pedido?",
+        botones: [
+          { text: "Ahora no", variant: "secondary" },
+          { text: "Valorar", onPress: () => setTimeout(() => setModalVisible(true), ESPERA_ENTRE_MODALES_MS) },
+        ],
+      });
+    } else if (estadoNuevo === "Cancelado") {
+      setAlerta({ tipo: "info", titulo: "Pedido cancelado", mensaje: "El puesto canceló este pedido." });
+    } else {
+      setBanner(`Tu pedido pasó a ${etiquetaEstado(estadoNuevo)}`);
+    }
   };
 
-  useEffect(() => {}, [pedido]);
+  const { pedido, refetch } = usePedidoEnVivo(pedidoNavegacion, {
+    esRepartidor: isViewRepartidor,
+    onCambioEstado: handleCambioEstado,
+  });
+
+  const VerUbicacionPedido = () => {
+    navigation.navigate("Ubicacion Pedido", { pedido });
+  };
 
   const handleRatingRepartidorChange = (value) => {
     setRatingRepartidor(value);
@@ -70,21 +102,48 @@ const DetallePedido = ({ route }) => {
       }).unwrap();
 
       setModalVisible(false);
-
-      setPedidoLocal({ ...pedido, estado: "Valorado" });
+      setValoradoLocal(true);
+      cambioPropio.current = "Valorado";
+      refetch();
+      setTimeout(
+        () => setAlerta({ tipo: "exito", titulo: "¡Gracias por tu valoración!", mensaje: "Tu opinión nos ayuda a mejorar." }),
+        ESPERA_ENTRE_MODALES_MS
+      );
     } catch (error) {
       console.error("Error al crear la valoración:", error);
+      setModalVisible(false);
+      setTimeout(
+        () => setAlerta({ tipo: "error", titulo: "No se pudo enviar la valoración", mensaje: "Intentá de nuevo en unos segundos." }),
+        ESPERA_ENTRE_MODALES_MS
+      );
     }
   };
 
   const handleCancelOrder = async () => {
+    setModalVisible2(false);
     try {
+      cambioPropio.current = "Cancelado";
       await cambiarEstadoPedido({ id: pedido?.id, accion: "cancelar" }).unwrap();
-      setModalVisible2(false);
-      setPedidoLocal({ ...pedido, estado: "Cancelado" });
+      refetch();
+      setTimeout(
+        () => setAlerta({ tipo: "exito", titulo: "Pedido cancelado", mensaje: `Cancelaste el pedido #${pedido?.id}.` }),
+        ESPERA_ENTRE_MODALES_MS
+      );
     } catch (error) {
+      cambioPropio.current = null;
       console.error("Error al actualizar el estado del pedido:", error);
-      Alert.alert("Error", "Hubo un problema al actualizar el estado del pedido.");
+      // El estado pudo haber cambiado (el puesto avanzó el pedido): se informa con el estado real.
+      let estadoActual = pedido?.estado;
+      try {
+        const respuesta = await refetch();
+        estadoActual = buscarPedido(respuesta?.data, pedido?.id)?.estado || estadoActual;
+      } catch (_) {
+        // Sin conexión: se usa el último estado conocido.
+      }
+      setTimeout(
+        () => setAlerta({ tipo: "error", titulo: "No se pudo cancelar el pedido", mensaje: mensajeNoSePudoCancelar(estadoActual) }),
+        ESPERA_ENTRE_MODALES_MS
+      );
     }
   };
 
@@ -291,6 +350,7 @@ const DetallePedido = ({ route }) => {
 
   return (
     <View style={styles.container}>
+      <BannerEstadoPedido mensaje={banner} onOcultar={() => setBanner(null)} />
       <View style={styles.card}>
         <Text style={styles.title}>Detalle del Pedido</Text>
         <View style={styles.section}>
@@ -311,7 +371,7 @@ const DetallePedido = ({ route }) => {
         </View>
         <View style={styles.section}>
           <Text style={styles.label}>Estado:</Text>
-          <Text style={[styles.value, styles.status]}>{pedido?.estado}</Text>
+          <Text style={[styles.value, styles.status]}>{etiquetaEstado(pedido?.estado)}</Text>
         </View>
 
         <Text style={[styles.label, styles.section]}>Productos:</Text>
@@ -332,7 +392,7 @@ const DetallePedido = ({ route }) => {
         </View>
 
         <View style={styles.buttonGroup}>
-          {pedido?.estado === "Entregado" && !isViewRepartidor && (
+          {pedido?.estado === "Entregado" && !isViewRepartidor && !valoradoLocal && (
             <TouchableOpacity
               style={[styles.button, styles.rateButton]}
               onPress={() => setModalVisible(true)}
@@ -341,7 +401,7 @@ const DetallePedido = ({ route }) => {
               <Text style={styles.buttonText}>Valorar Pedido</Text>
             </TouchableOpacity>
           )}
-          {["Pendiente", "Aceptado"].includes(pedido?.estado) && (
+          {puedeCancelarse(pedido?.estado) && !isViewRepartidor && (
             <TouchableOpacity
               style={[styles.button, styles.cancelButton]}
               onPress={() => setModalVisible2(true)}
@@ -424,6 +484,15 @@ const DetallePedido = ({ route }) => {
             style: { backgroundColor: Colors.Rojo },
           },
         ]}
+      />
+
+      <ThemedAlert
+        visible={Boolean(alerta)}
+        tipo={alerta?.tipo}
+        titulo={alerta?.titulo}
+        mensaje={alerta?.mensaje}
+        botones={alerta?.botones}
+        onClose={() => setAlerta(null)}
       />
     </View>
   );

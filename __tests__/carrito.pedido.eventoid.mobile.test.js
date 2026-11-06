@@ -1,5 +1,4 @@
 import React from 'react';
-import { Alert } from 'react-native';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import carritoReducer, { agregarProducto } from '../components/Features/carrito/carritoSlice';
 import CardCarrito from '../Views/Carrito/CardCarrito';
@@ -21,6 +20,10 @@ jest.mock('react-redux', () => ({
 }));
 jest.mock('../Styles/useDynamicColors', () => () => new Proxy({}, { get: () => '#000000' }));
 jest.mock('../components/ThemedModal/ThemedModal', () => () => null);
+jest.mock('../components/ThemedAlert/ThemedAlert', () => {
+  const { Text } = require('react-native');
+  return ({ visible, mensaje }) => (visible ? <Text testID="alerta">{mensaje}</Text> : null);
+});
 jest.mock('react-native-vector-icons/FontAwesome', () => () => null);
 
 const productos = [{ id: 10, nombre: 'Choripán', precio: 3500, cantidad: 1 }];
@@ -41,7 +44,6 @@ const renderCard = (props = {}) =>
 
 beforeEach(() => {
   jest.clearAllMocks();
-  jest.spyOn(Alert, 'alert').mockImplementation(() => {});
   global.fetch = jest.fn(() =>
     Promise.resolve({
       ok: true,
@@ -67,21 +69,21 @@ describe('Carrito - eventoId en el pedido (MOBILE)', () => {
   });
 
   test('envía el eventoId al crear el pedido después de pagar', async () => {
-    const { getByText } = renderCard();
+    const { getByText, queryByTestId } = renderCard();
     fireEvent.press(getByText('Finalizar Compra'));
 
     await waitFor(() => expect(mockCreatePedido).toHaveBeenCalledTimes(1));
     const body = mockCreatePedido.mock.calls[0][0];
     expect(body).toMatchObject({ eventoId: 9, puestoId: 1, consumidorId: 7 });
     expect(body).not.toHaveProperty('precompra');
-    expect(Alert.alert).not.toHaveBeenCalled();
+    expect(queryByTestId('alerta')).toBeNull();
   });
 
   test('sin eventoId no abre el pago y avisa al usuario', async () => {
-    const { getByText } = renderCard({ eventoId: undefined });
+    const { getByText, findByTestId } = renderCard({ eventoId: undefined });
     fireEvent.press(getByText('Finalizar Compra'));
 
-    await waitFor(() => expect(Alert.alert).toHaveBeenCalled());
+    expect((await findByTestId('alerta')).props.children).toContain('No se encontró el evento');
     expect(global.fetch).not.toHaveBeenCalled();
     expect(mockPresentPaymentSheet).not.toHaveBeenCalled();
     expect(mockCreatePedido).not.toHaveBeenCalled();
@@ -89,21 +91,20 @@ describe('Carrito - eventoId en el pedido (MOBILE)', () => {
 
   test('si el backend rechaza el pedido después de pagar, se muestra el motivo', async () => {
     mockCreatePedido.mockResolvedValue({ error: { status: 400, data: { msg: 'El evento ya finalizó' } } });
-    const { getByText } = renderCard();
+    const { getByText, findByTestId } = renderCard();
     fireEvent.press(getByText('Finalizar Compra'));
 
-    await waitFor(() => expect(Alert.alert).toHaveBeenCalled());
-    expect(Alert.alert.mock.calls[0][1]).toContain('El evento ya finalizó');
+    expect((await findByTestId('alerta')).props.children).toContain('El evento ya finalizó');
     expect(mockDispatch).not.toHaveBeenCalled();
   });
 
   test('si el usuario cancela el pago no se muestra error ni se crea el pedido', async () => {
     mockPresentPaymentSheet.mockResolvedValue({ error: { code: 'Canceled', message: 'canceled' } });
-    const { getByText } = renderCard();
+    const { getByText, queryByTestId } = renderCard();
     fireEvent.press(getByText('Finalizar Compra'));
 
     await waitFor(() => expect(mockPresentPaymentSheet).toHaveBeenCalled());
-    expect(Alert.alert).not.toHaveBeenCalled();
+    expect(queryByTestId('alerta')).toBeNull();
     expect(mockCreatePedido).not.toHaveBeenCalled();
   });
 
