@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import useDynamicColors from "../../Styles/useDynamicColors";
 import ThemedModal from "../../components/ThemedModal/ThemedModal";
@@ -22,6 +23,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 const CardCarrito = ({
   puesto,
   puestoNombre,
+  eventoId,
   productos,
   precompra,
   fecha,
@@ -51,7 +53,27 @@ const CardCarrito = ({
     return `${day}/${month}/${year}`;
   };
 
+  const avisarError = (mensaje) => {
+    setErrorPago(mensaje);
+    Alert.alert("No se pudo completar la compra", mensaje);
+  };
+
+  // El backend exige la fecha de precompra en formato ISO.
+  const fechaPrecompraIso = () => {
+    const date = fecha ? new Date(fecha) : null;
+    return date && !Number.isNaN(date.getTime()) ? date.toISOString() : null;
+  };
+
   const handleComprar = async () => {
+    // Se valida antes de cobrar: si el pedido no se puede registrar, no debe abrirse el pago.
+    if (!eventoId) {
+      avisarError("No se encontró el evento de estos productos. Quitalos del carrito y volvé a agregarlos desde el evento.");
+      return;
+    }
+    if (precompra && !fechaPrecompraIso()) {
+      avisarError("La fecha de la precompra no es válida. Volvé a agregar los productos eligiendo la fecha.");
+      return;
+    }
     setLoadingGlobal(true);
     try {
       const pago = await mostrarSheetPago();
@@ -65,7 +87,8 @@ const CardCarrito = ({
           consumidorId: user.consumidorId,
           total: calcularTotal(productos),
           puestoId: Number(puesto),
-          precompra,
+          eventoId: Number(eventoId),
+          ...(precompra ? { precompra: fechaPrecompraIso() } : {}),
           fecha: formatDate(fecha),
         };
         const responseData = await createPedidoMutation(detalles);
@@ -75,10 +98,16 @@ const CardCarrito = ({
           );
         } else {
           console.log("Error al crear el pedido:", responseData.error);
+          avisarError(
+            "El pago se realizó pero no se pudo registrar el pedido: " +
+              (responseData.error?.data?.msg || "error desconocido") +
+              ". No vuelvas a pagar; contactá al puesto."
+          );
         }
       }
     } catch (error) {
       console.log("Error durante el proceso de compra:", error.message);
+      avisarError(error.message || "Error desconocido durante la compra");
     } finally {
       setLoadingGlobal(false);
     }
@@ -131,7 +160,7 @@ const CardCarrito = ({
       clearTimeout(timeoutId);
 
       if (!clientSecret || !ephemeralKey || !customer) {
-        setErrorPago("Parámetros de pago incompletos. Intentá de nuevo.");
+        avisarError("Parámetros de pago incompletos. Intentá de nuevo.");
         setLoadingPago(false);
         return false;
       }
@@ -182,19 +211,23 @@ const CardCarrito = ({
         const { error: paymentError } = await presentPaymentSheet();
         setLoadingPago(false);
         if (paymentError) {
-          setErrorPago("Error en el pago: " + paymentError.message);
+          if (paymentError.code === "Canceled") {
+            setErrorPago("");
+          } else {
+            avisarError("Error en el pago: " + paymentError.message);
+          }
           return false;
         } else {
           return true;
         }
       } else {
-        setErrorPago("Error al inicializar la hoja de pago: " + error.message);
+        avisarError("Error al inicializar la hoja de pago: " + error.message);
         setLoadingPago(false);
         return false;
       }
     } catch (error) {
       clearTimeout(timeoutId);
-      setErrorPago(error.message || "Error desconocido al mostrar la hoja de pago");
+      avisarError(error.message || "Error desconocido al mostrar la hoja de pago");
       setLoadingPago(false);
       return false;
     }

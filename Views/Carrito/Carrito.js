@@ -70,6 +70,7 @@ const Carrito = () => {
     <CardCarrito 
       puesto={item.puesto} 
       puestoNombre={item.puestoNombre}
+      eventoId={item.eventoId}
       productos={item.productos} 
       fecha={item.fecha}
       precompra={item.preventa}

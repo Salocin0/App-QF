@@ -26,7 +26,10 @@
     "preset": "jest-expo",
     "setupFilesAfterEnv": [
       "./setupTests.js"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^immer$": "<rootDir>/node_modules/immer/dist/cjs/index.js"
+    }
   },
   "dependencies": {
     "@expo/cli": "^0.18.30",

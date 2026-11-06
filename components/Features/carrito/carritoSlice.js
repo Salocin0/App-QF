@@ -10,7 +10,7 @@ const carritoSlice = createSlice({
   reducers: {
     setCarrito: (state, action) => action.payload,
     agregarProducto: (state, action) => {
-      const { id, fecha, preventa, producto, puesto, puestoNombre } = action.payload;
+      const { id, fecha, preventa, producto, puesto, puestoNombre, eventoId } = action.payload;
       const cantidadAAgregar = Number(action.payload.cantidad) > 0 ? Number(action.payload.cantidad) : 1;
       const conjunto = state.find(
         (item) => item.id === id && item.fecha === fecha && item.preventa === preventa && item.puesto === puesto
@@ -19,6 +19,10 @@ const carritoSlice = createSlice({
       if (conjunto) {
         if (!conjunto.puestoNombre && puestoNombre) {
           conjunto.puestoNombre = puestoNombre;
+        }
+        // Carritos guardados antes de exigir eventoId se completan al volver a agregar desde el evento.
+        if (!conjunto.eventoId && eventoId) {
+          conjunto.eventoId = eventoId;
         }
         const existingProduct = conjunto.productos.find(
           (p) => p.id === producto.id
@@ -35,6 +39,7 @@ const carritoSlice = createSlice({
           preventa,
           puesto,
           puestoNombre,
+          eventoId,
           productos: [{ ...producto, cantidad: cantidadAAgregar }],
         });
       }

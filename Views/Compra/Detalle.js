@@ -44,6 +44,7 @@ const Detalle = ({ navigation }) => {
         producto,
         puesto: puesto?.id ?? producto.puestoId,
         puestoNombre: puesto?.nombreCarro,
+        eventoId: evento?.id,
         cantidad: count,
         preventa: precompra,
         fecha,
