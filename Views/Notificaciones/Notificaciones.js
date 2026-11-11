@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 import Aviso from "../Aviso";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://backendnode-qf.onrender.com";
+const API_URL = process.env.EXPO_PUBLIC_API_URL || "https://backendnode-qf.onrender.com";
 
 const Notificaciones = () => {
   const stylesExternos = useStyles();

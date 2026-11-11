@@ -235,7 +235,7 @@ const CardCarrito = ({
   // ...
   const fetchPaymentSheetParams = async () => {
     try {
-      const apiBaseUrl = (process.env.EXPO_PUBLIC_API_URL || "http://backendnode-qf.onrender.com").replace(/\/$/, "");
+      const apiBaseUrl = (process.env.EXPO_PUBLIC_API_URL || "https://backendnode-qf.onrender.com").replace(/\/$/, "");
       const response = await fetch(
         `${apiBaseUrl}/payment-sheet`,
         {

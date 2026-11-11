@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const locationApi = createApi({
   reducerPath: "locationApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${process.env.EXPO_PUBLIC_API_URL || "http://backendnode-qf.onrender.com"}`, // Asegúrate de tener esta variable configurada
+    baseUrl: `${process.env.EXPO_PUBLIC_API_URL || "https://backendnode-qf.onrender.com"}`, // Asegúrate de tener esta variable configurada
   }),
   endpoints: (builder) => ({
     // Endpoint para actualizar la ubicación del usuario

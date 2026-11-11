@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const puntosEncuentroApi = createApi({
   reducerPath: "puntosEncuentroApi",
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.EXPO_PUBLIC_API_URL || "http://backendnode-qf.onrender.com" }),
+  baseQuery: fetchBaseQuery({ baseUrl: process.env.EXPO_PUBLIC_API_URL || "https://backendnode-qf.onrender.com" }),
   endpoints: (builder) => ({
     getAllPuntosEncuentro: builder.query({
       query: () => ({

@@ -19,6 +19,7 @@ import useDynamicColors from "@/Styles/useDynamicColors";
 const Chatbot = () => {
   const user = useSelector((state) => state.auth);
   const isLoggedIn = user?.id;
+  const displayName = [user?.nombre, user?.apellido].filter(Boolean).join(" ") || user?.usuario;
   const Colors = useDynamicColors();
   console.log(user);
   const navigation = useNavigation(); // Inicializar useNavigation
@@ -34,7 +35,7 @@ const Chatbot = () => {
 
   useEffect(() => {
     const greetingMessage = isLoggedIn
-      ? `Hola ${user.nombre} 👋 👋, \nespero que estés bien! Acá Foody 🤖.  \nDecime, ¿en qué puedo ayudarte?`
+      ? `Hola ${displayName || "ahí"} 👋 👋, \nespero que estés bien! Acá Foody 🤖.  \nDecime, ¿en qué puedo ayudarte?`
       : `Hola Usuario 👋 👋,  \nespero que estés bien! Acá Foody 🤖.  \nDecime, ¿en qué puedo ayudarte?`;
 
     
@@ -62,7 +63,7 @@ const Chatbot = () => {
         },
       ]);
     }
-  }, [isLoggedIn, user.nombre]); // Run when `isLoggedIn` or `user.nombre` changes
+  }, [displayName, isLoggedIn]); // Run when the authenticated user's display name changes
 
   const sendMessage = () => {
     if (inputText.trim()) {

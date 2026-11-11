@@ -84,7 +84,7 @@
       "router": {
         "origin": false
       },
-      "apiUrl": "http://backendnode-qf.onrender.com",
+      "apiUrl": "https://backendnode-qf.onrender.com",
       "eas": {
         "projectId": "9ded873d-fbde-4feb-9335-5b08c58d9357"
       }

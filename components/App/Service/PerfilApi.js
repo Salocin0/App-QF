@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // Definir la API para obtener y actualizar datos del perfil del usuario
 export const perfilApi = createApi({
   reducerPath: "perfilApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.EXPO_PUBLIC_API_URL || "http://backendnode-qf.onrender.com"}` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.EXPO_PUBLIC_API_URL || "https://backendnode-qf.onrender.com"}` }),
   endpoints: (builder) => ({
     getPerfil: builder.query({
       query: (id) => ({

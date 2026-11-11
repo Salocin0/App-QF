@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const eventosApi = createApi({
   reducerPath: "eventosApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${process.env.EXPO_PUBLIC_API_URL || "http://backendnode-qf.onrender.com"}`,
+    baseUrl: `${process.env.EXPO_PUBLIC_API_URL || "https://backendnode-qf.onrender.com"}`,
   }),
   tagTypes: ["Evento"], // Define tags to associate with queries
   endpoints: (builder) => ({

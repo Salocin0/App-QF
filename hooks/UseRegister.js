@@ -51,7 +51,7 @@ const useRegister = (navigation) => {
   };
 
   const handleRegister = async () => {
-    const url = `${process.env.EXPO_PUBLIC_API_URL || "http://backendnode-qf.onrender.com"}user/`;
+    const url = `${process.env.EXPO_PUBLIC_API_URL || "https://backendnode-qf.onrender.com"}user/`;
 
     const datosRegistro = {
       correoElectronico: userData.email,

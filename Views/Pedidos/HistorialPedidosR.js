@@ -12,9 +12,10 @@ const HistorialPedidosR = ({ navigation }) => {
   const stylesExternos = useStyles();
   const Colors = useDynamicColors();
   const user = useSelector((state) => state.auth);
-  const { data, error, isLoading, refetch } = useGetPedidosRepartidorQuery(user.consumidorId, {
-    pollingInterval: 1000,
-  });
+  const { data, error, isLoading, refetch } = useGetPedidosRepartidorQuery(
+    { consumidorid: user.consumidorId, historial: true },
+    { pollingInterval: 0 }
+  );
 
   const [refreshing, setRefreshing] = useState(false);
 

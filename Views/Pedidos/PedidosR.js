@@ -6,6 +6,7 @@ import { useGetPedidosRepartidorQuery } from "@/components/App/Service/PedidosAp
 import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 import Aviso from "../Aviso";
+import { POLLING_PEDIDO_MS } from "../../components/Features/pedidos/estadosPedido";
 
 const PedidosR = ({ navigation }) => {
   const Colors = useDynamicColors();
@@ -13,7 +14,7 @@ const PedidosR = ({ navigation }) => {
 
   // Obtén los pedidos del repartidor
   const { data, error, isLoading, refetch } = useGetPedidosRepartidorQuery(user.consumidorId, {
-    pollingInterval: 1000,
+    pollingInterval: POLLING_PEDIDO_MS,
   });
 
   const [refreshing, setRefreshing] = useState(false);
@@ -59,7 +60,9 @@ const PedidosR = ({ navigation }) => {
       {isLoading ? (
         <ActivityIndicator size="large" color={Colors?.Azul} />
       ) : error ? (
-        <Aviso mensaje="Error al cargar los pedidos" />
+        <Aviso mensaje={error.status === "TIMEOUT_ERROR"
+          ? "El servidor tardó demasiado en responder. Revisá tu conexión e intentá actualizar."
+          : "No se pudieron cargar los pedidos. Revisá tu conexión e intentá actualizar."} />
       ) : filteredData.length > 0 ? ( // Cambia aquí para usar filteredData
         <FlatList
           data={filteredData}

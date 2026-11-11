@@ -73,7 +73,7 @@ export default Login = ({ navigation }) => {
       navigation.navigate("Login");
     } else {
       //ToastAndroid.show("Datos incorrectos", ToastAndroid.SHORT);
-      ToastAndroid.show(process.env.EXPO_PUBLIC_API_URL || "http://backendnode-qf.onrender.com"+"/login/", ToastAndroid.SHORT);
+      ToastAndroid.show(process.env.EXPO_PUBLIC_API_URL || "https://backendnode-qf.onrender.com"+"/login/", ToastAndroid.SHORT);
     }
   };
 

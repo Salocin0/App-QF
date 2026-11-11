@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const productoApi = createApi({
   reducerPath: "productoApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.EXPO_PUBLIC_API_URL || "http://backendnode-qf.onrender.com"}` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.EXPO_PUBLIC_API_URL || "https://backendnode-qf.onrender.com"}` }),
   endpoints: (builder) => ({
     getProductos: builder.query({
       query: (puestoId) => ({

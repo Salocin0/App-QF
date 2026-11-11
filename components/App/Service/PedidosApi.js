@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const pedidoApi = createApi({
   reducerPath: "pedidoApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.EXPO_PUBLIC_API_URL || "http://backendnode-qf.onrender.com"}` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.EXPO_PUBLIC_API_URL || "https://backendnode-qf.onrender.com"}`, timeout: 45000 }),
   tagTypes: ["Pedido", "PedidoRepartidor"], // Define las etiquetas
 
   endpoints: (builder) => ({
@@ -29,14 +29,20 @@ export const pedidoApi = createApi({
     }),
 
     getPedidosRepartidor: builder.query({
-      query: (consumidorid) => ({
-        url: `/pedido/repartidor`,
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "consumidorid": consumidorid,
-        },
-      }),
+      query: (argumento) => {
+        const consumidorid = typeof argumento === "object"
+          ? argumento.consumidorid
+          : argumento;
+        const historial = typeof argumento === "object" && argumento.historial;
+        return {
+          url: historial ? `/pedido/repartidor?historial=true` : `/pedido/repartidor`,
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "consumidorid": consumidorid,
+          },
+        };
+      },
       providesTags: ["PedidoRepartidor"], // Proporciona una etiqueta para invalidar
     }),
 

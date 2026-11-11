@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const asociacionesApi = createApi({
   reducerPath: "asociacionesApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.EXPO_PUBLIC_API_URL || "http://backendnode-qf.onrender.com"}`, forceRefetch: true }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.EXPO_PUBLIC_API_URL || "https://backendnode-qf.onrender.com"}`, forceRefetch: true }),
   endpoints: (builder) => ({
     getAsociaciones: builder.query({
       query: (consumidorId) => ({
