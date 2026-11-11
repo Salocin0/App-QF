@@ -15,6 +15,7 @@ import userImage from "./../../assets/user-img.png";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native"; // Importar useNavigation
 import useDynamicColors from "@/Styles/useDynamicColors";
+import { enviarMensajeChatbot } from "../../components/Features/chatbot/chatbotApi";
 
 const Chatbot = () => {
   const user = useSelector((state) => state.auth);
@@ -70,18 +71,9 @@ const Chatbot = () => {
       addMessageToChat(inputText, "user");
       setInputText("");
 
-      fetch(`${process.env.REACT_APP_BACK_URL}chatbot`, {
-        method: "POST",
-        body: new URLSearchParams({ userMessage: inputText }),
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          addMessageToChat(data.data.chat_response, "bot");
-        })
-        .catch((error) => console.error("Error:", error));
+      enviarMensajeChatbot(inputText)
+        .then((respuesta) => addMessageToChat(respuesta, "bot"))
+        .catch((error) => addMessageToChat(error.message, "bot"));
     }
   };
 
