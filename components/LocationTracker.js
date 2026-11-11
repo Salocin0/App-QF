@@ -1,48 +1,44 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import * as Location from 'expo-location';
 import { useUpdateUbicacionMutation } from "./App/Service/locationApi";
+import { iniciarSeguimientoUbicacion } from "./Features/ubicacion/seguimientoUbicacion";
 
+// Consumers and couriers both need it: each one sees the other's location on the delivery map.
 const LocationTracker = () => {
-  const user = useSelector((state) => state.auth); 
-  const isLoggedIn = user?.id;
-  const idUsuario = user?.id; 
+  const user = useSelector((state) => state.auth);
+  const idUsuario = user?.id;
 
   const [updateUbicacion] = useUpdateUbicacionMutation();
 
   useEffect(() => {
-    let locationInterval;
+    if (!idUsuario) return undefined;
+    let cancelado = false;
+    let detener = null;
 
-    const startTrackingLocation = async () => {
+    (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
-
       if (status !== 'granted') {
         console.log('Permiso de ubicación denegado');
         return;
       }
-
-      const trackLocation = async () => {
-        try {
-          const location = await Location.getCurrentPositionAsync({});
-          const { latitude: latitud, longitude: longitud } = location.coords;
-          const response = await updateUbicacion({ idUsuario, latitud, longitud });
-        } catch (error) {
-          console.error("Error al obtener o actualizar la ubicación:", error);
-        }
-      };
-      locationInterval = setInterval(trackLocation, 5000);
-    };
-
-    if (isLoggedIn) {
-      startTrackingLocation();
-    }
+      // The user may have logged out while the permission prompt was open.
+      if (cancelado) return;
+      detener = iniciarSeguimientoUbicacion({
+        obtenerUbicacion: async () => {
+          const { coords } = await Location.getCurrentPositionAsync({});
+          return { latitud: coords.latitude, longitud: coords.longitude };
+        },
+        enviarUbicacion: ({ latitud, longitud }) => updateUbicacion({ idUsuario, latitud, longitud }),
+        onError: (error) => console.error("Error al obtener o actualizar la ubicación:", error),
+      });
+    })();
 
     return () => {
-      if (locationInterval) {
-        clearInterval(locationInterval);
-      }
+      cancelado = true;
+      if (detener) detener();
     };
-  }, [isLoggedIn, idUsuario, updateUbicacion]); 
+  }, [idUsuario, updateUbicacion]);
 
   return null;
 };
