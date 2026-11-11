@@ -27,7 +27,7 @@ const AdministrarAsociaciones = ({ route }) => {
   const { data, error, isLoading, refetch } = useGetAsociacionesEventoQuery(
     eventoId,
     {
-      pollingInterval: 1000,
+      pollingInterval: 15000, // Association requests change rarely; polling every second downloaded MBs per second
     }
   );
 

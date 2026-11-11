@@ -13,7 +13,7 @@ const AsociacionesTabs = () => {
   const user = useSelector((state) => state.auth);
   const userId = user?.consumidorId;
   const { data, isLoading, error, refetch } = useGetAsociacionesPuestosQuery(userId, {
-    pollingInterval: 1000, // Recarga cada 1 segundo
+    pollingInterval: 15000, // Association requests change rarely; polling every second downloaded MBs per second
   });
 
   const onRefresh = useCallback(async () => {
