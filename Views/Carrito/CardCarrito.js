@@ -93,7 +93,7 @@ const CardCarrito = ({
         const responseData = await createPedidoMutation(detalles);
         if (responseData.data) {
           dispatch(
-            eliminarConjunto({ id: undefined, fecha, preventa: precompra, puesto })
+            eliminarConjunto({ id: undefined, fecha, preventa: precompra, puesto, eventoId })
           );
         } else {
           console.log("Error al crear el pedido:", responseData.error);
@@ -126,7 +126,7 @@ const CardCarrito = ({
 
   const disminuirCantidad = (productoId) => {
     dispatch(
-      restarProducto({ id: undefined, fecha, preventa: precompra, productoId, puesto })
+      restarProducto({ id: undefined, fecha, preventa: precompra, productoId, puesto, eventoId })
     );
   };
 
@@ -137,6 +137,7 @@ const CardCarrito = ({
           id: undefined,
           fecha,
           puesto,
+          eventoId,
           preventa: precompra,
           productoId: productoSeleccionado.id,
         })

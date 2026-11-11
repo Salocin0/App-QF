@@ -2,6 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const initialState = [];
+
+// Un conjunto es unico por puesto + fecha + preventa + evento: el mismo puesto puede estar en varios eventos
+// y el pedido se registra contra un unico evento.
+const mismoConjunto = (item, { id, fecha, preventa, puesto, eventoId }) =>
+  item.id === id && item.fecha === fecha && item.preventa === preventa && item.puesto === puesto && item.eventoId === eventoId;
 const CARRITO_STORAGE_KEY = "carritoPersistido";
 
 const carritoSlice = createSlice({
@@ -12,9 +17,10 @@ const carritoSlice = createSlice({
     agregarProducto: (state, action) => {
       const { id, fecha, preventa, producto, puesto, puestoNombre, eventoId } = action.payload;
       const cantidadAAgregar = Number(action.payload.cantidad) > 0 ? Number(action.payload.cantidad) : 1;
-      const conjunto = state.find(
-        (item) => item.id === id && item.fecha === fecha && item.preventa === preventa && item.puesto === puesto
-      );
+      const conjunto =
+        state.find((item) => mismoConjunto(item, action.payload)) ||
+        // Carritos guardados antes de exigir eventoId (sin evento) se completan al volver a agregar.
+        state.find((item) => !item.eventoId && mismoConjunto({ ...item, eventoId }, action.payload));
 
       if (conjunto) {
         if (!conjunto.puestoNombre && puestoNombre) {
@@ -47,7 +53,7 @@ const carritoSlice = createSlice({
     restarProducto: (state, action) => {
       const { id, fecha, preventa, productoId, puesto } = action.payload;
       const conjunto = state.find(
-        (item) => item.id === id && item.fecha === fecha && item.preventa === preventa && item.puesto === puesto
+        (item) => mismoConjunto(item, action.payload)
       );
 
       if (conjunto) {
@@ -61,14 +67,14 @@ const carritoSlice = createSlice({
     eliminarProducto: (state, action) => {
       const { id, fecha, preventa, productoId, puesto } = action.payload;
       const conjunto = state.find(
-        (item) => item.id === id && item.fecha === fecha && item.preventa === preventa && item.puesto === puesto
+        (item) => mismoConjunto(item, action.payload)
       );
 
       if (conjunto) {
         conjunto.productos = conjunto.productos.filter((p) => p.id !== productoId);
         if (conjunto.productos.length === 0) {
           const index = state.findIndex(
-            (item) => item.id === id && item.fecha === fecha && item.preventa === preventa && item.puesto === puesto
+            (item) => mismoConjunto(item, action.payload)
           );
           state.splice(index, 1); // Remove the empty set
         }
@@ -77,7 +83,7 @@ const carritoSlice = createSlice({
     eliminarConjunto: (state, action) => {
       const { id, fecha, preventa, puesto } = action.payload;
       const index = state.findIndex(
-        (item) => item.id === id && item.fecha === fecha && item.preventa === preventa && item.puesto === puesto
+        (item) => mismoConjunto(item, action.payload)
       );
       if (index !== -1) {
         state.splice(index, 1);
