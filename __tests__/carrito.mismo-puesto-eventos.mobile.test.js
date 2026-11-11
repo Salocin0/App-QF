@@ -31,3 +31,20 @@ describe('carrito: el mismo puesto en distintos eventos', () => {
     expect(state.map((c) => c.eventoId)).toEqual([9]);
   });
 });
+
+describe('carrito: botón "+" del carrito', () => {
+  const base = { puesto: 1, puestoNombre: 'Don Choripan', preventa: false, fecha: undefined };
+  const choripan = { id: 10, nombre: 'Choripan', precio: 3500 };
+
+  it('suma una unidad al conjunto del mismo evento', () => {
+    let state = carritoReducer([], agregarProducto({ ...base, eventoId: 9, producto: choripan, cantidad: 1 }));
+    state = carritoReducer(state, agregarProducto({ ...base, eventoId: 9, producto: { id: 10 }, soloSiExiste: true }));
+    expect(state).toHaveLength(1);
+    expect(state[0].productos[0]).toMatchObject({ id: 10, precio: 3500, cantidad: 2 });
+  });
+
+  it('no crea un conjunto con un producto sin precio si no encuentra el conjunto', () => {
+    const state = carritoReducer([], agregarProducto({ ...base, eventoId: 9, producto: { id: 10 }, soloSiExiste: true }));
+    expect(state).toEqual([]);
+  });
+});

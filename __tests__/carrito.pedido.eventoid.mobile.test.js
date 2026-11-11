@@ -116,3 +116,12 @@ describe('Carrito - eventoId en el pedido (MOBILE)', () => {
     expect(mockCreatePedido.mock.calls[0][0].precompra).toBe('2026-11-20T15:00:00.000Z');
   });
 });
+
+describe('Carrito - botón "+" (MOBILE)', () => {
+  test('envía el eventoId del conjunto para sumar en el mismo conjunto', () => {
+    const { getByLabelText } = renderCard();
+    fireEvent.press(getByLabelText('Aumentar cantidad'));
+    const accion = mockDispatch.mock.calls.map(([a]) => a).find((a) => a.type === 'carrito/agregarProducto');
+    expect(accion.payload).toMatchObject({ eventoId: 9, puesto: 1, producto: { id: 10 }, soloSiExiste: true });
+  });
+});

@@ -38,7 +38,9 @@ const carritoSlice = createSlice({
         } else {
           conjunto.productos.push({ ...producto, cantidad: cantidadAAgregar });
         }
-      } else {
+      } else if (!action.payload.soloSiExiste) {
+        // The cart "+" button sends only the product id (soloSiExiste): it must never start a new group,
+        // because rendering a product without its price crashes the cart screen.
         state.push({
           id,
           fecha,

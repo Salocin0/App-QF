@@ -119,7 +119,9 @@ const CardCarrito = ({
         fecha,
         preventa: precompra,
         puesto,
+        eventoId,
         producto: { id: productoId },
+        soloSiExiste: true,
       })
     );
   };
@@ -505,6 +507,7 @@ const CardCarrito = ({
             <Text style={styles.cantidadText}>{producto.cantidad}</Text>
             <TouchableOpacity
               style={styles.cantidadButton}
+              accessibilityLabel="Aumentar cantidad"
               onPress={() => incrementarCantidad(producto.id)}
             >
               <Icon name="plus" size={16} color={Colors.Negro} />
