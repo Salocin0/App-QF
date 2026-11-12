@@ -8,6 +8,7 @@ import {
   Image,
   StyleSheet,
   Linking,
+  Animated,
 } from "react-native";
 import logoImage from "./../../assets/quickfood-logo.png";
 import botImage from "./../../assets/bot-img.png";
@@ -16,19 +17,59 @@ import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native"; // Importar useNavigation
 import useDynamicColors from "@/Styles/useDynamicColors";
 import { enviarMensajeChatbot } from "../../components/Features/chatbot/chatbotApi";
+import { parseChatText } from "./chatRichText";
+
+// Three dots that pulse in sequence while Foody is "thinking".
+const TypingDots = ({ color }) => {
+  const dots = useRef([0, 1, 2].map(() => new Animated.Value(0.3))).current;
+
+  useEffect(() => {
+    const loops = dots.map((dot, i) =>
+      Animated.loop(
+        Animated.sequence([
+          Animated.delay(i * 180),
+          Animated.timing(dot, { toValue: 1, duration: 300, useNativeDriver: true }),
+          Animated.timing(dot, { toValue: 0.3, duration: 300, useNativeDriver: true }),
+          Animated.delay((2 - i) * 180),
+        ])
+      )
+    );
+    loops.forEach((l) => l.start());
+    return () => loops.forEach((l) => l.stop());
+  }, [dots]);
+
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center", paddingVertical: 6 }}>
+      {dots.map((opacity, i) => (
+        <Animated.View
+          key={i}
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: 4,
+            marginHorizontal: 3,
+            backgroundColor: color,
+            opacity,
+          }}
+        />
+      ))}
+    </View>
+  );
+};
 
 const Chatbot = () => {
   const user = useSelector((state) => state.auth);
   const isLoggedIn = user?.id;
   const displayName = [user?.nombre, user?.apellido].filter(Boolean).join(" ") || user?.usuario;
   const Colors = useDynamicColors();
-  console.log(user);
   const navigation = useNavigation(); // Inicializar useNavigation
 
   const [messages, setMessages] = useState([]);
   const chatInputRef = useRef(null);
   const scrollViewRef = useRef(null);
   const [inputText, setInputText] = useState("");
+  const [pendingCount, setPendingCount] = useState(0);
+  const queueRef = useRef(Promise.resolve());
   
   const MenssageLogin = `Puedes loguearte haciendo click aquí.`;
 
@@ -67,74 +108,88 @@ const Chatbot = () => {
   }, [displayName, isLoggedIn]); // Run when the authenticated user's display name changes
 
   const sendMessage = () => {
-    if (inputText.trim()) {
-      addMessageToChat(inputText, "user");
-      setInputText("");
+    const text = inputText.trim();
+    if (!text) return;
+    addMessageToChat(text, "user");
+    setInputText("");
+    setPendingCount((n) => n + 1);
 
-      enviarMensajeChatbot(inputText)
+    // Requests are chained so replies always come back in the order they were asked.
+    queueRef.current = queueRef.current.then(() =>
+      enviarMensajeChatbot(text)
         .then((respuesta) => addMessageToChat(respuesta, "bot"))
-        .catch((error) => addMessageToChat(error.message, "bot"));
-    }
+        .catch((error) => addMessageToChat(error.message, "bot"))
+        .finally(() => setPendingCount((n) => Math.max(0, n - 1)))
+    );
   };
 
-  // Parsea texto con links Markdown [texto](url) y los renderiza como texto presionable
-  const renderMarkdownText = (text, textStyle) => {
-    if (typeof text !== "string") return <Text style={textStyle}>{text}</Text>;
-
-    const pattern = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
-    const nodes = [];
-    let lastIndex = 0;
-    let match;
-    let key = 0;
-
-    while ((match = pattern.exec(text)) !== null) {
-      if (match.index > lastIndex) {
-        nodes.push(
-          <Text key={key++} style={textStyle}>
-            {text.slice(lastIndex, match.index)}
+  const renderSpans = (spans, baseStyle, keyPrefix) =>
+    spans.map((span, i) => {
+      const key = `${keyPrefix}-${i}`;
+      if (span.type === "bold") {
+        return (
+          <Text key={key} style={styles.boldText}>
+            {span.value}
           </Text>
         );
       }
-      const linkLabel = match[1];
-      const href = match[2];
-      nodes.push(
-        <Text
-          key={key++}
-          style={[textStyle, styles.linkText]}
-          onPress={() => Linking.openURL(href)}
-        >
-          {linkLabel}
-        </Text>
-      );
-      lastIndex = match.index + match[0].length;
-    }
+      if (span.type === "link") {
+        const href = span.href.startsWith("/")
+          ? null
+          : span.href;
+        return (
+          <Text
+            key={key}
+            style={styles.linkText}
+            onPress={href ? () => Linking.openURL(href) : undefined}
+          >
+            {span.label}
+          </Text>
+        );
+      }
+      return <Text key={key}>{span.value}</Text>;
+    });
 
-    if (lastIndex < text.length) {
-      nodes.push(
-        <Text key={key++} style={textStyle}>
-          {text.slice(lastIndex)}
-        </Text>
-      );
-    }
-
-    // Si no hubo matches, devolver el texto limpio (quitando markdown residual como [texto](/ruta))
-    if (nodes.length === 0) {
-      const cleanText = text.replace(/\[([^\]]+)\]\([^\)]+\)/g, "$1");
-      return <Text style={textStyle}>{cleanText}</Text>;
-    }
-
-    return <Text>{nodes}</Text>;
+  // Renders the Markdown subset Foody emits (bold, bullets, headings, links).
+  const renderRichText = (text) => {
+    const blocks = parseChatText(text);
+    if (blocks.length === 0) return <Text style={styles.messageText}>{text}</Text>;
+    return (
+      <View style={styles.bubble}>
+        {blocks.map((block, bi) => {
+          if (block.type === "list") {
+            return (
+              <View key={bi} style={styles.listBlock}>
+                {block.items.map((item, ii) => (
+                  <View key={ii} style={styles.listItem}>
+                    <Text style={styles.bullet}>{"•"}</Text>
+                    <Text style={styles.listText}>
+                      {renderSpans(item, styles.listText, `${bi}-${ii}`)}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            );
+          }
+          return (
+            <Text
+              key={bi}
+              style={[styles.paragraph, block.type === "heading" && styles.headingText]}
+            >
+              {renderSpans(block.spans, styles.paragraph, `${bi}`)}
+            </Text>
+          );
+        })}
+      </View>
+    );
   };
 
   const addMessageToChat = (message, sender) => {
     setMessages((prevMessages) => [...prevMessages, { message, sender }]);
 
-    setTimeout(() => {
-      if (scrollViewRef.current) {
-        scrollViewRef.current.scrollToEnd({ animated: true });
-      }
-    }, 100);
   };
+
+  const scrollToEnd = () => scrollViewRef.current?.scrollToEnd({ animated: true });
 
   const styles = StyleSheet.create({
     container: {
@@ -167,6 +222,7 @@ const Chatbot = () => {
     },
     userMessage: {
       justifyContent: "flex-end",
+      flexDirection: "row-reverse",
     },
     botMessage: {
       justifyContent: "flex-start",
@@ -176,6 +232,44 @@ const Chatbot = () => {
       height: 40,
       borderRadius: 20,
       marginRight: 10,
+    },
+    messageColumn: {
+      flexShrink: 1,
+      maxWidth: "85%",
+    },
+    bubble: {
+      backgroundColor: Colors.GrisClaroPeroNoTanClaro,
+      padding: 10,
+      borderRadius: 10,
+    },
+    paragraph: {
+      fontSize: 16,
+      color: Colors.Negro,
+      marginBottom: 4,
+    },
+    headingText: {
+      fontWeight: "bold",
+      fontSize: 17,
+    },
+    boldText: {
+      fontWeight: "bold",
+    },
+    listBlock: {
+      marginBottom: 4,
+    },
+    listItem: {
+      flexDirection: "row",
+      marginBottom: 2,
+    },
+    bullet: {
+      fontSize: 16,
+      color: Colors.Negro,
+      width: 16,
+    },
+    listText: {
+      flex: 1,
+      fontSize: 16,
+      color: Colors.Negro,
     },
     messageText: {
       fontSize: 16,
@@ -187,7 +281,6 @@ const Chatbot = () => {
     linkText: {
       color: Colors.Azul,
       textDecorationLine: "underline",
-      marginTop: 5,
     },
     inputContainer: {
       flexDirection: "row",
@@ -233,7 +326,11 @@ const Chatbot = () => {
       <View style={styles.header}>
         <Image source={logoImage} style={styles.logo} />
       </View>
-      <ScrollView style={styles.chatContainer} ref={scrollViewRef}>
+      <ScrollView
+        style={styles.chatContainer}
+        ref={scrollViewRef}
+        onContentSizeChange={scrollToEnd}
+      >
         {messages.map((msg, index) => (
           <View
             key={index}
@@ -247,6 +344,7 @@ const Chatbot = () => {
               style={styles.avatar}
             />
             <TouchableOpacity
+              style={styles.messageColumn}
               onPress={() => {
                 if (msg.message === MenssageLogin || msg.message === MenssageRegister) {
                   if (msg.message === MenssageLogin) {
@@ -259,12 +357,20 @@ const Chatbot = () => {
               disabled={msg.message != MenssageLogin && msg.message != MenssageRegister} // Desactiva el botón si no es clickeable
             >
               {msg.sender === "bot"
-                ? renderMarkdownText(msg.message, styles.messageText)
+                ? renderRichText(msg.message)
                 : <Text style={styles.messageText}>{msg.message}</Text>
               }
             </TouchableOpacity>
           </View>
         ))}
+        {pendingCount > 0 && (
+          <View style={[styles.chatMessage, styles.botMessage]}>
+            <Image source={botImage} style={styles.avatar} />
+            <View style={styles.bubble}>
+              <TypingDots color={Colors.GrisOscuro} />
+            </View>
+          </View>
+        )}
       </ScrollView>
       <View style={styles.inputContainer}>
         <TextInput
