@@ -19,6 +19,7 @@ import {
 } from "../../components/Features/carrito/carritoSlice";
 import { useStripe } from "@stripe/stripe-react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { calcularMontos, COMISION_SERVICIO_PORCENTAJE } from "./montosCarrito";
 
 const CardCarrito = ({
   puesto,
@@ -84,7 +85,7 @@ const CardCarrito = ({
             precio: Number(producto.precio),
           })),
           consumidorId: user.consumidorId,
-          total: calcularTotal(productos),
+          total: calcularMontos(productos).total,
           puestoId: Number(puesto),
           eventoId: Number(eventoId),
           ...(precompra ? { precompra: fechaPrecompraIso() } : {}),
@@ -247,7 +248,7 @@ const CardCarrito = ({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            amount: calcularTotal(productos) * 100,
+            amount: calcularMontos(productos).totalCentavos,
           }),
         }
       );
@@ -282,12 +283,7 @@ const CardCarrito = ({
     }
   };
 
-  const calcularTotal = (productos) => {
-    return productos.reduce(
-      (acc, item) => acc + item.precio * item.cantidad,
-      0
-    );
-  };
+  const montos = calcularMontos(productos);
 
   // ...
 
@@ -529,13 +525,20 @@ const CardCarrito = ({
         <View style={styles.summaryRow}>
           <Text style={styles.summaryLabel}>Subtotal:</Text>
           <Text style={styles.summaryValue}>
-            ${calcularTotal(productos).toFixed(2)}
+            ${montos.subtotal.toFixed(2)}
+          </Text>
+        </View>
+
+        <View style={styles.summaryRow}>
+          <Text style={styles.summaryLabel}>Comisión de servicio ({COMISION_SERVICIO_PORCENTAJE}%):</Text>
+          <Text style={styles.summaryValue}>
+            ${montos.comision.toFixed(2)}
           </Text>
         </View>
 
         <View style={styles.totalContainer}>
           <Text style={styles.totalText}>
-            Total: ${calcularTotal(productos).toFixed(2)}
+            Total: ${montos.total.toFixed(2)}
           </Text>
         </View>
 
