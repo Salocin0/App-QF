@@ -157,7 +157,7 @@ const EditarPerfil = () => {
     },
     logo: {
       width: 180,
-      height: 180,
+      height: 142,
     },
     card: {
       backgroundColor: "#222222",
@@ -262,7 +262,7 @@ const EditarPerfil = () => {
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 50 }}>
       <View style={styles.logoContainer}>
         <Image 
-          source={require("./../../assets/quickfood-logo.png")} 
+          source={require("./../../assets/qf-new-logo-transparent.png")} 
           style={styles.logo}
           resizeMode="contain"
         />

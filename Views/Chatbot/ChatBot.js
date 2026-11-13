@@ -9,8 +9,9 @@ import {
   StyleSheet,
   Linking,
   Animated,
+  Keyboard,
 } from "react-native";
-import logoImage from "./../../assets/quickfood-logo.png";
+import logoImage from "./../../assets/qf-new-logo-transparent.png";
 import botImage from "./../../assets/bot-img.png";
 import userImage from "./../../assets/user-img.png";
 import { useSelector } from "react-redux";
@@ -70,7 +71,20 @@ const Chatbot = () => {
   const [inputText, setInputText] = useState("");
   const [pendingCount, setPendingCount] = useState(0);
   const queueRef = useRef(Promise.resolve());
-  
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showSub = Keyboard.addListener("keyboardDidShow", () => setKeyboardVisible(true));
+    const hideSub = Keyboard.addListener("keyboardDidHide", () => setKeyboardVisible(false));
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
+  // Shrink the header logo while the keyboard is open so messages get more room.
+  const compactHeader = keyboardVisible;
+
   const MenssageLogin = `Puedes loguearte haciendo click aquí.`;
 
   const MenssageRegister = `Tambien podes crearte una cuenta \nhaciendo click aquí.`;
@@ -201,10 +215,16 @@ const Chatbot = () => {
       alignItems: "center",
       marginBottom: 10,
     },
+    // New logo is 563x443; keep that aspect ratio in both sizes.
     logo: {
-      width: 100,
-      height: 100,
+      width: 140,
+      height: 110,
       marginBottom: 5,
+    },
+    logoCompact: {
+      width: 56,
+      height: 44,
+      marginBottom: 0,
     },
     headerTitle: {
       fontSize: 20,
@@ -324,7 +344,11 @@ const Chatbot = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={logoImage} style={styles.logo} />
+        <Image
+          source={logoImage}
+          style={compactHeader ? styles.logoCompact : styles.logo}
+          resizeMode="contain"
+        />
       </View>
       <ScrollView
         style={styles.chatContainer}
