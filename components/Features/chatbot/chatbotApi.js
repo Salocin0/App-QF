@@ -31,7 +31,9 @@ export const armarHistorial = (conversacion, seq) =>
     ])
     .slice(-6);
 
-const mensajeDeError = (responseText) => {
+// Server texts are shown only for 4xx (e.g. rate limit); 5xx always get our own Spanish message.
+const mensajeDeError = (responseText, status) => {
+  if (!status || status >= 500) return MENSAJE_ERROR_CHATBOT;
   try {
     return JSON.parse(responseText)?.msg || MENSAJE_ERROR_CHATBOT;
   } catch {
@@ -93,7 +95,7 @@ export function enviarMensajeChatbotStream(
         return;
       }
       const texto = xhr.responseText || "";
-      if (xhr.status !== 200) return finish(reject, new Error(mensajeDeError(texto)));
+      if (xhr.status !== 200) return finish(reject, new Error(mensajeDeError(texto, xhr.status)));
       if (!texto.trim()) return finish(reject, new Error(MENSAJE_ERROR_CHATBOT));
       onText?.(texto);
       finish(resolve, texto);
@@ -122,7 +124,7 @@ export async function enviarMensajeChatbot(mensaje, { fetchImpl = fetch, baseUrl
       signal: controller.signal,
     });
     const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data?.msg || MENSAJE_ERROR_CHATBOT);
+    if (!response.ok) throw new Error(response.status < 500 && data?.msg ? data.msg : MENSAJE_ERROR_CHATBOT);
     if (typeof data?.data?.chat_response !== "string") throw new Error(MENSAJE_ERROR_CHATBOT);
     return data.data.chat_response;
   } catch (error) {

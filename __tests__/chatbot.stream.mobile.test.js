@@ -60,6 +60,14 @@ describe('chatbot mobile streaming', () => {
     await expect(promesa).rejects.toThrow('Demasiadas consultas seguidas.');
   });
 
+  it('ante un 500 nunca muestra el texto del servidor', async () => {
+    const xhr = crearXhr();
+    const promesa = enviarMensajeChatbotStream('hola', () => {}, { xhrFactory: () => xhr });
+    xhr.responseText = JSON.stringify({ msg: 'something went wrong :(' });
+    xhr.terminar(500);
+    await expect(promesa).rejects.toThrow(MENSAJE_ERROR_CHATBOT);
+  });
+
   it('falla con el mensaje genérico ante un error de red', async () => {
     const xhr = crearXhr();
     const promesa = enviarMensajeChatbotStream('hola', () => {}, { xhrFactory: () => xhr });
