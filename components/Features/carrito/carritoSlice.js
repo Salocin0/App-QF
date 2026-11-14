@@ -118,6 +118,18 @@ export const guardarCarritoPersistido = (carrito) => async () => {
   }
 };
 
+// Total units in the cart (all groups, all products), used by the tab badge.
+export const contarUnidadesCarrito = (carrito) =>
+  (Array.isArray(carrito) ? carrito : []).reduce(
+    (total, conjunto) =>
+      total +
+      (Array.isArray(conjunto?.productos) ? conjunto.productos : []).reduce(
+        (sub, p) => sub + (Number(p?.cantidad) > 0 ? Number(p.cantidad) : 0),
+        0
+      ),
+    0
+  );
+
 export const {
   setCarrito,
   agregarProducto,

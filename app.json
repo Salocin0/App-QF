@@ -16,7 +16,7 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#1a1a1a"
+      "backgroundColor": "#F5C06A"
     },
     "ios": {
       "supportsTablet": true,
@@ -27,7 +27,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#1a1a1a"
+        "backgroundColor": "#F5C06A"
       },
       "package": "com.salocin0.myapp",
       "googleServicesFile": "./google-services.json",

@@ -4,6 +4,9 @@
 //   /productos-puesto/:puestoId?evento=:eventoId             -> puesto products
 //   /productos-puesto/:puestoId?evento=:eventoId&producto=:id -> product detail
 
+// The .env value ends with "/"; joining must never produce "//evento/…" (Express answers 404).
+export const unirUrl = (base, path) => `${String(base).replace(/\/+$/, "")}/${String(path).replace(/^\/+/, "")}`;
+
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "https://backendnode-qf.onrender.com";
 
 // Roles whose tab navigator includes CompraStack (see MainNavigator).
@@ -52,7 +55,7 @@ export const puedeAbrirEnApp = (user) =>
   Boolean(user?.idToken) && ROLES_CON_COMPRA.includes(user?.tipoUsuario);
 
 const getData = async (path, headers = {}) => {
-  const response = await fetch(`${API_URL}${path}`, {
+  const response = await fetch(unirUrl(API_URL, path), {
     headers: { "Content-Type": "application/json", ...headers },
   });
   const body = await response.json().catch(() => null);

@@ -8,7 +8,7 @@ import { guardarSesionUsuario } from "../../components/Features/Auth/authSlice";
 import { usePushNotifications } from "./../../hooks/usePushNotifications";
 import useDynamicColors from "@/Styles/useDynamicColors";
 import FloatingButton from "../Chatbot/FloatingButton";
-import imglogo from "./../../assets/logo.png";
+import imglogo from "./../../assets/qf-new-logo-transparent.png";
 
 export default Login = ({ navigation }) => {
   const Colors = useDynamicColors();
@@ -79,9 +79,9 @@ export default Login = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-            <Image 
+      <Image
         source={imglogo}
-        style={{ height: "20%", resizeMode: "contain" }}
+        style={{ height: "20%", width: "70%", resizeMode: "contain" }}
       />
 
       <Text h4 style={styles.title} testID="titulo">

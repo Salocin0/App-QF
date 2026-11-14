@@ -3,6 +3,7 @@ import {
   puedeAbrirEnApp,
   resolverRutasCompra,
   abrirLinkEnApp,
+  unirUrl,
 } from "../Views/Chatbot/chatLinkNavigation";
 
 const BASE = "https://quickfood.example.com";
@@ -83,6 +84,25 @@ describe("resolverRutasCompra", () => {
 });
 
 describe("abrirLinkEnApp", () => {
+  it("une la URL del backend sin doble barra aunque termine en /", () => {
+    expect(unirUrl("https://api.qf.test/", "/evento/12")).toBe("https://api.qf.test/evento/12");
+    expect(unirUrl("https://api.qf.test", "/producto")).toBe("https://api.qf.test/producto");
+  });
+
+  it("navega dentro de la app con los datos del backend", async () => {
+    global.fetch = jest.fn(async (url) => {
+      expect(url).not.toMatch(/[^:]\/\//);
+      return { ok: true, json: async () => ({ status: "success", data: { id: 12, estado: "EnCurso" } }) };
+    });
+    const navigation = { navigate: jest.fn() };
+    const handled = await abrirLinkEnApp({
+      href: `${BASE}/listado-puestos/12`,
+      user: { idToken: "t", tipoUsuario: "consumidor" },
+      navigation,
+    });
+    expect(handled).toBe(true);
+    expect(navigation.navigate).toHaveBeenCalledWith("CompraStack", expect.objectContaining({ screen: "TipoCompra" }));
+  });
   it("no maneja links cuando el rol no tiene flujo de compra", async () => {
     const navigation = { navigate: jest.fn() };
     const handled = await abrirLinkEnApp({

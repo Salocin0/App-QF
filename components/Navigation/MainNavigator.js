@@ -16,6 +16,7 @@ import MisAsociacionesEPStack from "./MisAsociacionesEPStack";
 import CardAsignacionPedido from "@/Views/Pedidos/CardAsignacionPedido";
 import FloatingButton from "./../../Views/Chatbot/FloatingButton";
 import ChatBotStack from "./ChatbotStack";
+import { contarUnidadesCarrito } from "../Features/carrito/carritoSlice";
 
 const Tab = createBottomTabNavigator();
 
@@ -24,6 +25,7 @@ const MainNavigator = () => {
   const user = useSelector((state) => state.auth);
   const isAuthenticated = user.idToken;
   const userType = isAuthenticated ? user.tipoUsuario : null;
+  const unidadesCarrito = useSelector((state) => contarUnidadesCarrito(state.carrito));
 
   const styles = {
     tabBar: {
@@ -71,6 +73,7 @@ const MainNavigator = () => {
                 tabBarIcon: ({ focused }) => (
                   <TabBarIcon
                     title="Carrito"
+                    badge={unidadesCarrito}
                     nameIcon="shopping-cart"
                     focused={focused}
                   />
@@ -239,6 +242,7 @@ const MainNavigator = () => {
                 tabBarIcon: ({ focused }) => (
                   <TabBarIcon
                     title="Carrito"
+                    badge={unidadesCarrito}
                     nameIcon="shopping-cart"
                     focused={focused}
                   />
@@ -339,6 +343,7 @@ const MainNavigator = () => {
                 tabBarIcon: ({ focused }) => (
                   <TabBarIcon
                     title="Carrito"
+                    badge={unidadesCarrito}
                     nameIcon="shopping-cart"
                     focused={focused}
                   />

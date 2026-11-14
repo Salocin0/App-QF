@@ -17,9 +17,12 @@ import userImage from "./../../assets/user-img.png";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native"; // Importar useNavigation
 import useDynamicColors from "@/Styles/useDynamicColors";
-import { enviarMensajeChatbot } from "../../components/Features/chatbot/chatbotApi";
+import { enviarMensajeChatbotStream } from "../../components/Features/chatbot/chatbotApi";
 import { parseChatText } from "./chatRichText";
 import { abrirLinkEnApp } from "./chatLinkNavigation";
+
+// Bullet per nesting level: puesto (0) > producto (1) > detalle (2).
+const BULLETS = ["•", "◦", "▪"];
 
 // Three dots that pulse in sequence while Foody is "thinking".
 const TypingDots = ({ color }) => {
@@ -130,12 +133,17 @@ const Chatbot = () => {
     setPendingCount((n) => n + 1);
 
     // Requests are chained so replies always come back in the order they were asked.
-    queueRef.current = queueRef.current.then(() =>
-      enviarMensajeChatbot(text)
-        .then((respuesta) => addMessageToChat(respuesta, "bot"))
-        .catch((error) => addMessageToChat(error.message, "bot"))
-        .finally(() => setPendingCount((n) => Math.max(0, n - 1)))
-    );
+    // The reply is shown while Foody writes it (streaming) instead of all at once.
+    queueRef.current = queueRef.current.then(() => {
+      const id = `bot-${Date.now()}-${Math.random()}`;
+      const actualizar = (cambios) =>
+        setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, ...cambios } : m)));
+      setMessages((prev) => [...prev, { id, message: "", sender: "bot", streaming: true }]);
+      return enviarMensajeChatbotStream(text, (parcial) => actualizar({ message: parcial }))
+        .then((respuesta) => actualizar({ message: respuesta, streaming: false }))
+        .catch((error) => actualizar({ message: error.message, streaming: false }))
+        .finally(() => setPendingCount((n) => Math.max(0, n - 1)));
+    });
   };
 
   // Event/puesto/product links open the matching in-app screen; anything else
@@ -183,14 +191,19 @@ const Chatbot = () => {
           if (block.type === "list") {
             return (
               <View key={bi} style={styles.listBlock}>
-                {block.items.map((item, ii) => (
-                  <View key={ii} style={styles.listItem}>
-                    <Text style={styles.bullet}>{"•"}</Text>
-                    <Text style={styles.listText}>
-                      {renderSpans(item, styles.listText, `${bi}-${ii}`)}
-                    </Text>
-                  </View>
-                ))}
+                {block.items.map((item, ii) => {
+                  const level = block.levels?.[ii] || 0;
+                  return (
+                    <View key={ii} style={[styles.listItem, { marginLeft: level * 16 }]}>
+                      <Text style={[styles.bullet, level > 0 && styles.bulletNested]}>
+                        {BULLETS[level] || BULLETS[0]}
+                      </Text>
+                      <Text style={[styles.listText, level > 0 && styles.listTextNested]}>
+                        {renderSpans(item, styles.listText, `${bi}-${ii}`)}
+                      </Text>
+                    </View>
+                  );
+                })}
               </View>
             );
           }
@@ -292,13 +305,20 @@ const Chatbot = () => {
     },
     bullet: {
       fontSize: 16,
-      color: Colors.Negro,
+      color: Colors.BordeDorado,
       width: 16,
+    },
+    bulletNested: {
+      color: Colors.GrisOscuro,
+      fontSize: 14,
     },
     listText: {
       flex: 1,
       fontSize: 16,
       color: Colors.Negro,
+    },
+    listTextNested: {
+      fontSize: 15,
     },
     messageText: {
       fontSize: 16,
@@ -364,9 +384,9 @@ const Chatbot = () => {
         ref={scrollViewRef}
         onContentSizeChange={scrollToEnd}
       >
-        {messages.map((msg, index) => (
+        {messages.filter((msg) => msg.message !== "").map((msg, index) => (
           <View
-            key={index}
+            key={msg.id || index}
             style={[
               styles.chatMessage,
               msg.sender === "user" ? styles.userMessage : styles.botMessage,
@@ -396,7 +416,7 @@ const Chatbot = () => {
             </TouchableOpacity>
           </View>
         ))}
-        {pendingCount > 0 && (
+        {pendingCount > 0 && !messages.some((m) => m.streaming && m.message) && (
           <View style={[styles.chatMessage, styles.botMessage]}>
             <Image source={botImage} style={styles.avatar} />
             <View style={styles.bubble}>
