@@ -19,6 +19,7 @@ import { useNavigation } from "@react-navigation/native"; // Importar useNavigat
 import useDynamicColors from "@/Styles/useDynamicColors";
 import { enviarMensajeChatbot } from "../../components/Features/chatbot/chatbotApi";
 import { parseChatText } from "./chatRichText";
+import { abrirLinkEnApp } from "./chatLinkNavigation";
 
 // Three dots that pulse in sequence while Foody is "thinking".
 const TypingDots = ({ color }) => {
@@ -137,6 +138,17 @@ const Chatbot = () => {
     );
   };
 
+  // Event/puesto/product links open the matching in-app screen; anything else
+  // (ticket sites, roles without the purchase flow, errors) falls back to the browser.
+  const abrirLink = async (href) => {
+    try {
+      if (await abrirLinkEnApp({ href, user, navigation })) return;
+    } catch (error) {
+      console.warn("No se pudo abrir el enlace en la app:", error?.message || error);
+    }
+    if (/^https?:\/\//i.test(href)) Linking.openURL(href);
+  };
+
   const renderSpans = (spans, baseStyle, keyPrefix) =>
     spans.map((span, i) => {
       const key = `${keyPrefix}-${i}`;
@@ -148,14 +160,11 @@ const Chatbot = () => {
         );
       }
       if (span.type === "link") {
-        const href = span.href.startsWith("/")
-          ? null
-          : span.href;
         return (
           <Text
             key={key}
             style={styles.linkText}
-            onPress={href ? () => Linking.openURL(href) : undefined}
+            onPress={() => abrirLink(span.href)}
           >
             {span.label}
           </Text>
