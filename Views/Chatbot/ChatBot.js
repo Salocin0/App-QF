@@ -20,6 +20,10 @@ import useDynamicColors from "@/Styles/useDynamicColors";
 import { enviarMensajeChatbotStream } from "../../components/Features/chatbot/chatbotApi";
 import { parseChatText } from "./chatRichText";
 import { abrirLinkEnApp } from "./chatLinkNavigation";
+import useTextoSuave from "./useTextoSuave";
+
+// Bot text revealed smoothly while it streams (render prop keeps the hook per message).
+const TextoBot = ({ texto, animar, render }) => render(useTextoSuave(texto, animar));
 
 // Bullet per nesting level: puesto (0) > producto (1) > detalle (2).
 const BULLETS = ["•", "◦", "▪"];
@@ -138,7 +142,7 @@ const Chatbot = () => {
       const id = `bot-${Date.now()}-${Math.random()}`;
       const actualizar = (cambios) =>
         setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, ...cambios } : m)));
-      setMessages((prev) => [...prev, { id, message: "", sender: "bot", streaming: true }]);
+      setMessages((prev) => [...prev, { id, message: "", sender: "bot", streaming: true, animar: true }]);
       return enviarMensajeChatbotStream(text, (parcial) => actualizar({ message: parcial }))
         .then((respuesta) => actualizar({ message: respuesta, streaming: false }))
         .catch((error) => actualizar({ message: error.message, streaming: false }))
@@ -226,6 +230,17 @@ const Chatbot = () => {
   };
 
   const scrollToEnd = () => scrollViewRef.current?.scrollToEnd({ animated: true });
+
+  // Scroll only when a new message (or the typing bubble) appears, never while an answer
+  // grows, so the user can read at their own pace and scroll down when they want.
+  const conteoVisible =
+    messages.filter((m) => m.message !== "").length +
+    (pendingCount > 0 && !messages.some((m) => m.streaming && m.message) ? 1 : 0);
+  const conteoScrolleadoRef = useRef(0);
+  const scrollSiHayMensajeNuevo = () => {
+    if (conteoVisible > conteoScrolleadoRef.current) scrollToEnd();
+    conteoScrolleadoRef.current = conteoVisible;
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -382,7 +397,7 @@ const Chatbot = () => {
       <ScrollView
         style={styles.chatContainer}
         ref={scrollViewRef}
-        onContentSizeChange={scrollToEnd}
+        onContentSizeChange={scrollSiHayMensajeNuevo}
       >
         {messages.filter((msg) => msg.message !== "").map((msg, index) => (
           <View
@@ -410,7 +425,7 @@ const Chatbot = () => {
               disabled={msg.message != MenssageLogin && msg.message != MenssageRegister} // Desactiva el botón si no es clickeable
             >
               {msg.sender === "bot"
-                ? renderRichText(msg.message)
+                ? <TextoBot texto={msg.message} animar={Boolean(msg.animar)} render={renderRichText} />
                 : <Text style={styles.messageText}>{msg.message}</Text>
               }
             </TouchableOpacity>
