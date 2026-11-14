@@ -17,13 +17,18 @@ import userImage from "./../../assets/user-img.png";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native"; // Importar useNavigation
 import useDynamicColors from "@/Styles/useDynamicColors";
-import { enviarMensajeChatbotStream } from "../../components/Features/chatbot/chatbotApi";
+import { enviarMensajeChatbotStream, armarHistorial } from "../../components/Features/chatbot/chatbotApi";
 import { parseChatText } from "./chatRichText";
 import { abrirLinkEnApp } from "./chatLinkNavigation";
 import useTextoSuave from "./useTextoSuave";
 
 // Bot text revealed smoothly while it streams (render prop keeps the hook per message).
-const TextoBot = ({ texto, animar, render }) => render(useTextoSuave(texto, animar));
+// `pendiente` is true while Foody is still writing or part of the text is not shown yet,
+// so the bubble can show the typing dots instead of looking frozen.
+const TextoBot = ({ texto, animar, escribiendo, render }) => {
+  const visible = useTextoSuave(texto, animar);
+  return render(visible, Boolean(escribiendo) || visible.length < (texto || "").length);
+};
 
 // Bullet per nesting level: puesto (0) > producto (1) > detalle (2).
 const BULLETS = ["•", "◦", "▪"];
@@ -74,6 +79,10 @@ const Chatbot = () => {
   const navigation = useNavigation(); // Inicializar useNavigation
 
   const [messages, setMessages] = useState([]);
+  // Questions and their final answers by question number, for the short memory sent to Foody.
+  // Kept outside React state so a queued question always sees the previous answer.
+  const conversacionRef = useRef([]);
+  const preguntaSeqRef = useRef(0);
   const chatInputRef = useRef(null);
   const scrollViewRef = useRef(null);
   const [inputText, setInputText] = useState("");
@@ -132,7 +141,9 @@ const Chatbot = () => {
   const sendMessage = () => {
     const text = inputText.trim();
     if (!text) return;
-    addMessageToChat(text, "user");
+    const seq = ++preguntaSeqRef.current;
+    conversacionRef.current.push({ seq, pregunta: text });
+    setMessages((prev) => [...prev, { message: text, sender: "user", seq }]);
     setInputText("");
     setPendingCount((n) => n + 1);
 
@@ -142,10 +153,15 @@ const Chatbot = () => {
       const id = `bot-${Date.now()}-${Math.random()}`;
       const actualizar = (cambios) =>
         setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, ...cambios } : m)));
-      setMessages((prev) => [...prev, { id, message: "", sender: "bot", streaming: true, animar: true }]);
-      return enviarMensajeChatbotStream(text, (parcial) => actualizar({ message: parcial }))
-        .then((respuesta) => actualizar({ message: respuesta, streaming: false }))
-        .catch((error) => actualizar({ message: error.message, streaming: false }))
+      const historial = armarHistorial(conversacionRef.current, seq);
+      setMessages((prev) => [...prev, { id, message: "", sender: "bot", streaming: true, animar: true, respondeA: seq }]);
+      return enviarMensajeChatbotStream(text, (parcial) => actualizar({ message: parcial }), { historial })
+        .then((respuesta) => {
+          const entrada = conversacionRef.current.find((c) => c.seq === seq);
+          if (entrada) entrada.respuesta = respuesta;
+          actualizar({ message: respuesta, streaming: false });
+        })
+        .catch((error) => actualizar({ message: error.message, streaming: false, error: true }))
         .finally(() => setPendingCount((n) => Math.max(0, n - 1)));
     });
   };
@@ -186,9 +202,13 @@ const Chatbot = () => {
     });
 
   // Renders the Markdown subset Foody emits (bold, bullets, headings, links).
-  const renderRichText = (text) => {
+  // `pendiente` adds the typing dots at the end of the bubble while Foody keeps writing.
+  const renderRichText = (text, pendiente = false) => {
     const blocks = parseChatText(text);
-    if (blocks.length === 0) return <Text style={styles.messageText}>{text}</Text>;
+    const puntos = pendiente ? <TypingDots color={Colors.GrisOscuro} /> : null;
+    if (blocks.length === 0) {
+      return pendiente ? <View style={styles.bubble}>{puntos}</View> : <Text style={styles.messageText}>{text}</Text>;
+    }
     return (
       <View style={styles.bubble}>
         {blocks.map((block, bi) => {
@@ -220,13 +240,9 @@ const Chatbot = () => {
             </Text>
           );
         })}
+        {puntos}
       </View>
     );
-  };
-
-  const addMessageToChat = (message, sender) => {
-    setMessages((prevMessages) => [...prevMessages, { message, sender }]);
-
   };
 
   const scrollToEnd = () => scrollViewRef.current?.scrollToEnd({ animated: true });
@@ -425,7 +441,7 @@ const Chatbot = () => {
               disabled={msg.message != MenssageLogin && msg.message != MenssageRegister} // Desactiva el botón si no es clickeable
             >
               {msg.sender === "bot"
-                ? <TextoBot texto={msg.message} animar={Boolean(msg.animar)} render={renderRichText} />
+                ? <TextoBot texto={msg.message} animar={Boolean(msg.animar)} escribiendo={msg.streaming} render={renderRichText} />
                 : <Text style={styles.messageText}>{msg.message}</Text>
               }
             </TouchableOpacity>

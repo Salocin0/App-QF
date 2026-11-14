@@ -7,6 +7,30 @@ export const MENSAJE_TIMEOUT_CHATBOT = "Foody tardó demasiado en responder. Rev
 export const chatbotUrl = (baseUrl = process.env.EXPO_PUBLIC_API_URL || DEFAULT_API_URL) =>
   `${baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`}chatbot`;
 
+// Short memory: the last 3 exchanges ({ rol: "usuario" | "foody", texto }) travel with the
+// question as JSON; the server re-validates and trims them.
+export const cuerpoChatbot = (mensaje, historial) =>
+  new URLSearchParams(
+    Array.isArray(historial) && historial.length
+      ? { userMessage: mensaje, historial: JSON.stringify(historial.slice(-6)) }
+      : { userMessage: mensaje }
+  ).toString();
+
+/**
+ * Builds the history for question number `seq` from the earlier questions and their
+ * answers ([{ seq, pregunta, respuesta? }]). Later (queued) questions and failed or
+ * missing answers are left out. Returns the last 3 exchanges at most.
+ */
+export const armarHistorial = (conversacion, seq) =>
+  (Array.isArray(conversacion) ? conversacion : [])
+    .filter((c) => c && c.seq < seq)
+    .sort((a, b) => a.seq - b.seq)
+    .flatMap((c) => [
+      { rol: "usuario", texto: c.pregunta },
+      ...(typeof c.respuesta === "string" && c.respuesta.trim() ? [{ rol: "foody", texto: c.respuesta }] : []),
+    ])
+    .slice(-6);
+
 const mensajeDeError = (responseText) => {
   try {
     return JSON.parse(responseText)?.msg || MENSAJE_ERROR_CHATBOT;
@@ -25,7 +49,7 @@ const mensajeDeError = (responseText) => {
 export function enviarMensajeChatbotStream(
   mensaje,
   onText,
-  { xhrFactory = () => new XMLHttpRequest(), baseUrl, timeoutMs = CHATBOT_TIMEOUT_MS, fallback = enviarMensajeChatbot } = {}
+  { xhrFactory = () => new XMLHttpRequest(), baseUrl, timeoutMs = CHATBOT_TIMEOUT_MS, fallback = enviarMensajeChatbot, historial } = {}
 ) {
   return new Promise((resolve, reject) => {
     const xhr = xhrFactory();
@@ -59,7 +83,7 @@ export function enviarMensajeChatbotStream(
       if (xhr.status === 404) {
         clearTimeout(timeoutId);
         settled = true;
-        fallback(mensaje, { baseUrl, timeoutMs }).then(
+        fallback(mensaje, { baseUrl, timeoutMs, historial }).then(
           (texto) => {
             onText?.(texto);
             resolve(texto);
@@ -75,7 +99,7 @@ export function enviarMensajeChatbotStream(
       finish(resolve, texto);
     };
     xhr.onerror = () => finish(reject, new Error(MENSAJE_ERROR_CHATBOT));
-    xhr.send(new URLSearchParams({ userMessage: mensaje }).toString());
+    xhr.send(cuerpoChatbot(mensaje, historial));
   });
 }
 
@@ -83,7 +107,7 @@ export function enviarMensajeChatbotStream(
  * Sends a message to the help chatbot and resolves with the reply text.
  * Rejects with an Error whose message is ready to show in the chat (server error, invalid reply or timeout).
  */
-export async function enviarMensajeChatbot(mensaje, { fetchImpl = fetch, baseUrl, timeoutMs = CHATBOT_TIMEOUT_MS } = {}) {
+export async function enviarMensajeChatbot(mensaje, { fetchImpl = fetch, baseUrl, timeoutMs = CHATBOT_TIMEOUT_MS, historial } = {}) {
   const controller = new AbortController();
   let timedOut = false;
   const timeoutId = setTimeout(() => {
@@ -93,7 +117,7 @@ export async function enviarMensajeChatbot(mensaje, { fetchImpl = fetch, baseUrl
   try {
     const response = await fetchImpl(chatbotUrl(baseUrl), {
       method: "POST",
-      body: new URLSearchParams({ userMessage: mensaje }).toString(),
+      body: cuerpoChatbot(mensaje, historial),
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       signal: controller.signal,
     });
