@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, Image, TouchableOpacity } from "react-native";
 import * as Location from "expo-location";
-import imgevento from "./../assets/eventoimg.jpeg";
 import logoevento from "./../assets/logoevento.webp";
 import useDynamicColors from "../Styles/useDynamicColors";
-import { formatDistanceToNow } from "date-fns";
-import { es } from "date-fns/locale";
 import { getDistance } from "geolib";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCalendarAlt, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
@@ -19,6 +16,7 @@ const EventoCard = ({ item, onPress }) => {
   const [location, setLocation] = useState(null);
   const [distance, setDistance] = useState(null);
   const [locationPermission, setLocationPermission] = useState(null);
+  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     const getLocationPermission = async () => {
@@ -52,165 +50,172 @@ const EventoCard = ({ item, onPress }) => {
     }
   }, [location, item?.coords]);
 
-  const calcularHorasRestantes = (fecha) => {
-    const ahora = new Date();
-    const diferencia = fecha - ahora;
-    const horasRestantes = Math.round(diferencia / (1000 * 60 * 60));
-    return horasRestantes;
+  const calcularTiempoRestante = (fecha) => {
+    const horasTotales = Math.floor((fecha - new Date()) / (1000 * 60 * 60));
+    const dias = Math.floor(horasTotales / 24);
+    const horas = horasTotales % 24;
+    if (dias > 0) {
+      return `${dias} día${dias > 1 ? "s" : ""} y ${horas} hora${horas !== 1 ? "s" : ""}`;
+    }
+    return `${horas} hora${horas !== 1 ? "s" : ""}`;
   };
 
-  // Safeguard against undefined diaEventos
   const fechaInicio = item?.diaEventos?.length
-    ? new Date(Math.min(...item.diaEventos.map(d => new Date(d.fechaHoraInicioDiaEvento))))
+    ? new Date(Math.min(...item.diaEventos.map((d) => new Date(d.fechaHoraInicioDiaEvento))))
     : null;
   const fechaFin = item?.diaEventos?.length
-    ? new Date(Math.max(...item.diaEventos.map(d => new Date(d.fechaHoraFinDiaEvento))))
+    ? new Date(Math.max(...item.diaEventos.map((d) => new Date(d.fechaHoraFinDiaEvento))))
     : null;
 
-  const tiempoHastaInicio = fechaInicio
-    ? formatDistanceToNow(fechaInicio, { addSuffix: true, locale: es })
-    : "Fecha no disponible";
-  const tiempoHastaFin = fechaFin
-    ? `Termina en ${calcularHorasRestantes(fechaFin)} horas`
-    : "Fecha no disponible";
+  const ahora = new Date();
+  const eventoFinalizado = fechaFin && fechaFin <= ahora;
+  const eventoEnProgreso = fechaInicio && fechaFin && fechaInicio <= ahora && fechaFin > ahora;
+
+  const textoTiempo = !fechaInicio || !fechaFin
+    ? "Fecha no disponible"
+    : fechaInicio > ahora
+    ? `Empieza en ${calcularTiempoRestante(fechaInicio)}`
+    : fechaFin > ahora
+    ? `Termina en ${calcularTiempoRestante(fechaFin)}`
+    : "Finalizado";
+
+  const textoBadge = eventoFinalizado
+    ? "Finalizado"
+    : eventoEnProgreso
+    ? "En progreso"
+    : fechaInicio
+    ? "Empieza pronto"
+    : null;
+
+  const ubicacion = [item?.ubicacion, item?.localidad, item?.provincia]
+    .map((part) => (typeof part === "string" ? part.trim() : ""))
+    .filter(Boolean)
+    .reduce((acc, part) => {
+      if (!acc.some((existing) => existing.toLowerCase().includes(part.toLowerCase()))) acc.push(part);
+      return acc;
+    }, [])
+    .join(", ");
+
+  const fechaTexto = fechaInicio
+    ? fechaInicio.toLocaleDateString("es-AR", { day: "numeric", month: "short", year: "numeric" })
+    : null;
+
+  const fondoCard = Colors.modoOscuroActivo ? "#2a2a2a" : "#ffffff";
+  const fondoImagen = Colors.modoOscuroActivo ? "#1e1e1e" : "#f2f2f2";
 
   return (
     <TouchableOpacity
+      activeOpacity={0.85}
       style={{
-        backgroundColor: "#222222",
-        flexDirection: "column",
-        height: 200,
-        marginVertical: 5,
+        backgroundColor: fondoCard,
+        marginVertical: 8,
         marginHorizontal: 20,
-        borderRadius: 10,
+        borderRadius: 14,
         overflow: "hidden",
-        borderWidth: 2,
+        borderWidth: 1,
         borderColor: Colors.BordeDorado,
-        shadowColor: Colors.BordeDorado,
+        shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
+        shadowOpacity: 0.25,
         shadowRadius: 4,
-        elevation: 5,
+        elevation: 4,
       }}
       onPress={() => onPress?.(item)}
     >
-      <View style={{ flex: 2 }}>
+      <View style={{ backgroundColor: fondoImagen, padding: 12 }}>
         <Image
-          source={imgevento}
-          style={{
-            width: "100%",
-            height: "100%",
-          }}
-          resizeMode="cover"
+          source={item?.img && !imgError ? { uri: item.img } : logoevento}
+          onError={() => setImgError(true)}
+          style={{ width: "100%", height: 150, borderRadius: 6, backgroundColor: "#f7f5ef" }}
+          resizeMode="contain"
         />
-      </View>
-      <View style={{ flex: 3, flexDirection: "row" }}>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Image
-            source={
-              item?.img
-                ? { uri: item?.img }
-                : logoevento
-            }
+        {textoBadge && (
+          <View
             style={{
-              width: 75,
-              height: 75,
-              borderRadius: 5,
-              margin: 10,
-              borderWidth: 2,
-              borderColor: Colors.BordeDorado,
-            }}
-            resizeMode="cover"
-          />
-        </View>
-        <View
-          style={{
-            flex: 2,
-            paddingVertical: 10,
-            justifyContent: "center",
-            paddingEnd: 10,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: "bold",
-              marginBottom: 5,
-              textAlign: "left",
-              color: "#ffffff",
+              position: "absolute",
+              top: 18,
+              left: 18,
+              backgroundColor: eventoEnProgreso ? "#4caf50" : eventoFinalizado ? "#757575" : "#f5b942",
+              borderRadius: 20,
+              paddingVertical: 4,
+              paddingHorizontal: 10,
             }}
           >
-            {item?.nombre}
-          </Text>
-          <Text
-            style={{ fontSize: 14, textAlign: "left", color: "#cccccc" }}
+            <Text style={{ fontSize: 12, fontWeight: "bold", color: "#1a1a1a" }}>{textoBadge}</Text>
+          </View>
+        )}
+        {item?.tienePreventa && (
+          <View
+            style={{
+              position: "absolute",
+              top: 18,
+              right: 18,
+              backgroundColor: Colors.BordeDorado,
+              borderRadius: 20,
+              paddingVertical: 4,
+              paddingHorizontal: 10,
+            }}
           >
-            {item?.descripcion}
-          </Text>
-        </View>
-      </View>
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignContent: "center",
-          paddingVertical: 5,
-          paddingHorizontal: 10,
-          borderTopWidth: 1,
-          borderColor: Colors.BordeDorado,
-          backgroundColor: "#1a1a1a",
-          borderBottomLeftRadius: 8,
-          borderBottomRightRadius: 8,
-        }}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <FontAwesomeIcon
-            icon={faCalendarAlt}
-            color={Colors.BordeDorado}
-            size={16}
-          />
-          <Text style={{ fontSize: 16, color: "#cccccc", marginLeft: 5 }}>
-            {fechaInicio > new Date() ? `Empieza ${tiempoHastaInicio}` : tiempoHastaFin}
-          </Text>
-        </View>
-        {locationPermission && location && distance !== null && (
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <FontAwesomeIcon
-              icon={faMapMarkerAlt}
-              color={Colors.BordeDorado}
-              size={16}
-            />
-            <Text style={{ fontSize: 16, color: "#cccccc", marginLeft: 5 }}>
-              A {distance} km
-            </Text>
+            <Text style={{ fontSize: 12, fontWeight: "bold", color: "#000000" }}>Preventa</Text>
           </View>
         )}
       </View>
 
-      {item?.tienePreventa && (
+      <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 12 }}>
+        <Text
+          numberOfLines={2}
+          style={{ fontSize: 19, fontWeight: "bold", color: Colors.BordeDorado, textAlign: "center", marginBottom: 6 }}
+        >
+          {item?.nombre}
+        </Text>
+        {!!item?.descripcion && (
+          <Text
+            numberOfLines={2}
+            style={{ fontSize: 14, lineHeight: 20, color: Colors.modoOscuroActivo ? "#e0e0e0" : "#333333", textAlign: "center", marginBottom: 8 }}
+          >
+            {item.descripcion}
+          </Text>
+        )}
+
+        {!!ubicacion && (
+          <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom: 2 }}>
+            <FontAwesomeIcon icon={faMapMarkerAlt} color={Colors.BordeDorado} size={12} />
+            <Text numberOfLines={1} style={{ flexShrink: 1, fontSize: 13, fontWeight: "600", color: Colors.BordeDorado, marginLeft: 5 }}>
+              {ubicacion}
+            </Text>
+          </View>
+        )}
+        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
+          {fechaTexto && (
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <FontAwesomeIcon icon={faCalendarAlt} color={Colors.BordeDorado} size={12} />
+              <Text style={{ fontSize: 13, fontWeight: "600", color: Colors.BordeDorado, marginLeft: 5 }}>{fechaTexto}</Text>
+            </View>
+          )}
+          {locationPermission && location && distance !== null && (
+            <Text style={{ fontSize: 13, fontWeight: "600", color: Colors.BordeDorado, marginLeft: fechaTexto ? 10 : 0 }}>
+              · A {distance} km
+            </Text>
+          )}
+        </View>
+
         <View
           style={{
-            position: "absolute",
-            top: 10,
-            right: 10,
-            backgroundColor: Colors.BordeDorado,
-            borderRadius: 5,
-            paddingVertical: 5,
-            paddingHorizontal: 10,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginTop: 12,
+            paddingTop: 10,
+            borderTopWidth: 1,
+            borderColor: Colors.BordeDorado,
           }}
         >
-          <Text style={{ fontSize: 16, color: "#000000", fontWeight: "bold" }}>
-            Precompra
+          <Text numberOfLines={1} style={{ flexShrink: 1, fontSize: 13, color: Colors.modoOscuroActivo ? "#cccccc" : "#555555", marginRight: 8 }}>
+            {textoTiempo}
           </Text>
+          <Text style={{ fontSize: 14, fontWeight: "bold", color: Colors.BordeDorado }}>Ver evento →</Text>
         </View>
-      )}
+      </View>
     </TouchableOpacity>
   );
 };
